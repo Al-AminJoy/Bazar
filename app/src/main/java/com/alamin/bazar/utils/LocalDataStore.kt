@@ -15,6 +15,7 @@ class LocalDataStore (val context: Context){
         val Context.dataStore: DataStore<Preferences> by preferencesDataStore(PREFERENCE_NAME)
         val USER_ID = intPreferencesKey("user_id")
         val USER_NAME = stringPreferencesKey("user_name")
+        val USER_TOKEN = stringPreferencesKey("user_token")
     }
 
     /**
@@ -53,6 +54,26 @@ class LocalDataStore (val context: Context){
     suspend fun removeName(){
         context.dataStore.edit {
             it.remove(USER_NAME)
+        }
+    }
+
+    /**
+     * User Registration Operation
+     */
+
+    suspend fun storeToken(token: String){
+        context.dataStore.edit {
+            it[USER_TOKEN] = token
+        }
+    }
+
+    fun getToken() = context.dataStore.data.map {
+        it[USER_TOKEN]?:-1
+    }
+
+    suspend fun removeToken(){
+        context.dataStore.edit {
+            it.remove(USER_TOKEN)
         }
     }
 
