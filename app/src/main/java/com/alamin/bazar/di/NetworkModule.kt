@@ -2,6 +2,7 @@ package com.alamin.bazar.di
 
 import com.alamin.bazar.model.network.APIClient
 import com.alamin.bazar.model.network.APIInterface
+import com.alamin.bazar.utils.Constants
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -39,7 +40,7 @@ class NetworkModule {
     @Provides
     fun provideRetrofit(client: OkHttpClient): Retrofit{
         return Retrofit.Builder()
-            .baseUrl(APIClient.BASE_URL)
+            .baseUrl(Constants.BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .build();

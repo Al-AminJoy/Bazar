@@ -5,16 +5,18 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 @Entity
-data class User(
+data class Product(
     @PrimaryKey
-    @SerializedName("email")
-    val email: String,
     @SerializedName("id")
     val id: String,
-    @SerializedName("lastname")
-    val lastname: String,
     @SerializedName("name")
     val name: String,
-    @SerializedName("phone")
-    val phone: String
+    @SerializedName("price")
+    val price: String,
+    @SerializedName("brand")
+    val brand: String,
+    @SerializedName("category")
+    val category: String,
+    @SerializedName("description")
+    val description: String
 )

@@ -3,13 +3,9 @@ package com.alamin.bazar.model.data
 
 import com.google.gson.annotations.SerializedName
 
-data class UserRegistration(
+data class UserData(
     @SerializedName("email")
     val email: String,
-    @SerializedName("name")
-    val name: String,
     @SerializedName("password")
-    val password: String,
-    @SerializedName("pic")
-    val pic: String
+    val password: String
 )
