@@ -2,6 +2,7 @@ package com.alamin.bazar.di
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
+import com.alamin.bazar.view.activity.LoginActivity
 import com.alamin.bazar.view.activity.MainActivity
 import com.alamin.bazar.view.fragment.*
 import dagger.BindsInstance
@@ -12,7 +13,7 @@ import javax.inject.Singleton
 @Component(modules = [LocalStorageModule::class, NetworkModule::class, ViewModelModule::class])
 interface AppComponent {
     fun injectMain(mainActivity: MainActivity)
-    fun injectLogin(loginFragment: LoginFragment)
+    fun injectLogin(loginActivity: LoginActivity)
     fun injectDashBoard(dashBoardFragment: DashBoardFragment)
     fun injectCart(cartFragment: CartFragment)
     fun injectOrders(ordersFragment: OrdersFragment)
