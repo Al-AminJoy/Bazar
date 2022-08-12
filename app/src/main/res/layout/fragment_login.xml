@@ -1,14 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".view.fragment.LoginFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <data>
+
+        <import type="com.alamin.bazar.view_model.UserDataViewModel"/>
+        <import type="android.view.View.OnClickListener"/>
+
+        <variable
+            name="userDataViewModel"
+            type="UserDataViewModel" />
+
+        <variable
+            name="loginClickListener"
+            type="OnClickListener" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        tools:context=".view.fragment.LoginFragment">
 
-</FrameLayout>
+       <androidx.constraintlayout.widget.Guideline
+           android:id="@+id/guidelineTop"
+           android:layout_width="match_parent"
+           android:layout_height="1dp"
+           android:orientation="horizontal"
+           app:layout_constraintGuide_percent=".40"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/guidelineTop"
+            android:src="@drawable/login"/>
+
+        <TextView
+            android:id="@+id/txtLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guidelineTop"
+            android:layout_marginVertical="@dimen/app_margin"
+            android:layout_marginHorizontal="@dimen/app_margin"
+            android:text="Login"
+            android:textSize="@dimen/textSizeL"
+            android:textColor="@color/theme_secondary"
+            android:textStyle="bold"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/app_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtLogin"
+            android:layout_marginHorizontal="@dimen/app_margin"
+            android:hint="Email"
+            app:hintTextColor="@color/theme_secondary"
+            app:boxStrokeColor="@color/theme_secondary"
+            app:boxCornerRadiusTopStart="@dimen/dimen4dp"
+            app:boxCornerRadiusBottomStart="@dimen/dimen4dp"
+            app:boxCornerRadiusBottomEnd="@dimen/dimen4dp"
+            app:boxCornerRadiusTopEnd="@dimen/dimen4dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding8dp"
+                android:singleLine="true"
+                android:maxLength="48"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/app_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layoutEmail"
+            android:layout_marginHorizontal="@dimen/app_margin"
+            android:hint="Password"
+            app:hintTextColor="@color/theme_secondary"
+            app:boxStrokeColor="@color/theme_secondary"
+            app:boxCornerRadiusTopStart="@dimen/dimen4dp"
+            app:boxCornerRadiusBottomStart="@dimen/dimen4dp"
+            app:boxCornerRadiusBottomEnd="@dimen/dimen4dp"
+            app:boxCornerRadiusTopEnd="@dimen/dimen4dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding8dp"
+                android:singleLine="true"
+                android:inputType="textPassword"
+                android:maxLength="48"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layoutPassword"
+            android:layout_marginHorizontal="@dimen/app_margin"
+            android:layout_marginVertical="@dimen/app_margin"
+            android:text="Login"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/theme_secondary"
+            app:rippleColor="@color/Baby_Blue"/>
+
+        <TextView
+            android:id="@+id/txtRegisterMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnLogin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias=".95"
+            android:text="Haven't Any Account ?"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/txtRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Register"
+            android:layout_marginHorizontal="@dimen/app_margin"
+            android:textStyle="bold"
+            android:textColor="@color/theme_secondary"
+            app:layout_constraintStart_toEndOf="@id/txtRegisterMessage"
+            app:layout_constraintEnd_toEndOf=""
+            app:layout_constraintTop_toTopOf="@id/txtRegisterMessage"
+            app:layout_constraintBottom_toBottomOf="@id/txtRegisterMessage"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

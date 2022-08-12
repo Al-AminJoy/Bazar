@@ -2,10 +2,7 @@ package com.alamin.bazar.utils
 
 import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.map
 
@@ -13,9 +10,30 @@ const val PREFERENCE_NAME = "data_store"
 class LocalDataStore (val context: Context){
     companion object PreferenceKeys{
         val Context.dataStore: DataStore<Preferences> by preferencesDataStore(PREFERENCE_NAME)
+        val USER = stringPreferencesKey("user")
         val USER_ID = intPreferencesKey("user_id")
         val USER_NAME = stringPreferencesKey("user_name")
         val USER_TOKEN = stringPreferencesKey("user_token")
+    }
+
+    /**
+     * User Operation
+     */
+    suspend fun storeUser(user: String){
+        context.dataStore.edit {
+            it[USER] = user
+        }
+    }
+
+    fun getUser() = context.dataStore.data.map {
+        it[USER]?:-1
+    }
+
+
+    suspend fun removeUser(){
+        context.dataStore.edit {
+            it.remove(USER)
+        }
     }
 
     /**
@@ -58,7 +76,7 @@ class LocalDataStore (val context: Context){
     }
 
     /**
-     * User Registration Operation
+     * User Token Operation
      */
 
     suspend fun storeToken(token: String){
@@ -76,7 +94,5 @@ class LocalDataStore (val context: Context){
             it.remove(USER_TOKEN)
         }
     }
-
-
 
 }

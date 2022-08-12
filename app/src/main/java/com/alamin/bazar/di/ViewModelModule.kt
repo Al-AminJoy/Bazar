@@ -1,6 +1,7 @@
 package com.alamin.bazar.di
 
 import androidx.lifecycle.ViewModel
+import com.alamin.bazar.view_model.UserDataViewModel
 import com.alamin.bazar.view_model.UserViewModel
 import dagger.Binds
 import dagger.Module
@@ -14,4 +15,9 @@ abstract class ViewModelModule {
     @ClassKey(UserViewModel::class)
     @IntoMap
     abstract fun provideUserViewModel(userViewModel: UserViewModel): ViewModel
+
+    @Binds
+    @ClassKey(UserDataViewModel::class)
+    @IntoMap
+    abstract fun provideUserDataViewModel(userDataViewModel: UserDataViewModel): ViewModel
 }
