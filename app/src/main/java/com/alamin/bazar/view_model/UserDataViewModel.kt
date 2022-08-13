@@ -53,4 +53,31 @@ class UserDataViewModel @Inject constructor(private val userDataRepository: User
     private fun isValidEmail(email: String?): Boolean {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
+
+    fun signUpUser(apiResponse: APIResponse){
+        val userEmail = inputEmail.value
+        val userPassword = inputPassword.value
+        if (userEmail.equals(null) || TextUtils.isEmpty(userEmail)){
+            apiResponse.onFailed("Please, Enter Email")
+        }else if (!isValidEmail(userEmail)){
+            apiResponse.onFailed("Please, Enter Valid Email")
+        }else if (userPassword.equals(null) || TextUtils.isEmpty(userPassword)){
+            apiResponse.onFailed("Please, Enter Password")
+        }else{
+            val userData = UserData(userEmail?.trim()!!,userPassword?.trim()!!)
+
+            viewModelScope.launch(IO) {
+                val response =  userDataRepository.signUpUser(userData)
+                if (response){
+                    withContext(Main){
+                        apiResponse.onSuccess("Success")
+                    }
+                }else{
+                    withContext(Main){
+                        apiResponse.onFailed("Failed")
+                    }
+                }
+            }
+        }
+    }
 }

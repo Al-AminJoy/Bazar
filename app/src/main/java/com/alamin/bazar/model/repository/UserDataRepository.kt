@@ -20,11 +20,21 @@ class UserDataRepository @Inject constructor(private val apiInterface: APIInterf
 
      suspend fun loginUser(userData: UserData): Boolean{
         val response = apiInterface.login(userData)
-         Log.d(TAG, "loginUser: ${response.code()} ${response.message()}")
         response.body()?.let {
             if (response.isSuccessful){
                     loginResponseLiveData.postValue(response.body())
                     return true
+            }
+        }
+        return false
+    }
+
+    suspend fun signUpUser(userData: UserData): Boolean{
+        val response = apiInterface.signup(userData)
+        response.body()?.let {
+            if (response.isSuccessful){
+                loginResponseLiveData.postValue(response.body())
+                return true
             }
         }
         return false

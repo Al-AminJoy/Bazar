@@ -59,6 +59,10 @@ class LoginActivity : AppCompatActivity() {
             })
         }
 
+        binding.setSignUpClickListener {
+            startActivity(Intent(this@LoginActivity,SignUpActivity::class.java))
+        }
+
         userDataViewModel.loginResponse.observe(this, Observer {
             lifecycleScope.launch{
                 localDataStore.storeToken(it.token)

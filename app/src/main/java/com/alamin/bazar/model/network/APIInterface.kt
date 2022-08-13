@@ -10,4 +10,7 @@ interface APIInterface {
 
     @POST("/users/signin")
     suspend fun login(@Body user: UserData): Response<UserResponse>
+
+    @POST("/users/signup")
+    suspend fun signup(@Body user: UserData): Response<UserResponse>
 }

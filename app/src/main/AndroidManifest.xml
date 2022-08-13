@@ -3,8 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.alamin.bazar">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-
     <application
         android:name=".BazaarApplication"
         android:allowBackup="true"
@@ -17,6 +15,9 @@
         android:theme="@style/Theme.Bazar"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".view.activity.SignUpActivity"
+            android:exported="false" />
         <activity
             android:name=".view.activity.MainActivity"
             android:exported="false" />
@@ -34,6 +35,7 @@
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-permission android:name="android.permission.INTERNET" />
 

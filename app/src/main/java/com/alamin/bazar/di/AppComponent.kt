@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.alamin.bazar.view.activity.LoginActivity
 import com.alamin.bazar.view.activity.MainActivity
+import com.alamin.bazar.view.activity.SignUpActivity
 import com.alamin.bazar.view.fragment.*
 import dagger.BindsInstance
 import dagger.Component
@@ -14,6 +15,7 @@ import javax.inject.Singleton
 interface AppComponent {
     fun injectMain(mainActivity: MainActivity)
     fun injectLogin(loginActivity: LoginActivity)
+    fun injectSignUp(signUpActivity: SignUpActivity)
     fun injectDashBoard(dashBoardFragment: DashBoardFragment)
     fun injectCart(cartFragment: CartFragment)
     fun injectOrders(ordersFragment: OrdersFragment)
