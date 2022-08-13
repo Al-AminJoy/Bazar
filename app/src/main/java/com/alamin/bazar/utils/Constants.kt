@@ -1,5 +1,5 @@
 package com.alamin.bazar.utils
 
 object Constants {
-    const val BASE_URL = "http://api.fakeshop-api.com/"
+    const val BASE_URL = "https://fakestoreapi.com/"
 }

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="com.alamin.bazar.model.data.Product"/>
+        <import type="com.alamin.bazar.view.adapter.ProductClickListener"/>
+        <variable
+            name="product"
+            type="Product" />
+        <variable
+            name="productClick"
+            type="ProductClickListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/app_margin"
+        android:layout_marginVertical="@dimen/dimen4dp"
+        android:background="@drawable/white_fill_round_corner"
+        android:onClick="@{()->productClick.onClick(product)}">
+
+        <ImageView
+            android:id="@+id/imgProduct"
+            android:layout_width="@dimen/dimen100dp"
+            android:layout_height="@dimen/dimen100dp"
+            android:scaleType="fitXY"
+            android:backgroundTint="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/app_margin"
+            setImage="@{product.image}"/>
+
+        <TextView
+            android:id="@+id/txtProductName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/textSizeM"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imgProduct"
+            android:padding="@dimen/app_margin"
+            android:gravity="center"
+            android:text="@{product.title}"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/textSizeM"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtProductName"
+            android:padding="@dimen/app_margin"
+            android:gravity="center"
+            android:text="@{product.price+` Tk`}"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

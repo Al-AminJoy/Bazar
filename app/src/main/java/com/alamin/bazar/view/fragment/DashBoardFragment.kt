@@ -1,20 +1,69 @@
 package com.alamin.bazar.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import com.alamin.bazar.BazaarApplication
 import com.alamin.bazar.R
+import com.alamin.bazar.databinding.FragmentDashBoardBinding
+import com.alamin.bazar.model.data.Product
+import com.alamin.bazar.view.adapter.ProductClickListener
+import com.alamin.bazar.view.adapter.ProductsAdapter
+import com.alamin.bazar.view_model.ProductViewModel
+import com.alamin.bazar.view_model.ViewModelFactory
+import javax.inject.Inject
 
+private const val TAG = "DashBoardFragment"
 class DashBoardFragment : Fragment() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    @Inject
+    lateinit var productsAdapter: ProductsAdapter
+
+    private lateinit var productViewModel: ProductViewModel
+
+    private lateinit var binding : FragmentDashBoardBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dash_board, container, false)
+        binding = FragmentDashBoardBinding.inflate(layoutInflater)
+
+        val component = (requireActivity().applicationContext as BazaarApplication).appComponent
+        component.injectDashBoard(this)
+
+        productViewModel = ViewModelProvider(this,viewModelFactory)[ProductViewModel::class.java]
+
+        productViewModel.requestProduct()
+
+        productViewModel.productList.observe(requireActivity(), Observer {
+            productViewModel.insertProduct(it)
+        })
+
+        productViewModel.productFromLocal.observe(requireActivity(), Observer {
+            binding.recyclerView.apply {
+                layoutManager = GridLayoutManager(requireContext(),2)
+                adapter = productsAdapter
+            }
+            with(productsAdapter){
+                setData(ArrayList(it))
+                setOnClick(object: ProductClickListener{
+                    override fun onClick(product: Product) {
+
+                    }
+                })
+            }
+        })
+
+        return binding.root
     }
 
 }

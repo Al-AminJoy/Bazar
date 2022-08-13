@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent=".40"/>
+            app:layout_constraintGuide_percent=".30"/>
 
         <ImageView
             android:layout_width="match_parent"
@@ -77,7 +77,7 @@
                 android:singleLine="true"
                 android:inputType="textEmailAddress"
                 android:maxLength="48"
-                android:text="@={userDataViewModel.inputEmail}"/>
+                android:text="@={userDataViewModel.inputName}"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

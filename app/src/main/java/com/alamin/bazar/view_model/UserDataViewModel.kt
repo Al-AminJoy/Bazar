@@ -17,23 +17,21 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class UserDataViewModel @Inject constructor(private val userDataRepository: UserDataRepository): ViewModel() {
-    val inputEmail = MutableLiveData<String>()
+    val inputName = MutableLiveData<String>()
     val inputPassword = MutableLiveData<String>()
 
     val loginResponse : LiveData<UserResponse>
     get() = userDataRepository.getLoginResponse
 
     fun loginUser(apiResponse: APIResponse){
-        val userEmail = inputEmail.value
+        val userName = inputName.value
         val userPassword = inputPassword.value
-        if (userEmail.equals(null) || TextUtils.isEmpty(userEmail)){
-            apiResponse.onFailed("Please, Enter Email")
-        }else if (!isValidEmail(userEmail)){
-            apiResponse.onFailed("Please, Enter Valid Email")
+        if (userName.equals(null) || TextUtils.isEmpty(userName)){
+            apiResponse.onFailed("Please, Enter Name")
         }else if (userPassword.equals(null) || TextUtils.isEmpty(userPassword)){
             apiResponse.onFailed("Please, Enter Password")
         }else{
-            val userData = UserData(userEmail?.trim()!!,userPassword?.trim()!!)
+            val userData = UserData(userName?.trim()!!,userPassword?.trim()!!)
 
             viewModelScope.launch(IO) {
               val response =  userDataRepository.loginUser(userData)
@@ -50,21 +48,17 @@ class UserDataViewModel @Inject constructor(private val userDataRepository: User
         }
     }
 
-    private fun isValidEmail(email: String?): Boolean {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    }
+
 
     fun signUpUser(apiResponse: APIResponse){
-        val userEmail = inputEmail.value
+        val userName = inputName.value
         val userPassword = inputPassword.value
-        if (userEmail.equals(null) || TextUtils.isEmpty(userEmail)){
-            apiResponse.onFailed("Please, Enter Email")
-        }else if (!isValidEmail(userEmail)){
-            apiResponse.onFailed("Please, Enter Valid Email")
+        if (userName.equals(null) || TextUtils.isEmpty(userName)){
+            apiResponse.onFailed("Please, Enter Name")
         }else if (userPassword.equals(null) || TextUtils.isEmpty(userPassword)){
             apiResponse.onFailed("Please, Enter Password")
         }else{
-            val userData = UserData(userEmail?.trim()!!,userPassword?.trim()!!)
+            val userData = UserData(userName?.trim()!!,userPassword?.trim()!!)
 
             viewModelScope.launch(IO) {
                 val response =  userDataRepository.signUpUser(userData)
