@@ -9,7 +9,11 @@
         android:id="@+id/dashBoardFragment"
         android:name="com.alamin.bazar.view.fragment.DashBoardFragment"
         android:label="Dashboard"
-        tools:layout="@layout/fragment_dash_board" />
+        tools:layout="@layout/fragment_dash_board" >
+        <action
+            android:id="@+id/action_dashBoardFragment_to_productDetailsFragment"
+            app:destination="@id/productDetailsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/cartFragment"
@@ -26,4 +30,18 @@
         android:name="com.alamin.bazar.view.fragment.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/productDetailsFragment"
+        android:name="com.alamin.bazar.view.fragment.ProductDetailsFragment"
+        android:label="Product Details"
+        tools:layout="@layout/fragment_product_details" >
+        <action
+            android:id="@+id/action_productDetailsFragment_to_dashBoardFragment"
+            app:destination="@id/dashBoardFragment" />
+        <argument
+            android:name="product"
+            app:argType="com.alamin.bazar.model.data.Product" />
+
+
+    </fragment>
 </navigation>

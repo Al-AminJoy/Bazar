@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.alamin.bazar.BazaarApplication
 import com.alamin.bazar.R
@@ -57,7 +58,8 @@ class DashBoardFragment : Fragment() {
                 setData(ArrayList(it))
                 setOnClick(object: ProductClickListener{
                     override fun onClick(product: Product) {
-
+                        val action = DashBoardFragmentDirections.actionDashBoardFragmentToProductDetailsFragment(product)
+                        findNavController().navigate(action)
                     }
                 })
             }
