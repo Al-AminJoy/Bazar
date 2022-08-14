@@ -1,5 +1,6 @@
 package com.alamin.bazar.model.network
 
+import com.alamin.bazar.model.data.Cart
 import com.alamin.bazar.model.data.Product
 import com.alamin.bazar.model.data.UserResponse
 import com.alamin.bazar.model.data.UserData
@@ -15,6 +16,10 @@ interface APIInterface {
 
     @POST("users/signup")
     suspend fun signup(@Body user: UserData): Response<UserResponse>
+
+    @POST("carts")
+    suspend fun addCart(@Body cart: Cart): Response<Cart>
+
 
     @GET("products")
     suspend fun getProducts(): Response<List<Product>>

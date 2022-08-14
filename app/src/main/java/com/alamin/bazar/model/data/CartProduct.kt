@@ -1,24 +1,18 @@
 package com.alamin.bazar.model.data
 
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
+
 @Entity
+@Parcelize
 data class CartProduct(
     @PrimaryKey
-    @SerializedName("id")
-    val id: String,
-    @SerializedName("brand")
-    val brand: String,
-    @SerializedName("category")
-    val category: String,
-    @SerializedName("description")
-    val description: String,
-    @SerializedName("name")
-    val name: String,
-    @SerializedName("price")
-    val price: String,
+    @SerializedName("productId")
+    val productId: Int,
     @SerializedName("quantity")
     val quantity: Int
-)
+): Parcelable

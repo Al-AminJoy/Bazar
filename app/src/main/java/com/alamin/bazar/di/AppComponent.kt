@@ -17,6 +17,7 @@ interface AppComponent {
     fun injectLogin(loginActivity: LoginActivity)
     fun injectSignUp(signUpActivity: SignUpActivity)
     fun injectDashBoard(dashBoardFragment: DashBoardFragment)
+    fun injectProductDetails(productDetailsFragment: ProductDetailsFragment)
     fun injectCart(cartFragment: CartFragment)
     fun injectOrders(ordersFragment: OrdersFragment)
     fun injectProfile(profileFragment: ProfileFragment)
