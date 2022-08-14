@@ -7,10 +7,10 @@ import com.alamin.bazar.model.data.CartProduct
 @Dao
 interface CartDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCart(carts: List<CartProduct>)
+    suspend fun insertCart(carts: List<CartProduct>)
 
     @Query("SELECT * FROM cartproduct")
-    fun getAllCart(): LiveData<CartProduct>
+    fun getAllCart(): LiveData<List<CartProduct>>
 
     @Delete
     fun deleteCart(cartProduct: CartProduct)

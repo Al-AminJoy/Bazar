@@ -10,11 +10,12 @@ import javax.inject.Inject
 
 class CartRepository @Inject constructor(private val apiInterface: APIInterface,private val localDatabase: LocalDatabase) {
     private val cartDao = localDatabase.cartDao()
-
     private val cartLiveData = MutableLiveData<Cart>()
 
     val cartResponse: LiveData<Cart>
     get() = cartLiveData
+
+    fun getAllCart(): LiveData<List<CartProduct>> = cartDao.getAllCart()
 
     suspend fun requestAddCart(cart: Cart): Boolean{
         val response = apiInterface.addCart(cart)
@@ -31,4 +32,6 @@ class CartRepository @Inject constructor(private val apiInterface: APIInterface,
     suspend fun insertCart(carts: List<CartProduct>){
         cartDao.insertCart(carts)
     }
+
+
 }

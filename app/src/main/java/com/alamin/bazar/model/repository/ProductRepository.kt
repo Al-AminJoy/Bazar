@@ -17,11 +17,12 @@ class ProductRepository @Inject constructor(private val apiInterface: APIInterfa
     get() = liveProductList
 
     val productFromLocal: LiveData<List<Product>>
-    get() = productDao.getAllProduct();
+    get() = productDao.getAllProduct()
+
+    fun getProductByIdList(ids:List<Int>):LiveData<List<Product>> = productDao.getProductByIdList(ids)
 
     suspend fun requestProduct(){
         var response = apiInterface.getProducts()
-        Log.d(TAG, "requestProduct: ${response.code()} ${response.message()}")
         response.body()?.let {
             if (response.isSuccessful){
                 liveProductList.postValue(response.body())

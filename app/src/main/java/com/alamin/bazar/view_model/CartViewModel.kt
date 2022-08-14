@@ -1,5 +1,6 @@
 package com.alamin.bazar.view_model
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,6 +24,8 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
     val count = MutableLiveData<Int>().apply {
         value = 0
     }
+
+    fun getAllCart(): LiveData<List<CartProduct>> = cartRepository.getAllCart()
 
     fun addProduct(){
         count.value?.let {
