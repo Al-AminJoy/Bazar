@@ -78,4 +78,10 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
         }
     }
 
+    fun deleteCartById(id: Int){
+        viewModelScope.launch (IO) {
+            cartRepository.deleteCartById(id)
+        }
+    }
+
 }

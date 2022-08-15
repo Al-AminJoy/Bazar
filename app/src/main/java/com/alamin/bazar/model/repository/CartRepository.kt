@@ -33,5 +33,8 @@ class CartRepository @Inject constructor(private val apiInterface: APIInterface,
         cartDao.insertCart(carts)
     }
 
+    suspend fun deleteCartById(id: Int){
+        cartDao.deleteCartById(id)
+    }
 
 }
