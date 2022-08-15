@@ -43,12 +43,6 @@ class DashBoardFragment : Fragment() {
 
         productViewModel = ViewModelProvider(this,viewModelFactory)[ProductViewModel::class.java]
 
-        productViewModel.requestProduct()
-
-        productViewModel.productList.observe(requireActivity(), Observer {
-            productViewModel.insertProduct(it)
-        })
-
         productViewModel.productFromLocal.observe(requireActivity(), Observer {
             binding.recyclerView.apply {
                 layoutManager = GridLayoutManager(requireContext(),2)

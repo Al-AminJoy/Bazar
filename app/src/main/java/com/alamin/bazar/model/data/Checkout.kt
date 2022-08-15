@@ -1,5 +1,9 @@
 package com.alamin.bazar.model.data
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class Checkout(
     val productId: Int,
     val quantity: Int,
@@ -7,4 +11,4 @@ data class Checkout(
     val category: String,
     val image: String,
     val price: Double
-)
+):Parcelable

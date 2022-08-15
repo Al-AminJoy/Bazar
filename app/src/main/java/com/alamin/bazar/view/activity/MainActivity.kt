@@ -3,17 +3,29 @@ package com.alamin.bazar.view.activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.alamin.bazar.BazaarApplication
 import com.alamin.bazar.R
 import com.alamin.bazar.databinding.ActivityMainBinding
+import com.alamin.bazar.databinding.FragmentDashBoardBinding
+import com.alamin.bazar.view_model.ProductViewModel
+import com.alamin.bazar.view_model.ViewModelFactory
 import kotlinx.android.synthetic.main.content_main.view.*
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    private lateinit var productViewModel: ProductViewModel
+
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -23,6 +35,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.includeContent.toolbar)
+
+        val component = (this.applicationContext as BazaarApplication).appComponent
+        component.injectMain(this)
+
+        productViewModel = ViewModelProvider(this,viewModelFactory)[ProductViewModel::class.java]
+
+        productViewModel.productList.observe(this, Observer {
+            productViewModel.insertProduct(it)
+        })
 
         navController = findNavController(R.id.fragment)
         appBarConfiguration = AppBarConfiguration(setOf(R.id.dashBoardFragment,R.id.cartFragment,R.id.profileFragment))
@@ -40,5 +61,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return super.onSupportNavigateUp() || navController.navigateUp(appBarConfiguration);
+    }
+
+    override fun onResume() {
+        super.onResume()
+        productViewModel.requestProduct()
     }
 }

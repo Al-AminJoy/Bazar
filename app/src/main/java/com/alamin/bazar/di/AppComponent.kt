@@ -23,6 +23,7 @@ interface AppComponent {
     fun injectProfile(profileFragment: ProfileFragment)
     fun injectRegister(registrationFragment: RegistrationFragment)
     fun injectWishList(wishListFragment: WishListFragment)
+    fun injectCheckout(checkoutFragment: CheckoutFragment)
 
     fun getViewModelMap(): Map<Class<*>, ViewModel>
 

@@ -11,152 +11,213 @@
             name="onCheckoutClick"
             type="OnClickListener" />
 
+        <variable
+            name="onCashClick"
+            type="OnClickListener" />
+        <variable
+            name="onOnlinePaymentClick"
+            type="OnClickListener" />
+
     </data>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".view.fragment.CartFragment"
-        android:orientation="vertical">
-
-       <androidx.cardview.widget.CardView
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           app:cardCornerRadius="@dimen/app_margin"
-           android:layout_margin="@dimen/app_margin">
-          <LinearLayout
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:padding="@dimen/app_margin">
-              <TextView
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:textSize="@dimen/textSizeL"
-                  android:textStyle="bold"
-                  android:text="Item(s) In Your Shopping cart"
-                  android:padding="@dimen/app_margin"/>
-
-              <androidx.recyclerview.widget.RecyclerView
-                  android:id="@+id/recyclerView"
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:paddingStart="@dimen/app_margin"/>
-          </LinearLayout>
-       </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
+        android:layout_height="match_parent">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="@dimen/app_margin"
-            android:layout_margin="@dimen/app_margin">
-            <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_height="match_parent"
+            tools:context=".view.fragment.CartFragment"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="@dimen/app_margin">
-                <TextView
-                    android:id="@+id/txtSubTotalTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:textSize="@dimen/textSizeL"
-                    android:text="Sub-Total"
-                    android:textColor="@color/black"
-                    android:padding="@dimen/app_margin"/>
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/app_margin"
+                android:layout_margin="@dimen/app_margin">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="@dimen/app_margin">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/textSizeL"
+                        android:textStyle="bold"
+                        android:text="Item(s) In Your Shopping cart"
+                        android:padding="@dimen/app_margin"/>
 
-                <TextView
-                    android:id="@+id/txtSubTotal"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toEndOf="@id/txtSubTotalTitle"
-                    app:layout_constraintTop_toTopOf="@id/txtSubTotalTitle"
-                    app:layout_constraintBottom_toBottomOf="@id/txtSubTotalTitle"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:textSize="@dimen/textSizeL"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:text="00"
-                    android:gravity="end"
-                    android:padding="@dimen/app_margin"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingStart="@dimen/app_margin"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                <TextView
-                    android:id="@+id/txtShippingTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txtSubTotalTitle"
-                    android:textSize="@dimen/textSizeL"
-                    android:text="Shipping"
-                    android:textColor="@color/black"
-                    android:padding="@dimen/app_margin"/>
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/app_margin"
+                android:layout_margin="@dimen/app_margin">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="@dimen/app_margin">
+                    <TextView
+                        android:id="@+id/txtSubTotalTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:textSize="@dimen/textSizeL"
+                        android:text="Sub-Total"
+                        android:textColor="@color/black"
+                        android:padding="@dimen/app_margin"/>
 
-                <TextView
-                    android:id="@+id/txtShipping"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toEndOf="@id/txtShippingTitle"
-                    app:layout_constraintTop_toTopOf="@id/txtShippingTitle"
-                    app:layout_constraintBottom_toBottomOf="@id/txtShippingTitle"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:textSize="@dimen/textSizeL"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:text="00"
-                    android:gravity="end"
-                    android:padding="@dimen/app_margin"/>
+                    <TextView
+                        android:id="@+id/txtSubTotal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toEndOf="@id/txtSubTotalTitle"
+                        app:layout_constraintTop_toTopOf="@id/txtSubTotalTitle"
+                        app:layout_constraintBottom_toBottomOf="@id/txtSubTotalTitle"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:textSize="@dimen/textSizeL"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:text="00"
+                        android:gravity="end"
+                        android:padding="@dimen/app_margin"/>
 
-                <View
-                    android:id="@+id/view"
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txtShippingTitle"
-                    android:layout_marginVertical="@dimen/app_margin"
-                    android:background="@color/DarkGray"/>
+                    <TextView
+                        android:id="@+id/txtShippingTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txtSubTotalTitle"
+                        android:textSize="@dimen/textSizeL"
+                        android:text="Shipping"
+                        android:textColor="@color/black"
+                        android:padding="@dimen/app_margin"/>
 
-                <TextView
-                    android:id="@+id/txtTotalTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/view"
-                    android:textSize="@dimen/textSizeL"
-                    android:text="Total"
-                    android:textColor="@color/black"
-                    android:padding="@dimen/app_margin"/>
+                    <TextView
+                        android:id="@+id/txtShipping"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toEndOf="@id/txtShippingTitle"
+                        app:layout_constraintTop_toTopOf="@id/txtShippingTitle"
+                        app:layout_constraintBottom_toBottomOf="@id/txtShippingTitle"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:textSize="@dimen/textSizeL"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:text="00"
+                        android:gravity="end"
+                        android:padding="@dimen/app_margin"/>
 
-                <TextView
-                    android:id="@+id/txtTotal"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toEndOf="@id/txtTotalTitle"
-                    app:layout_constraintTop_toTopOf="@id/txtTotalTitle"
-                    app:layout_constraintBottom_toBottomOf="@id/txtTotalTitle"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:textSize="@dimen/textSizeL"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:text="00"
-                    android:gravity="end"
-                    android:padding="@dimen/app_margin"/>
+                    <View
+                        android:id="@+id/view"
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txtShippingTitle"
+                        android:layout_marginVertical="@dimen/app_margin"
+                        android:background="@color/DarkGray"/>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
+                    <TextView
+                        android:id="@+id/txtTotalTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/view"
+                        android:textSize="@dimen/textSizeL"
+                        android:text="Total"
+                        android:textColor="@color/black"
+                        android:padding="@dimen/app_margin"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/app_margin"
-            android:layout_marginHorizontal="@dimen/app_margin"
-            app:cornerRadius="@dimen/app_margin"
-            android:text="Checkout"
-            android:textAllCaps="false"
-            android:backgroundTint="@color/theme_secondary"
-            app:rippleColor="@color/Baby_Blue"
-            android:onClick="@{onCheckoutClick}"/>
+                    <TextView
+                        android:id="@+id/txtTotal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toEndOf="@id/txtTotalTitle"
+                        app:layout_constraintTop_toTopOf="@id/txtTotalTitle"
+                        app:layout_constraintBottom_toBottomOf="@id/txtTotalTitle"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:textSize="@dimen/textSizeL"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:text="00"
+                        android:gravity="end"
+                        android:padding="@dimen/app_margin"/>
 
-    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/app_margin"
+                android:layout_margin="@dimen/app_margin">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/app_margin"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/textSizeL"
+                        android:textStyle="bold"
+                        android:text="Payment Method"
+                        android:padding="@dimen/app_margin"/>
+
+                    <RadioGroup
+                        android:id="@+id/radioGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <RadioButton
+                            android:id="@+id/btnCashOnDelivery"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Cash On Delivery"
+                            android:checked="true"
+                            android:buttonTint="@color/theme_secondary"
+                            android:onClick="@{onCashClick}"/>
+
+                        <RadioButton
+                            android:id="@+id/btnOnlinePayment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Online Payment"
+                            android:buttonTint="@color/theme_secondary"
+                            android:onClick="@{onOnlinePaymentClick}"/>
+
+                    </RadioGroup>
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/app_margin"
+                android:layout_marginHorizontal="@dimen/app_margin"
+                app:cornerRadius="@dimen/app_margin"
+                android:text="Checkout"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/theme_secondary"
+                app:rippleColor="@color/Baby_Blue"
+                android:onClick="@{onCheckoutClick}"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
 </layout>

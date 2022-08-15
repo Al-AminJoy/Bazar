@@ -19,7 +19,11 @@
         android:id="@+id/cartFragment"
         android:name="com.alamin.bazar.view.fragment.CartFragment"
         android:label="Cart"
-        tools:layout="@layout/fragment_cart" />
+        tools:layout="@layout/fragment_cart" >
+        <action
+            android:id="@+id/action_cartFragment_to_checkoutFragment"
+            app:destination="@id/checkoutFragment" />
+    </fragment>
     <fragment
         android:id="@+id/ordersFragment"
         android:name="com.alamin.bazar.view.fragment.OrdersFragment"
@@ -43,5 +47,17 @@
             app:argType="com.alamin.bazar.model.data.Product" />
 
 
+    </fragment>
+    <fragment
+        android:id="@+id/checkoutFragment"
+        android:name="com.alamin.bazar.view.fragment.CheckoutFragment"
+        android:label="CheckoutFragment" >
+
+        <action
+            android:id="@+id/action_checkoutFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
+        <argument
+            android:name="invoice"
+            app:argType="com.alamin.bazar.model.data.Invoice" />
     </fragment>
 </navigation>

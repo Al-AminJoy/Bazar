@@ -6,12 +6,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alamin.bazar.BazaarApplication
 import com.alamin.bazar.databinding.FragmentCartBinding
 import com.alamin.bazar.model.data.Checkout
+import com.alamin.bazar.model.data.Invoice
 import com.alamin.bazar.view.adapter.CartAdapter
 import com.alamin.bazar.view.adapter.CartClickListener
 import com.alamin.bazar.view.adapter.CheckoutAdapter
@@ -19,6 +22,8 @@ import com.alamin.bazar.view.adapter.CheckoutAdapter
 import com.alamin.bazar.view_model.CartViewModel
 import com.alamin.bazar.view_model.ProductViewModel
 import com.alamin.bazar.view_model.ViewModelFactory
+import java.text.SimpleDateFormat
+import java.util.*
 
 import javax.inject.Inject
 
@@ -31,6 +36,14 @@ class CartFragment : Fragment() {
     private lateinit var cartViewModel: CartViewModel
     private lateinit var productViewModel: ProductViewModel
     private lateinit var binding : FragmentCartBinding
+
+    private var checkoutList = arrayListOf<Checkout>()
+    private var isCashOnDelivery = true
+    private var subtotal = 0.00
+    private var shipping = 50.00
+    private var total = 0.00
+    private var address: String = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -43,6 +56,26 @@ class CartFragment : Fragment() {
         cartViewModel = ViewModelProvider(this,viewModelFactory)[CartViewModel::class.java]
         productViewModel = ViewModelProvider(this,viewModelFactory)[ProductViewModel::class.java]
 
+        binding.setOnCashClick {
+            isCashOnDelivery = true
+        }
+
+        binding.setOnOnlinePaymentClick {
+            isCashOnDelivery = false
+        }
+
+        binding.setOnCheckoutClick {
+            val dateString = SimpleDateFormat("yyyy/MM/dd").format(Date(System.currentTimeMillis()))
+            if (checkoutList.isNotEmpty()){
+                val invoice = Invoice(0,dateString,subtotal,shipping,total,address,isCashOnDelivery,checkoutList)
+                val action = CartFragmentDirections.actionCartFragmentToCheckoutFragment(invoice)
+                findNavController().navigate(action)
+
+            }else{
+                Toast.makeText(activity, "Add Product in Cart First", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = checkoutAdapter
@@ -51,7 +84,7 @@ class CartFragment : Fragment() {
         activity?.let { fragmentActivity ->
             cartViewModel.getAllCart().observe(fragmentActivity, Observer { list ->
                 val productIdList = list.map { cartProduct -> cartProduct.productId }.toList()
-                    var checkoutList  = arrayListOf<Checkout>()
+                    checkoutList.clear()
                         productViewModel.getProductByIdList(productIdList).observe(fragmentActivity, Observer {
                             for (product in it){
                                 for (cart in list){
@@ -68,9 +101,8 @@ class CartFragment : Fragment() {
                                 })
                                 setData(checkoutList)
                             }
-                            val subtotal = checkoutList.sumOf { checkout -> checkout.price * checkout.quantity }
-                            val shipping = 50.00
-                            val total = Math.round((subtotal+shipping) * 100.0)/100.0
+                            subtotal = Math.round(checkoutList.sumOf { checkout -> checkout.price * checkout.quantity } * 100.0)/100.0
+                            total = Math.round((subtotal+shipping) * 100.0)/100.0
                             binding.txtSubTotal.text = "\u09F3  $subtotal"
                             binding.txtShipping.text = "\u09F3  $shipping"
                             binding.txtTotal.text = "\u09F3  $total"
