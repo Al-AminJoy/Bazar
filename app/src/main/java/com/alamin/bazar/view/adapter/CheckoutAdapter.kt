@@ -1,18 +1,22 @@
 package com.alamin.bazar.view.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.alamin.bazar.databinding.RowCartBinding
 import com.alamin.bazar.model.data.Checkout
 import javax.inject.Inject
 
+private const val TAG = "CheckoutAdapter"
 class CheckoutAdapter @Inject constructor(private val checkoutDiffUtils: CheckoutDiffUtils):
     RecyclerView.Adapter<CheckoutAdapter.CheckoutViewHolder>() {
 
     private var checkoutList = arrayListOf<Checkout>()
     private lateinit var cartClickListener: CartClickListener
+
 
     inner class CheckoutViewHolder(val binding: RowCartBinding): RecyclerView.ViewHolder(binding.root) {
         fun binding(checkout: Checkout){
@@ -37,6 +41,8 @@ class CheckoutAdapter @Inject constructor(private val checkoutDiffUtils: Checkou
     }
 
     override fun getItemCount(): Int {
+        Log.d(TAG, "getItemCount: ${checkoutDiffUtils.oldListSize}")
+        //Log.d(TAG, "getItemCount: ${checkoutDiffUtils.newListSize}")
         return checkoutList.size
     }
 

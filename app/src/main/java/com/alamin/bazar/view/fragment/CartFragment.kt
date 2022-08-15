@@ -51,11 +51,8 @@ class CartFragment : Fragment() {
         activity?.let { fragmentActivity ->
             cartViewModel.getAllCart().observe(fragmentActivity, Observer { list ->
                 val productIdList = list.map { cartProduct -> cartProduct.productId }.toList()
-                Log.d(TAG, "onCreateView: $productIdList")
-                if (productIdList.isNotEmpty()){
                     var checkoutList  = arrayListOf<Checkout>()
                         productViewModel.getProductByIdList(productIdList).observe(fragmentActivity, Observer {
-                            Log.d(TAG, "onCreateView: Inner")
                             for (product in it){
                                 for (cart in list){
                                     if (product.id == cart.productId){
@@ -64,18 +61,21 @@ class CartFragment : Fragment() {
                                 }
                             }
                             with(checkoutAdapter){
-                                setData(checkoutList)
                                 setCartClick(object : CartClickListener{
                                     override fun onClick(checkout: Checkout) {
                                         cartViewModel.deleteCartById(checkout.productId)
                                     }
-
                                 })
+                                setData(checkoutList)
                             }
-                            Log.d(TAG, "onCreateView: $checkoutList")
+                            val subtotal = checkoutList.sumOf { checkout -> checkout.price * checkout.quantity }
+                            val shipping = 50.00
+                            val total = Math.round((subtotal+shipping) * 100.0)/100.0
+                            binding.txtSubTotal.text = "\u09F3  $subtotal"
+                            binding.txtShipping.text = "\u09F3  $shipping"
+                            binding.txtTotal.text = "\u09F3  $total"
                         })
 
-                    }
             })
         }
 

@@ -26,14 +26,6 @@ class CheckoutDiffUtils @Inject constructor(): DiffUtil.Callback() {
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return when{
-            oldList[oldItemPosition].productId == newList[newItemPosition].productId -> false
-            oldList[oldItemPosition].title == newList[newItemPosition].title -> false
-            oldList[oldItemPosition].quantity == newList[newItemPosition].quantity -> false
-            oldList[oldItemPosition].category == newList[newItemPosition].category -> false
-            oldList[oldItemPosition].image == newList[newItemPosition].image -> false
-            oldList[oldItemPosition].price == newList[newItemPosition].price -> false
-            else -> true
-        }
+        return oldList[oldItemPosition] == newList[newItemPosition]
     }
 }
