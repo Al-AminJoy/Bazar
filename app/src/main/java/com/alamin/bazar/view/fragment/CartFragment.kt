@@ -9,12 +9,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alamin.bazar.BazaarApplication
 import com.alamin.bazar.databinding.FragmentCartBinding
 import com.alamin.bazar.model.data.Checkout
 import com.alamin.bazar.model.data.Invoice
+import com.alamin.bazar.utils.LocalDataStore
 import com.alamin.bazar.view.adapter.CartAdapter
 import com.alamin.bazar.view.adapter.CartClickListener
 import com.alamin.bazar.view.adapter.CheckoutAdapter
@@ -32,6 +34,8 @@ class CartFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     @Inject
+    lateinit var localDataStore: LocalDataStore
+    @Inject
     lateinit var checkoutAdapter: CheckoutAdapter
     private lateinit var cartViewModel: CartViewModel
     private lateinit var productViewModel: ProductViewModel
@@ -42,16 +46,27 @@ class CartFragment : Fragment() {
     private var subtotal = 0.00
     private var shipping = 50.00
     private var total = 0.00
-    private var address: String = ""
+    private lateinit var userAddress: String
+    private lateinit var customAddress: String
+    private lateinit var address: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+
         binding = FragmentCartBinding.inflate(layoutInflater)
 
         val component = (requireActivity().applicationContext as BazaarApplication).appComponent
         component.injectCart(this)
+
+        userAddress = "H-26, R-18, Khilkhet,Dhaka"
+        lifecycleScope.launchWhenCreated {
+            customAddress = localDataStore.getLastAddress().toString()
+        }
+        binding.userAddress = userAddress
+        binding.customAddress = if (customAddress.equals("-1")) "Address Not Set" else customAddress
 
         cartViewModel = ViewModelProvider(this,viewModelFactory)[CartViewModel::class.java]
         productViewModel = ViewModelProvider(this,viewModelFactory)[ProductViewModel::class.java]
@@ -63,13 +78,24 @@ class CartFragment : Fragment() {
         binding.setOnOnlinePaymentClick {
             isCashOnDelivery = false
         }
+        binding.setOnUserAddressClick {
+            address = userAddress
+        }
+
+        binding.setOnCustomAddressClick {
+            address = customAddress
+        }
 
         binding.setOnCheckoutClick {
             val dateString = SimpleDateFormat("yyyy/MM/dd").format(Date(System.currentTimeMillis()))
             if (finalCheckoutList.isNotEmpty()){
-                val invoice = Invoice(0,dateString,subtotal,shipping,total,address,isCashOnDelivery,finalCheckoutList)
-                val action = CartFragmentDirections.actionCartFragmentToCheckoutFragment(invoice)
-                findNavController().navigate(action)
+                if (customAddress.equals("-1")){
+                    Toast.makeText(activity, "No Address Set", Toast.LENGTH_SHORT).show()
+                }else{
+                    val invoice = Invoice(0,dateString,subtotal,shipping,total,address,isCashOnDelivery,finalCheckoutList)
+                    val action = CartFragmentDirections.actionCartFragmentToCheckoutFragment(invoice)
+                    findNavController().navigate(action)
+                }
 
             }else{
                 Toast.makeText(activity, "Add Product in Cart First", Toast.LENGTH_SHORT).show()

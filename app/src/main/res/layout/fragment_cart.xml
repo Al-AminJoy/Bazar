@@ -18,6 +18,21 @@
             name="onOnlinePaymentClick"
             type="OnClickListener" />
 
+        <variable
+            name="onUserAddressClick"
+            type="OnClickListener" />
+        <variable
+            name="onCustomAddressClick"
+            type="OnClickListener" />
+
+        <variable
+            name="customAddress"
+            type="String" />
+
+        <variable
+            name="userAddress"
+            type="String" />
+
     </data>
 
     <ScrollView
@@ -200,6 +215,87 @@
 
                     </RadioGroup>
                 </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/app_margin"
+                android:layout_margin="@dimen/app_margin">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/app_margin">
+                    <TextView
+                        android:id="@+id/txtAddressTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/textSizeL"
+                        android:textStyle="bold"
+                        android:text="Address"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/imgEdit"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:padding="@dimen/app_margin"/>
+
+                    <ImageView
+                        android:id="@+id/imgEdit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="@id/txtAddressTitle"
+                        android:src="@drawable/ic_edit"
+                        app:tint="@color/Green_Peas"
+                        android:layout_gravity="end"/>
+
+                    <RadioGroup
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txtAddressTitle">
+
+                        <RadioButton
+                            android:id="@+id/btnUserAddress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{userAddress}"
+                            android:checked="true"
+                            android:buttonTint="@color/theme_secondary"
+                            android:onClick="@{onUserAddressClick}"/>
+
+                        <RadioButton
+                            android:id="@+id/btnCustomAddress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{customAddress}"
+                            android:buttonTint="@color/theme_secondary"
+                            android:onClick="@{onCustomAddressClick}"/>
+
+
+                    </RadioGroup>
+
+<!--
+                    <TextView
+                        android:id="@+id/txtAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txtAddressTitle"
+                        android:textSize="@dimen/textSizeL"
+                        android:text="H-26, R-18, Khilkhet,Dhaka"
+                        android:textColor="@color/black"
+                        android:padding="@dimen/app_margin"/>
+-->
+
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>
 

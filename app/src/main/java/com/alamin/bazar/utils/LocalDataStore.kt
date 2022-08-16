@@ -15,6 +15,7 @@ class LocalDataStore @Inject constructor (val context: Context){
         val USER_ID = intPreferencesKey("user_id")
         val USER_NAME = stringPreferencesKey("user_name")
         val USER_TOKEN = stringPreferencesKey("user_token")
+        val LAST_ADDRESS = stringPreferencesKey("last_address")
     }
 
     /**
@@ -93,6 +94,26 @@ class LocalDataStore @Inject constructor (val context: Context){
     suspend fun removeToken(){
         context.dataStore.edit {
             it.remove(USER_TOKEN)
+        }
+    }
+
+    /**
+     * Address Operation
+     */
+
+    suspend fun storeLastAddress(address: String){
+        context.dataStore.edit {
+            it[LAST_ADDRESS] = address
+        }
+    }
+
+    fun getLastAddress() = context.dataStore.data.map {
+        it[LAST_ADDRESS]?:-1
+    }
+
+    suspend fun removeLastAddress(){
+        context.dataStore.edit {
+            it.remove(LAST_ADDRESS)
         }
     }
 
