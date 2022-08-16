@@ -37,7 +37,7 @@ class CartFragment : Fragment() {
     private lateinit var productViewModel: ProductViewModel
     private lateinit var binding : FragmentCartBinding
 
-    private var checkoutList = arrayListOf<Checkout>()
+    private var finalCheckoutList = arrayListOf<Checkout>()
     private var isCashOnDelivery = true
     private var subtotal = 0.00
     private var shipping = 50.00
@@ -66,8 +66,8 @@ class CartFragment : Fragment() {
 
         binding.setOnCheckoutClick {
             val dateString = SimpleDateFormat("yyyy/MM/dd").format(Date(System.currentTimeMillis()))
-            if (checkoutList.isNotEmpty()){
-                val invoice = Invoice(0,dateString,subtotal,shipping,total,address,isCashOnDelivery,checkoutList)
+            if (finalCheckoutList.isNotEmpty()){
+                val invoice = Invoice(0,dateString,subtotal,shipping,total,address,isCashOnDelivery,finalCheckoutList)
                 val action = CartFragmentDirections.actionCartFragmentToCheckoutFragment(invoice)
                 findNavController().navigate(action)
 
@@ -84,8 +84,10 @@ class CartFragment : Fragment() {
         activity?.let { fragmentActivity ->
             cartViewModel.getAllCart().observe(fragmentActivity, Observer { list ->
                 val productIdList = list.map { cartProduct -> cartProduct.productId }.toList()
-                    checkoutList.clear()
+                Log.d(TAG, "onCreateView: $productIdList")
+                    var checkoutList = arrayListOf<Checkout>()
                         productViewModel.getProductByIdList(productIdList).observe(fragmentActivity, Observer {
+                            Log.d(TAG, "onCreateView: $it")
                             for (product in it){
                                 for (cart in list){
                                     if (product.id == cart.productId){
@@ -97,8 +99,11 @@ class CartFragment : Fragment() {
                                 setCartClick(object : CartClickListener{
                                     override fun onClick(checkout: Checkout) {
                                         cartViewModel.deleteCartById(checkout.productId)
+                                        //Log.d(TAG, "onCreateView: OnClick")
                                     }
                                 })
+                                Log.d(TAG, "onCreateView: Checkout $checkoutList")
+                                finalCheckoutList = checkoutList
                                 setData(checkoutList)
                             }
                             subtotal = Math.round(checkoutList.sumOf { checkout -> checkout.price * checkout.quantity } * 100.0)/100.0
