@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,25 +25,32 @@ import com.alamin.bazar.view.adapter.CheckoutAdapter
 import com.alamin.bazar.view_model.CartViewModel
 import com.alamin.bazar.view_model.ProductViewModel
 import com.alamin.bazar.view_model.ViewModelFactory
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import java.text.SimpleDateFormat
 import java.util.*
 
 import javax.inject.Inject
+import kotlin.math.round
 
 private const val TAG = "CartFragment"
+
 class CartFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
     @Inject
     lateinit var localDataStore: LocalDataStore
+
     @Inject
     lateinit var checkoutAdapter: CheckoutAdapter
     private lateinit var cartViewModel: CartViewModel
     private lateinit var productViewModel: ProductViewModel
-    private lateinit var binding : FragmentCartBinding
+    private lateinit var binding: FragmentCartBinding
 
     private var finalCheckoutList = arrayListOf<Checkout>()
     private var isCashOnDelivery = true
+    private var isUserAddress = true
     private var subtotal = 0.00
     private var shipping = 50.00
     private var total = 0.00
@@ -61,15 +69,19 @@ class CartFragment : Fragment() {
         val component = (requireActivity().applicationContext as BazaarApplication).appComponent
         component.injectCart(this)
 
+
         userAddress = "H-26, R-18, Khilkhet,Dhaka"
         lifecycleScope.launchWhenCreated {
-            customAddress = localDataStore.getLastAddress().toString()
+            localDataStore.getLastAddress().collect {
+                customAddress = it
+                binding.customAddress = if (customAddress.trim().isNotEmpty()) it else " Address Not Set"
+            }
         }
-        binding.userAddress = userAddress
-        binding.customAddress = if (customAddress.equals("-1")) "Address Not Set" else customAddress
 
-        cartViewModel = ViewModelProvider(this,viewModelFactory)[CartViewModel::class.java]
-        productViewModel = ViewModelProvider(this,viewModelFactory)[ProductViewModel::class.java]
+        binding.userAddress = userAddress
+
+        cartViewModel = ViewModelProvider(this, viewModelFactory)[CartViewModel::class.java]
+        productViewModel = ViewModelProvider(this, viewModelFactory)[ProductViewModel::class.java]
 
         binding.setOnCashClick {
             isCashOnDelivery = true
@@ -80,24 +92,36 @@ class CartFragment : Fragment() {
         }
         binding.setOnUserAddressClick {
             address = userAddress
+            isUserAddress = true
         }
 
         binding.setOnCustomAddressClick {
             address = customAddress
+            isUserAddress = false
         }
 
         binding.setOnCheckoutClick {
             val dateString = SimpleDateFormat("yyyy/MM/dd").format(Date(System.currentTimeMillis()))
-            if (finalCheckoutList.isNotEmpty()){
-                if (customAddress.equals("-1")){
-                    Toast.makeText(activity, "No Address Set", Toast.LENGTH_SHORT).show()
-                }else{
-                    val invoice = Invoice(0,dateString,subtotal,shipping,total,address,isCashOnDelivery,finalCheckoutList)
-                    val action = CartFragmentDirections.actionCartFragmentToCheckoutFragment(invoice)
+            if (finalCheckoutList.isNotEmpty()) {
+                if (address.isEmpty() && !isUserAddress) {
+                    Toast.makeText(activity, "Please, Insert Address First", Toast.LENGTH_SHORT).show()
+                } else {
+                    val invoice = Invoice(
+                        0,
+                        dateString,
+                        subtotal,
+                        shipping,
+                        total,
+                        address,
+                        isCashOnDelivery,
+                        finalCheckoutList
+                    )
+                    val action =
+                        CartFragmentDirections.actionCartFragmentToCheckoutFragment(invoice)
                     findNavController().navigate(action)
                 }
 
-            }else{
+            } else {
                 Toast.makeText(activity, "Add Product in Cart First", Toast.LENGTH_SHORT).show()
             }
         }
@@ -111,33 +135,43 @@ class CartFragment : Fragment() {
             cartViewModel.getAllCart().observe(fragmentActivity, Observer { list ->
                 val productIdList = list.map { cartProduct -> cartProduct.productId }.toList()
                 Log.d(TAG, "onCreateView: $productIdList")
-                    var checkoutList = arrayListOf<Checkout>()
-                        productViewModel.getProductByIdList(productIdList).observe(fragmentActivity, Observer {
-                            Log.d(TAG, "onCreateView: $it")
-                            for (product in it){
-                                for (cart in list){
-                                    if (product.id == cart.productId){
-                                        checkoutList.add(Checkout(product.id,cart.quantity,product.title,product.category,product.image,product.price))
-                                    }
+                var checkoutList = arrayListOf<Checkout>()
+                productViewModel.getProductByIdList(productIdList)
+                    .observe(fragmentActivity, Observer {
+                        Log.d(TAG, "onCreateView: $it")
+                        for (product in it) {
+                            for (cart in list) {
+                                if (product.id == cart.productId) {
+                                    checkoutList.add(
+                                        Checkout(
+                                            product.id,
+                                            cart.quantity,
+                                            product.title,
+                                            product.category,
+                                            product.image,
+                                            product.price
+                                        )
+                                    )
                                 }
                             }
-                            with(checkoutAdapter){
-                                setCartClick(object : CartClickListener{
-                                    override fun onClick(checkout: Checkout) {
-                                        cartViewModel.deleteCartById(checkout.productId)
-                                        //Log.d(TAG, "onCreateView: OnClick")
-                                    }
-                                })
-                                Log.d(TAG, "onCreateView: Checkout $checkoutList")
-                                finalCheckoutList = checkoutList
-                                setData(checkoutList)
-                            }
-                            subtotal = Math.round(checkoutList.sumOf { checkout -> checkout.price * checkout.quantity } * 100.0)/100.0
-                            total = Math.round((subtotal+shipping) * 100.0)/100.0
-                            binding.txtSubTotal.text = "\u09F3  $subtotal"
-                            binding.txtShipping.text = "\u09F3  $shipping"
-                            binding.txtTotal.text = "\u09F3  $total"
-                        })
+                        }
+                        with(checkoutAdapter) {
+                            setCartClick(object : CartClickListener {
+                                override fun onClick(checkout: Checkout) {
+                                    cartViewModel.deleteCartById(checkout.productId)
+                                    //Log.d(TAG, "onCreateView: OnClick")
+                                }
+                            })
+                            Log.d(TAG, "onCreateView: Checkout $checkoutList")
+                            finalCheckoutList = checkoutList
+                            setData(checkoutList)
+                        }
+                        subtotal = round(checkoutList.sumOf { checkout -> checkout.price * checkout.quantity } * 100.0) / 100.0
+                        total = round((subtotal + shipping) * 100.0) / 100.0
+                        binding.txtSubTotal.text = "\u09F3  $subtotal"
+                        binding.txtShipping.text = "\u09F3  $shipping"
+                        binding.txtTotal.text = "\u09F3  $total"
+                    })
 
             })
         }

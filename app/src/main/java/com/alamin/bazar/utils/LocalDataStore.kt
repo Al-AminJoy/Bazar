@@ -108,7 +108,7 @@ class LocalDataStore @Inject constructor (val context: Context){
     }
 
     fun getLastAddress() = context.dataStore.data.map {
-        it[LAST_ADDRESS]?:-1
+        it[LAST_ADDRESS]?: ""
     }
 
     suspend fun removeLastAddress(){
