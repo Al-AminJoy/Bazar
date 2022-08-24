@@ -244,19 +244,21 @@
                         android:id="@+id/imgEdit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintBottom_toBottomOf="@id/txtAddressTitle"
+                        app:layout_constraintBottom_toBottomOf="@id/radioGroupAddress"
                         android:src="@drawable/ic_edit"
                         app:tint="@color/Green_Peas"
-                        android:layout_gravity="end"/>
+                        android:layout_gravity="end"
+                        android:layout_marginBottom="@dimen/app_margin"/>
 
                     <RadioGroup
-                        android:layout_width="wrap_content"
+                        android:id="@+id/radioGroupAddress"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/txtAddressTitle">
+                        app:layout_constraintTop_toBottomOf="@id/txtAddressTitle"
+                        app:layout_constraintEnd_toStartOf="@id/imgEdit">
 
                         <RadioButton
                             android:id="@+id/btnUserAddress"
@@ -276,20 +278,6 @@
 
 
                     </RadioGroup>
-
-<!--
-                    <TextView
-                        android:id="@+id/txtAddress"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/txtAddressTitle"
-                        android:textSize="@dimen/textSizeL"
-                        android:text="H-26, R-18, Khilkhet,Dhaka"
-                        android:textColor="@color/black"
-                        android:padding="@dimen/app_margin"/>
--->
 
 
 
