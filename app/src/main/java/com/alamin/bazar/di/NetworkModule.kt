@@ -1,6 +1,5 @@
 package com.alamin.bazar.di
 
-import com.alamin.bazar.model.network.APIClient
 import com.alamin.bazar.model.network.APIInterface
 import com.alamin.bazar.utils.Constants
 import com.google.gson.GsonBuilder

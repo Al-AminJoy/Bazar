@@ -9,7 +9,7 @@ import com.alamin.bazar.model.local.dao.CartDao
 import com.alamin.bazar.model.local.dao.ProductDao
 import com.alamin.bazar.model.local.dao.UserDao
 
-@Database(entities = [User::class, CartProduct::class, Product::class], version = 2, exportSchema = true)
+@Database(entities = [User::class, CartProduct::class, Product::class], version = 1, exportSchema = true)
 abstract class LocalDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao;
     abstract fun productDao(): ProductDao;

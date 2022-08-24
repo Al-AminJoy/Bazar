@@ -18,7 +18,9 @@ import com.alamin.bazar.databinding.ActivityLoginBinding
 import com.alamin.bazar.model.network.APIResponse
 import com.alamin.bazar.utils.LocalDataStore
 import com.alamin.bazar.view_model.UserDataViewModel
+import com.alamin.bazar.view_model.UserViewModel
 import com.alamin.bazar.view_model.ViewModelFactory
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,6 +31,7 @@ class LoginActivity : AppCompatActivity() {
     @Inject
     lateinit var localDataStore: LocalDataStore
     private lateinit var userDataViewModel: UserDataViewModel
+    private lateinit var userViewModel: UserViewModel;
     private lateinit var binding : ActivityLoginBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +42,7 @@ class LoginActivity : AppCompatActivity() {
         component.injectLogin(this)
 
         userDataViewModel = ViewModelProvider(this,viewModelFactory)[UserDataViewModel::class.java]
+        userViewModel = ViewModelProvider(this,viewModelFactory)[UserViewModel::class.java]
 
         binding.userDataViewModel = userDataViewModel
         binding.lifecycleOwner = this
@@ -47,8 +51,8 @@ class LoginActivity : AppCompatActivity() {
             binding.btnLogin.visibility = View.GONE
             userDataViewModel.loginUser(object : APIResponse{
                 override fun onSuccess(message: String) {
-                    startActivity(Intent(this@LoginActivity,MainActivity::class.java))
-                    finish()
+                    //TODO: User ID Should Dynamic
+                    userViewModel.requestUser(1);
                 }
 
                 override fun onFailed(message: String) {
@@ -66,6 +70,16 @@ class LoginActivity : AppCompatActivity() {
         userDataViewModel.loginResponse.observe(this, Observer {
             lifecycleScope.launch{
                 localDataStore.storeToken(it.token)
+            }
+        })
+
+        userViewModel.user.observe(this, Observer{
+            if (it != null){
+                lifecycleScope.launch {
+                    localDataStore.storeUser(Gson().toJson(it))
+                }
+                startActivity(Intent(this@LoginActivity,MainActivity::class.java))
+                finish()
             }
         })
     }

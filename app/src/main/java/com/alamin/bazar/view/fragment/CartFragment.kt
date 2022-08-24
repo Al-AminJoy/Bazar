@@ -15,8 +15,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alamin.bazar.BazaarApplication
 import com.alamin.bazar.databinding.FragmentCartBinding
+import com.alamin.bazar.model.data.Address
 import com.alamin.bazar.model.data.Checkout
 import com.alamin.bazar.model.data.Invoice
+import com.alamin.bazar.model.data.User
 import com.alamin.bazar.utils.LocalDataStore
 import com.alamin.bazar.view.adapter.CartAdapter
 import com.alamin.bazar.view.adapter.CartClickListener
@@ -25,8 +27,10 @@ import com.alamin.bazar.view.adapter.CheckoutAdapter
 import com.alamin.bazar.view_model.CartViewModel
 import com.alamin.bazar.view_model.ProductViewModel
 import com.alamin.bazar.view_model.ViewModelFactory
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.flow.collect
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -56,7 +60,8 @@ class CartFragment : Fragment() {
     private var total = 0.00
     private lateinit var userAddress: String
     private lateinit var customAddress: String
-    private lateinit var address: String
+    private var deliveryAddress: String = ""
+    private lateinit var address: Address
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,7 +75,6 @@ class CartFragment : Fragment() {
         component.injectCart(this)
 
 
-        userAddress = "H-26, R-18, Khilkhet,Dhaka"
         lifecycleScope.launchWhenCreated {
             localDataStore.getLastAddress().collect {
                 customAddress = it
@@ -78,41 +82,49 @@ class CartFragment : Fragment() {
             }
         }
 
-        binding.userAddress = userAddress
+        lifecycleScope.launchWhenCreated {
+            localDataStore.getUser().collect{
+                if (it.trim().isNotEmpty()){
+                    val user : User = Gson().fromJson(it,User::class.java)
+                    address = user.address
+                    userAddress = "${address.number}, ${address.street}, ${address.city}-${address.zipcode}"
+                    binding.userAddress = userAddress
+                }
+            }
+        }
+
 
         cartViewModel = ViewModelProvider(this, viewModelFactory)[CartViewModel::class.java]
         productViewModel = ViewModelProvider(this, viewModelFactory)[ProductViewModel::class.java]
 
-        binding.setOnCashClick {
-            isCashOnDelivery = true
-        }
-
-        binding.setOnOnlinePaymentClick {
-            isCashOnDelivery = false
-        }
         binding.setOnUserAddressClick {
-            address = userAddress
+            deliveryAddress = userAddress
             isUserAddress = true
         }
 
         binding.setOnCustomAddressClick {
-            address = customAddress
+            deliveryAddress = customAddress
             isUserAddress = false
         }
 
         binding.setOnCheckoutClick {
             val dateString = SimpleDateFormat("yyyy/MM/dd").format(Date(System.currentTimeMillis()))
             if (finalCheckoutList.isNotEmpty()) {
-                if (address.isEmpty() && !isUserAddress) {
+                if (!binding.btnCashOnDelivery.isChecked && !binding.btnOnlinePayment.isChecked) {
+                    Toast.makeText(activity, "Please, Select Delivery Method", Toast.LENGTH_SHORT).show()
+                }else if (!binding.btnUserAddress.isChecked && !binding.btnCustomAddress.isChecked) {
+                    Toast.makeText(activity, "Please, Select Address", Toast.LENGTH_SHORT).show()
+                }else if (deliveryAddress.trim().isEmpty() && binding.btnCustomAddress.isChecked) {
                     Toast.makeText(activity, "Please, Insert Address First", Toast.LENGTH_SHORT).show()
                 } else {
+                    isCashOnDelivery = binding.btnCashOnDelivery.isChecked
                     val invoice = Invoice(
                         0,
                         dateString,
                         subtotal,
                         shipping,
                         total,
-                        address,
+                        deliveryAddress,
                         isCashOnDelivery,
                         finalCheckoutList
                     )
@@ -134,11 +146,9 @@ class CartFragment : Fragment() {
         activity?.let { fragmentActivity ->
             cartViewModel.getAllCart().observe(fragmentActivity, Observer { list ->
                 val productIdList = list.map { cartProduct -> cartProduct.productId }.toList()
-                Log.d(TAG, "onCreateView: $productIdList")
                 var checkoutList = arrayListOf<Checkout>()
                 productViewModel.getProductByIdList(productIdList)
                     .observe(fragmentActivity, Observer {
-                        Log.d(TAG, "onCreateView: $it")
                         for (product in it) {
                             for (cart in list) {
                                 if (product.id == cart.productId) {
@@ -159,10 +169,8 @@ class CartFragment : Fragment() {
                             setCartClick(object : CartClickListener {
                                 override fun onClick(checkout: Checkout) {
                                     cartViewModel.deleteCartById(checkout.productId)
-                                    //Log.d(TAG, "onCreateView: OnClick")
                                 }
                             })
-                            Log.d(TAG, "onCreateView: Checkout $checkoutList")
                             finalCheckoutList = checkoutList
                             setData(checkoutList)
                         }

@@ -1,9 +1,7 @@
 package com.alamin.bazar.model.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.alamin.bazar.model.data.User
 import com.alamin.bazar.model.data.UserData
 import com.alamin.bazar.model.data.UserResponse
 import com.alamin.bazar.model.local.LocalDatabase

@@ -28,7 +28,7 @@ class LocalDataStore @Inject constructor (val context: Context){
     }
 
     fun getUser() = context.dataStore.data.map {
-        it[USER]?:-1
+        it[USER]?: ""
     }
 
 
