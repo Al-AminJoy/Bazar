@@ -13,11 +13,12 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.alamin.bazar.BazaarApplication
 import com.alamin.bazar.R
+import com.alamin.bazar.app_interface.AddressSetListener
 import com.alamin.bazar.databinding.ActivityMainBinding
 import com.alamin.bazar.databinding.FragmentDashBoardBinding
+import com.alamin.bazar.view.fragment.CartFragment
 import com.alamin.bazar.view_model.ProductViewModel
 import com.alamin.bazar.view_model.ViewModelFactory
-import kotlinx.android.synthetic.main.content_main.view.*
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.includeContent.toolbar)
+        setSupportActionBar(binding.includeContent.findViewById(R.id.toolbar))
 
         val component = (this.applicationContext as BazaarApplication).appComponent
         component.injectMain(this)
@@ -67,4 +68,6 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         productViewModel.requestProduct()
     }
+
+
 }

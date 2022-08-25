@@ -24,6 +24,9 @@
         <variable
             name="onCustomAddressClick"
             type="OnClickListener" />
+        <variable
+            name="onEditCustomAddressClick"
+            type="OnClickListener" />
 
         <variable
             name="customAddress"
@@ -247,9 +250,10 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toBottomOf="@id/radioGroupAddress"
                         android:src="@drawable/ic_edit"
-                        app:tint="@color/Green_Peas"
+                        app:tint="@color/theme_secondary"
                         android:layout_gravity="end"
-                        android:layout_marginBottom="@dimen/app_margin"/>
+                        android:layout_marginBottom="@dimen/app_margin"
+                        android:onClick="@{onEditCustomAddressClick}"/>
 
                     <RadioGroup
                         android:id="@+id/radioGroupAddress"

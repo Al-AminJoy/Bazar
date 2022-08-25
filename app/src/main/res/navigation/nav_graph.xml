@@ -23,6 +23,12 @@
         <action
             android:id="@+id/action_cartFragment_to_checkoutFragment"
             app:destination="@id/checkoutFragment" />
+        <action
+            android:id="@+id/action_cartFragment_to_customAddressFragment"
+            app:destination="@id/customAddressFragment" />
+       <!-- <argument
+            android:name="custom_address"
+            app:argType="string" />-->
     </fragment>
     <fragment
         android:id="@+id/ordersFragment"
@@ -60,4 +66,12 @@
             android:name="invoice"
             app:argType="com.alamin.bazar.model.data.Invoice" />
     </fragment>
+    <dialog
+        android:id="@+id/customAddressFragment"
+        android:name="com.alamin.bazar.view.dialog.CustomAddressFragment"
+        android:label="CustomAddressFragment" >
+        <action
+            android:id="@+id/action_customAddressFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
+    </dialog>
 </navigation>

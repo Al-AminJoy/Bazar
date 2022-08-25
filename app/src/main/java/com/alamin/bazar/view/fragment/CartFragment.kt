@@ -12,8 +12,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alamin.bazar.BazaarApplication
+import com.alamin.bazar.R
 import com.alamin.bazar.databinding.FragmentCartBinding
 import com.alamin.bazar.model.data.Address
 import com.alamin.bazar.model.data.Checkout
@@ -63,6 +65,7 @@ class CartFragment : Fragment() {
     private var deliveryAddress: String = ""
     private lateinit var address: Address
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -73,7 +76,6 @@ class CartFragment : Fragment() {
 
         val component = (requireActivity().applicationContext as BazaarApplication).appComponent
         component.injectCart(this)
-
 
         lifecycleScope.launchWhenCreated {
             localDataStore.getLastAddress().collect {
@@ -105,6 +107,10 @@ class CartFragment : Fragment() {
         binding.setOnCustomAddressClick {
             deliveryAddress = customAddress
             isUserAddress = false
+        }
+
+        binding.setOnEditCustomAddressClick {
+            findNavController().navigate(R.id.action_cartFragment_to_customAddressFragment)
         }
 
         binding.setOnCheckoutClick {
@@ -188,5 +194,9 @@ class CartFragment : Fragment() {
         return binding.root
     }
 
+    fun setCustomAddress(newAddress: String){
+        customAddress = newAddress
+        binding.customAddress = customAddress
+    }
 
 }
