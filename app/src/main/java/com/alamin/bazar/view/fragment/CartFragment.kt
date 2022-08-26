@@ -55,15 +55,11 @@ class CartFragment : Fragment() {
     private lateinit var binding: FragmentCartBinding
 
     private var finalCheckoutList = arrayListOf<Checkout>()
-    private var isCashOnDelivery = true
-    private var isUserAddress = true
+
     private var subtotal = 0.00
     private var shipping = 50.00
     private var total = 0.00
-    private lateinit var userAddress: String
-    private lateinit var customAddress: String
-    private var deliveryAddress: String = ""
-    private lateinit var address: Address
+
 
 
     override fun onCreateView(
@@ -77,67 +73,31 @@ class CartFragment : Fragment() {
         val component = (requireActivity().applicationContext as BazaarApplication).appComponent
         component.injectCart(this)
 
-        lifecycleScope.launchWhenCreated {
-            localDataStore.getLastAddress().collect {
-                customAddress = it
-                binding.customAddress = if (customAddress.trim().isNotEmpty()) it else " Address Not Set"
-            }
-        }
 
-        lifecycleScope.launchWhenCreated {
-            localDataStore.getUser().collect{
-                if (it.trim().isNotEmpty()){
-                    val user : User = Gson().fromJson(it,User::class.java)
-                    address = user.address
-                    userAddress = "${address.number}, ${address.street}, ${address.city}-${address.zipcode}"
-                    binding.userAddress = userAddress
-                }
-            }
-        }
 
 
         cartViewModel = ViewModelProvider(this, viewModelFactory)[CartViewModel::class.java]
         productViewModel = ViewModelProvider(this, viewModelFactory)[ProductViewModel::class.java]
 
-        binding.setOnUserAddressClick {
-            deliveryAddress = userAddress
-            isUserAddress = true
-        }
 
-        binding.setOnCustomAddressClick {
-            deliveryAddress = customAddress
-            isUserAddress = false
-        }
-
-        binding.setOnEditCustomAddressClick {
-            findNavController().navigate(R.id.action_cartFragment_to_customAddressFragment)
-        }
 
         binding.setOnCheckoutClick {
-            val dateString = SimpleDateFormat("yyyy/MM/dd").format(Date(System.currentTimeMillis()))
             if (finalCheckoutList.isNotEmpty()) {
-                if (!binding.btnCashOnDelivery.isChecked && !binding.btnOnlinePayment.isChecked) {
-                    Toast.makeText(activity, "Please, Select Delivery Method", Toast.LENGTH_SHORT).show()
-                }else if (!binding.btnUserAddress.isChecked && !binding.btnCustomAddress.isChecked) {
-                    Toast.makeText(activity, "Please, Select Address", Toast.LENGTH_SHORT).show()
-                }else if (deliveryAddress.trim().isEmpty() && binding.btnCustomAddress.isChecked) {
-                    Toast.makeText(activity, "Please, Insert Address First", Toast.LENGTH_SHORT).show()
-                } else {
-                    isCashOnDelivery = binding.btnCashOnDelivery.isChecked
-                    val invoice = Invoice(
+                val invoice = Invoice(
                         0,
-                        dateString,
+                        "",
                         subtotal,
                         shipping,
                         total,
-                        deliveryAddress,
-                        isCashOnDelivery,
+                        "",
+                        false,
+                    "",
                         finalCheckoutList
                     )
                     val action =
                         CartFragmentDirections.actionCartFragmentToCheckoutFragment(invoice)
                     findNavController().navigate(action)
-                }
+
 
             } else {
                 Toast.makeText(activity, "Add Product in Cart First", Toast.LENGTH_SHORT).show()
@@ -192,11 +152,6 @@ class CartFragment : Fragment() {
 
 
         return binding.root
-    }
-
-    fun setCustomAddress(newAddress: String){
-        customAddress = newAddress
-        binding.customAddress = customAddress
     }
 
 }

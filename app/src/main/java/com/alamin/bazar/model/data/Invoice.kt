@@ -12,5 +12,6 @@ data class Invoice(
     val total: Double,
     val address: String,
     val isCashOnDelivery: Boolean,
+    val note: String,
     val products: List<Checkout>
 ):Parcelable

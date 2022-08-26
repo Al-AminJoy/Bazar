@@ -24,8 +24,10 @@ class UserDataViewModel @Inject constructor(private val userDataRepository: User
     get() = userDataRepository.getLoginResponse
 
     fun loginUser(apiResponse: APIResponse){
-        val userName = inputName.value
-        val userPassword = inputPassword.value
+       /* val userName = inputName.value
+        val userPassword = inputPassword.value   */
+        val userName = "johnd"
+        val userPassword = "m38rmF$"
         if (userName.equals(null) || TextUtils.isEmpty(userName)){
             apiResponse.onFailed("Please, Enter Name")
         }else if (userPassword.equals(null) || TextUtils.isEmpty(userPassword)){

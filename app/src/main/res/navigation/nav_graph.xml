@@ -23,10 +23,7 @@
         <action
             android:id="@+id/action_cartFragment_to_checkoutFragment"
             app:destination="@id/checkoutFragment" />
-        <action
-            android:id="@+id/action_cartFragment_to_customAddressFragment"
-            app:destination="@id/customAddressFragment" />
-       <!-- <argument
+        <!-- <argument
             android:name="custom_address"
             app:argType="string" />-->
     </fragment>
@@ -57,7 +54,7 @@
     <fragment
         android:id="@+id/checkoutFragment"
         android:name="com.alamin.bazar.view.fragment.CheckoutFragment"
-        android:label="CheckoutFragment" >
+        android:label="CheckoutFragment">
 
         <action
             android:id="@+id/action_checkoutFragment_to_cartFragment"
@@ -65,13 +62,21 @@
         <argument
             android:name="invoice"
             app:argType="com.alamin.bazar.model.data.Invoice" />
+        <action
+            android:id="@+id/action_checkoutFragment_to_customAddressFragment"
+            app:destination="@id/customAddressFragment" />
+        <action
+            android:id="@+id/action_checkoutFragment_to_dashBoardFragment"
+            app:destination="@id/dashBoardFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/dashBoardFragment"/>
     </fragment>
     <dialog
         android:id="@+id/customAddressFragment"
         android:name="com.alamin.bazar.view.dialog.CustomAddressFragment"
         android:label="CustomAddressFragment" >
         <action
-            android:id="@+id/action_customAddressFragment_to_cartFragment"
-            app:destination="@id/cartFragment" />
+            android:id="@+id/action_customAddressFragment_to_checkoutFragment"
+            app:destination="@id/checkoutFragment" />
     </dialog>
 </navigation>
