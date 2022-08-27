@@ -26,6 +26,7 @@ import java.util.*
 import javax.inject.Inject
 
 private const val TAG = "CheckoutFragment"
+
 class CheckoutFragment : Fragment() {
 
     @Inject
@@ -61,16 +62,18 @@ class CheckoutFragment : Fragment() {
         lifecycleScope.launchWhenCreated {
             localDataStore.getLastAddress().collect {
                 customAddress = it
-                binding.customAddress = if (customAddress.trim().isNotEmpty()) it else " Address Not Set"
+                binding.customAddress =
+                    if (customAddress.trim().isNotEmpty()) it else " Address Not Set"
             }
         }
 
         lifecycleScope.launchWhenCreated {
-            localDataStore.getUser().collect{
-                if (it.trim().isNotEmpty()){
-                    val user : User = Gson().fromJson(it, User::class.java)
+            localDataStore.getUser().collect {
+                if (it.trim().isNotEmpty()) {
+                    val user: User = Gson().fromJson(it, User::class.java)
                     address = user.address
-                    userAddress = "${address.number}, ${address.street}, ${address.city}-${address.zipcode}"
+                    userAddress =
+                        "${address.number}, ${address.street}, ${address.city}-${address.zipcode}"
                     binding.userAddress = userAddress
                 }
             }
@@ -92,32 +95,35 @@ class CheckoutFragment : Fragment() {
 
         binding.setOnConfirmClick {
             val dateString = SimpleDateFormat("yyyy/MM/dd").format(Date(System.currentTimeMillis()))
-                if (!binding.btnCashOnDelivery.isChecked && !binding.btnOnlinePayment.isChecked) {
-                    Toast.makeText(activity, "Please, Select Delivery Method", Toast.LENGTH_SHORT).show()
-                }else if (!binding.btnUserAddress.isChecked && !binding.btnCustomAddress.isChecked) {
-                    Toast.makeText(activity, "Please, Select Address", Toast.LENGTH_SHORT).show()
-                }else if (deliveryAddress.trim().isEmpty() && binding.btnCustomAddress.isChecked) {
-                    Toast.makeText(activity, "Please, Insert Address First", Toast.LENGTH_SHORT).show()
-                } else {
-                    isCashOnDelivery = binding.btnCashOnDelivery.isChecked
-                    val note = binding.txtNote.text.toString().ifEmpty { "" }
-                    val invoice = Invoice(
-                        0,
-                        dateString,
-                        arg.invoice.subTotal,
-                        arg.invoice.shippingCharge,
-                        arg.invoice.total,
-                        deliveryAddress,
-                        isCashOnDelivery,
-                        note,
-                        arg.invoice.products
-                    )
-                    cartViewModel.deleteAllCart()
-                    Toast.makeText(activity, "Order Confirmed", Toast.LENGTH_LONG).show()
-                    findNavController().navigate(R.id.action_checkoutFragment_to_dashBoardFragment)
-                }
-
+            if (!binding.btnCashOnDelivery.isChecked && !binding.btnOnlinePayment.isChecked) {
+                Toast.makeText(activity, "Please, Select Delivery Method", Toast.LENGTH_SHORT)
+                    .show()
+            } else if (!binding.btnUserAddress.isChecked && !binding.btnCustomAddress.isChecked) {
+                Toast.makeText(activity, "Please, Select Address", Toast.LENGTH_SHORT).show()
+            } else if (deliveryAddress.trim().isEmpty() && binding.btnCustomAddress.isChecked) {
+                Toast.makeText(activity, "Please, Insert Address First", Toast.LENGTH_SHORT).show()
+            } else {
+                isCashOnDelivery = binding.btnCashOnDelivery.isChecked
+                val note = binding.txtNote.text.toString().ifEmpty { "" }
+                val invoice = Invoice(
+                    0,
+                    dateString,
+                    arg.invoice.subTotal,
+                    arg.invoice.shippingCharge,
+                    arg.invoice.total,
+                    deliveryAddress,
+                    isCashOnDelivery,
+                    note,
+                    "Pending",
+                    false,
+                    arg.invoice.checkoutHolder
+                )
+                cartViewModel.deleteAllCart()
+                Toast.makeText(activity, "Order Confirmed", Toast.LENGTH_LONG).show()
+                findNavController().navigate(R.id.action_checkoutFragment_to_dashBoardFragment)
             }
+
+        }
 
 
         return binding.root

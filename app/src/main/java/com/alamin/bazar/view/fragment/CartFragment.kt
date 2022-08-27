@@ -17,10 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.alamin.bazar.BazaarApplication
 import com.alamin.bazar.R
 import com.alamin.bazar.databinding.FragmentCartBinding
-import com.alamin.bazar.model.data.Address
-import com.alamin.bazar.model.data.Checkout
-import com.alamin.bazar.model.data.Invoice
-import com.alamin.bazar.model.data.User
+import com.alamin.bazar.model.data.*
 import com.alamin.bazar.utils.LocalDataStore
 import com.alamin.bazar.view.adapter.CartAdapter
 import com.alamin.bazar.view.adapter.CartClickListener
@@ -61,7 +58,6 @@ class CartFragment : Fragment() {
     private var total = 0.00
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -79,24 +75,25 @@ class CartFragment : Fragment() {
         cartViewModel = ViewModelProvider(this, viewModelFactory)[CartViewModel::class.java]
         productViewModel = ViewModelProvider(this, viewModelFactory)[ProductViewModel::class.java]
 
-
-
+        val holder = CheckoutHolder(finalCheckoutList)
         binding.setOnCheckoutClick {
             if (finalCheckoutList.isNotEmpty()) {
                 val invoice = Invoice(
-                        0,
-                        "",
-                        subtotal,
-                        shipping,
-                        total,
-                        "",
-                        false,
+                    0,
                     "",
-                        finalCheckoutList
-                    )
-                    val action =
-                        CartFragmentDirections.actionCartFragmentToCheckoutFragment(invoice)
-                    findNavController().navigate(action)
+                    subtotal,
+                    shipping,
+                    total,
+                    "",
+                    false,
+                    "",
+                    "",
+                    false,
+                    holder
+                )
+                val action =
+                    CartFragmentDirections.actionCartFragmentToCheckoutFragment(invoice)
+                findNavController().navigate(action)
 
 
             } else {
@@ -140,7 +137,8 @@ class CartFragment : Fragment() {
                             finalCheckoutList = checkoutList
                             setData(checkoutList)
                         }
-                        subtotal = round(checkoutList.sumOf { checkout -> checkout.price * checkout.quantity } * 100.0) / 100.0
+                        subtotal =
+                            round(checkoutList.sumOf { checkout -> checkout.price * checkout.quantity } * 100.0) / 100.0
                         total = round((subtotal + shipping) * 100.0) / 100.0
                         binding.txtSubTotal.text = "\u09F3  $subtotal"
                         binding.txtShipping.text = "\u09F3  $shipping"

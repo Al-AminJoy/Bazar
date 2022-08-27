@@ -16,6 +16,7 @@ class LocalStorageModule {
             context.applicationContext,
             LocalDatabase::class.java,
             "local_database")
+            .fallbackToDestructiveMigration()
             .build();
     }
 }

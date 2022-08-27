@@ -6,9 +6,18 @@
     <data>
 
         <import type="com.alamin.bazar.model.data.User"/>
+        <import type="android.view.View.OnClickListener"/>
         <variable
             name="user"
             type="User" />
+
+        <variable
+            name="onOrdersClick"
+            type="OnClickListener" />
+
+        <variable
+            name="onWishListClick"
+            type="OnClickListener" />
 
     </data>
 
@@ -53,7 +62,7 @@
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:textSize="@dimen/textSizeL"
-               android:text="Al-Amin Joy"
+               android:text="@{user.name.firstname+` `+user.name.lastname}"
                android:textStyle="bold"
                android:textColor="@color/white"
                app:layout_constraintStart_toEndOf="@id/imgProfile"
@@ -65,7 +74,7 @@
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:textSize="@dimen/textSizeM"
-               android:text="alamin@gmail.com"
+               android:text="@{user.email}"
                android:textColor="@color/white"
                app:layout_constraintStart_toEndOf="@id/imgProfile"
                app:layout_constraintTop_toBottomOf="@id/txtName"
@@ -80,7 +89,8 @@
             app:layout_constraintTop_toBottomOf="@id/layoutTop"
             app:layout_constraintBottom_toBottomOf="@id/layoutTop"
             android:layout_marginEnd="@dimen/app_margin"
-            app:cardCornerRadius="@dimen/app_margin">
+            app:cardCornerRadius="@dimen/app_margin"
+            android:onClick="@{onWishListClick}">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -98,7 +108,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/textSizeM"
-                    android:text="Wishlist"
+                    android:text="Wish List"
                     android:textColor="@color/Gray"
                     android:gravity="center"
                     android:layout_gravity="center"/>
@@ -114,7 +124,8 @@
             app:layout_constraintTop_toBottomOf="@id/layoutTop"
             app:layout_constraintBottom_toBottomOf="@id/layoutTop"
             android:layout_marginStart="@dimen/app_margin"
-            app:cardCornerRadius="@dimen/app_margin">
+            app:cardCornerRadius="@dimen/app_margin"
+            android:onClick="@{onOrdersClick}">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -165,7 +176,7 @@
             android:layout_marginHorizontal="@dimen/app_margin"
             android:textSize="@dimen/textSizeL"
             android:textColor="@color/theme_secondary"
-            android:text="alamin111"
+            android:text="@{user.username}"
             />
 
         <TextView
@@ -193,7 +204,7 @@
             android:layout_marginHorizontal="@dimen/app_margin"
             android:textSize="@dimen/textSizeL"
             android:textColor="@color/theme_secondary"
-            android:text="01749411185"
+            android:text="@{user.phone}"
             />
 
         <TextView
@@ -221,8 +232,7 @@
             android:layout_marginHorizontal="@dimen/app_margin"
             android:textSize="@dimen/textSizeL"
             android:textColor="@color/theme_secondary"
-            android:text="Dhaka"
-            />
+            android:text="@{user.address.city}" />
 
         <TextView
             android:id="@+id/txtUserAddressTitle"
@@ -249,7 +259,7 @@
             android:layout_marginHorizontal="@dimen/app_margin"
             android:textSize="@dimen/textSizeL"
             android:textColor="@color/theme_secondary"
-            android:text="Badda,Dhaka"
+            android:text="@{user.address.number+`,`+user.address.street+`,`+user.address.city+`-`+user.address.zipcode}"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
