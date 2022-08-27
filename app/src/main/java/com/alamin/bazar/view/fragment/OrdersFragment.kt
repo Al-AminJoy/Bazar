@@ -1,21 +1,39 @@
 package com.alamin.bazar.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.alamin.bazar.BazaarApplication
 import com.alamin.bazar.R
+import com.alamin.bazar.databinding.FragmentOrdersBinding
+import com.alamin.bazar.view_model.InvoiceViewModel
+import com.alamin.bazar.view_model.ViewModelFactory
+import javax.inject.Inject
 
-
+private const val TAG = "OrdersFragment"
 class OrdersFragment : Fragment() {
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
 
+    private lateinit var invoiceViewModel: InvoiceViewModel
+    private lateinit var binding: FragmentOrdersBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_orders, container, false)
+        binding = FragmentOrdersBinding.inflate(layoutInflater)
+        val component = (requireActivity().applicationContext as BazaarApplication).appComponent
+        component.injectOrders(this)
+        invoiceViewModel = ViewModelProvider(this,viewModelFactory)[InvoiceViewModel::class.java]
+        invoiceViewModel.invoiceList.observe(requireActivity(), Observer {
+            Log.d(TAG, "onCreateView: $it")
+        })
+        return binding.root
     }
 
 }

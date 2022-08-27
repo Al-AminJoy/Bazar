@@ -1,10 +1,7 @@
 package com.alamin.bazar.di
 
 import androidx.lifecycle.ViewModel
-import com.alamin.bazar.view_model.CartViewModel
-import com.alamin.bazar.view_model.ProductViewModel
-import com.alamin.bazar.view_model.UserDataViewModel
-import com.alamin.bazar.view_model.UserViewModel
+import com.alamin.bazar.view_model.*
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.ClassKey
@@ -32,4 +29,9 @@ abstract class ViewModelModule {
     @ClassKey(CartViewModel::class)
     @IntoMap
     abstract fun provideCartViewModel(cartViewModel: CartViewModel): ViewModel
+
+    @Binds
+    @ClassKey(InvoiceViewModel::class)
+    @IntoMap
+    abstract fun provideInvoiceViewModel(invoiceViewModel: InvoiceViewModel): ViewModel
 }
