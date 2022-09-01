@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/textSizeL"
             android:textStyle="bold"
-            android:text="25/08/2022"
+            android:text="@{invoice.invoiceDate}"
             android:padding="@dimen/app_margin"
             />
 
@@ -27,38 +27,39 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="@dimen/app_margin"
-            app:cardBackgroundColor="@color/Bee_Yellow"
-            android:layout_marginHorizontal="@dimen/app_margin">
+            setOrderCardBackground="@{invoice.status}"
+            android:layout_marginHorizontal="@dimen/app_margin"
+            app:cardElevation="@dimen/dimen2dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:padding="@dimen/app_margin"
-                android:layout_marginStart="2dp"
+                android:layout_marginStart="@dimen/dimen4dp"
                 android:background="@color/white">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Order ID : #2500"
+                    android:text="@{`Order ID : #`+invoice.invoiceId}"
                     android:textSize="@dimen/textSizeM"
                     android:textStyle="bold"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Total : 2500 \u09F3"
+                    android:text="@{`Total : `+invoice.total+` \u09F3`}"
                     android:textSize="@dimen/textSizeM"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Status : Pending"
+                    android:text="@{`Status : `+invoice.status}"
                     android:textSize="@dimen/textSizeM"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Delivered : No"
+                    android:text="@{invoice.isReceived?`Delivered: Yes`: `Delivered: No`}"
                     android:textSize="@dimen/textSizeM"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
