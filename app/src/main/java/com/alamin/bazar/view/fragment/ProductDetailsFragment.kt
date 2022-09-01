@@ -33,6 +33,7 @@ class ProductDetailsFragment : Fragment() {
     ): View? {
         binding = FragmentProductDetailsBinding.inflate(layoutInflater)
         binding.product = arg.product
+        binding.isWished = true
 
         val component = (requireActivity().applicationContext as BazaarApplication).appComponent
         component.injectProductDetails(this)

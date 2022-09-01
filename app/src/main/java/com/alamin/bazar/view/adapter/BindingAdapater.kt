@@ -23,3 +23,12 @@ fun CardView.setOrderCardBackground(status: String){
         this.setCardBackgroundColor(resources.getColor(R.color.Ferrari_Red))
     }
 }
+
+@BindingAdapter("setIconTint")
+fun ImageView.setIconTint(isWished: Boolean){
+    if (isWished){
+        setColorFilter(resources.getColor(R.color.red))
+    }else{
+        setColorFilter(resources.getColor(R.color.Ash_Gray))
+    }
+}
