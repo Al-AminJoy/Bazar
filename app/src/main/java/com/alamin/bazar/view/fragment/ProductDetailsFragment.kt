@@ -13,9 +13,11 @@ import androidx.navigation.fragment.navArgs
 import com.alamin.bazar.BazaarApplication
 import com.alamin.bazar.R
 import com.alamin.bazar.databinding.FragmentProductDetailsBinding
+import com.alamin.bazar.model.data.Wish
 import com.alamin.bazar.model.network.APIResponse
 import com.alamin.bazar.view_model.CartViewModel
 import com.alamin.bazar.view_model.ViewModelFactory
+import com.alamin.bazar.view_model.WishViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import javax.inject.Inject
 
@@ -25,20 +27,22 @@ class ProductDetailsFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private lateinit var cartViewModel: CartViewModel
+    lateinit var wishViewModel: WishViewModel
     private lateinit var binding: FragmentProductDetailsBinding
     private  val arg by navArgs<ProductDetailsFragmentArgs>()
+    private  var isWished: Boolean = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentProductDetailsBinding.inflate(layoutInflater)
         binding.product = arg.product
-        binding.isWished = true
 
         val component = (requireActivity().applicationContext as BazaarApplication).appComponent
         component.injectProductDetails(this)
 
         cartViewModel = ViewModelProvider(this,viewModelFactory)[CartViewModel::class.java]
+        wishViewModel = ViewModelProvider(this,viewModelFactory)[WishViewModel::class.java]
 
         binding.setOnAddClick {
             cartViewModel.addProduct()
@@ -63,6 +67,20 @@ class ProductDetailsFragment : Fragment() {
 
             })
         }
+
+        binding.setOnWishClick {
+            if (isWished){
+                wishViewModel.deleteWish(arg.product.id)
+            }else{
+                val wish = Wish(0,arg.product.id)
+                wishViewModel.insertWish(wish)
+            }
+        }
+
+        wishViewModel.getWishByProductId(arg.product.id).observe(requireActivity(), Observer {
+            isWished = it != null
+            binding.isWished = isWished
+        })
 
         cartViewModel.count.observe(requireActivity(), Observer {
             binding.txtQuantity.text = it.toString()

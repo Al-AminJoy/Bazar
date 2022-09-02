@@ -34,4 +34,9 @@ abstract class ViewModelModule {
     @ClassKey(InvoiceViewModel::class)
     @IntoMap
     abstract fun provideInvoiceViewModel(invoiceViewModel: InvoiceViewModel): ViewModel
+
+    @Binds
+    @ClassKey(WishViewModel::class)
+    @IntoMap
+    abstract fun provideWishlist(wishViewModel: WishViewModel): ViewModel
 }
