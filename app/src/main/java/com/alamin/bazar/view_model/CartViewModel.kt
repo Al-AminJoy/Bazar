@@ -78,6 +78,30 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
         }
     }
 
+    fun requestAddCartFromWish(product: Product, apiResponse: APIResponse){
+            val dateString = SimpleDateFormat("yyyy/MM/dd").format(Date(System.currentTimeMillis()))
+            val cartProduct = CartProduct(product.id, 1)
+            val productList = arrayListOf<CartProduct>()
+            productList.add(cartProduct)
+            //TODO: User Id Should Dynamic
+            val cart = Cart(dateString,1,productList)
+
+            viewModelScope.launch (IO) {
+               val response = cartRepository.requestAddCart(cart)
+                if (response){
+                    withContext(Main){
+                        apiResponse.onSuccess("Successfully Added")
+                    }
+                }else{
+                    withContext(Main){
+                        apiResponse.onSuccess("Failed")
+                    }
+                }
+            }
+
+        }
+
+
     fun deleteCartById(id: Int){
         viewModelScope.launch (IO) {
             cartRepository.deleteCartById(id)

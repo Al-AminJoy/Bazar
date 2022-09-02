@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="com.alamin.bazar.model.data.Product"/>
+        <import type="com.alamin.bazar.view.adapter.ProductClickListener"/>
+        <variable
+            name="product"
+            type="Product" />
+
+        <variable
+            name="onAddCartClick"
+            type="ProductClickListener" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/app_margin"
+            app:cardCornerRadius="@dimen/app_margin"
+            app:cardElevation="@dimen/dimen2dp">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/app_margin">
+                <ImageView
+                    android:id="@+id/imgProduct"
+                    android:layout_width="@dimen/dimen100dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintTop_toTopOf="@+id/txtTitle"
+                    app:layout_constraintBottom_toBottomOf="@id/btnAddCart"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:src="@drawable/img_product"
+                    setImage="@{product.image}"/>
+
+                <TextView
+                    android:id="@+id/txtTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toEndOf="@id/imgProduct"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:gravity="start"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:text="@{product.title}"
+                    android:textSize="@dimen/textSizeM"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="@dimen/app_margin"/>
+
+                <TextView
+                    android:id="@+id/txtPrice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toEndOf="@id/imgProduct"
+                    app:layout_constraintTop_toBottomOf="@id/txtTitle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:gravity="start"
+                    android:layout_marginTop="@dimen/app_margin"
+                    android:text="@{`\u09F3 `+product.price}"
+                    android:textSize="@dimen/textSizeM"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="@dimen/app_margin"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAddCart"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toEndOf="@id/imgProduct"
+                    app:layout_constraintTop_toBottomOf="@id/txtPrice"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:text="Add to Cart"
+                    app:cornerRadius="@dimen/app_margin"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/textSizeM"
+                    android:layout_marginTop="@dimen/app_margin"
+                    android:backgroundTint="@color/theme_secondary"
+                    app:rippleColor="@color/Beetle_Green"
+                    android:onClick="@{()->onAddCartClick.onClick(product)}"
+                    android:layout_marginStart="@dimen/app_margin"
+                    app:icon="@drawable/ic_cart"
+                    app:iconGravity="textStart"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</layout>
