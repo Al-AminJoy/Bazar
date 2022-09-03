@@ -4,9 +4,13 @@
 
     <data>
         <import type="com.alamin.bazar.model.data.Invoice"/>
+        <import type="com.alamin.bazar.view.adapter.OrderClickListener"/>
         <variable
             name="invoice"
             type="Invoice" />
+        <variable
+            name="onOrderClick"
+            type="OrderClickListener" />
     </data>
 
     <LinearLayout
@@ -23,13 +27,14 @@
             android:padding="@dimen/app_margin"
             />
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="@dimen/app_margin"
             setOrderCardBackground="@{invoice.status}"
             android:layout_marginHorizontal="@dimen/app_margin"
-            app:cardElevation="@dimen/dimen2dp">
+            app:cardElevation="@dimen/dimen2dp"
+            android:onClick="@{()-> onOrderClick.onOrderClick(invoice)}">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -62,7 +67,7 @@
                     android:text="@{invoice.isReceived?`Delivered: Yes`: `Delivered: No`}"
                     android:textSize="@dimen/textSizeM"/>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 </layout>

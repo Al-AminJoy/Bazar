@@ -34,6 +34,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 import javax.inject.Inject
+import kotlin.math.log
 import kotlin.math.round
 
 private const val TAG = "CartFragment"
@@ -69,14 +70,11 @@ class CartFragment : Fragment() {
         val component = (requireActivity().applicationContext as BazaarApplication).appComponent
         component.injectCart(this)
 
-
-
-
         cartViewModel = ViewModelProvider(this, viewModelFactory)[CartViewModel::class.java]
         productViewModel = ViewModelProvider(this, viewModelFactory)[ProductViewModel::class.java]
 
-        val holder = CheckoutHolder(finalCheckoutList)
         binding.setOnCheckoutClick {
+            val holder = CheckoutHolder(finalCheckoutList)
             if (finalCheckoutList.isNotEmpty()) {
                 val invoice = Invoice(
                     0,
@@ -108,41 +106,48 @@ class CartFragment : Fragment() {
 
         activity?.let { fragmentActivity ->
             cartViewModel.getAllCart().observe(fragmentActivity, Observer { list ->
+                if (list.isEmpty()){
+                    binding.txtCartItemsTitle.text = "No Cart Item Added"
+                }else{
+                    binding.txtCartItemsTitle.text = "Item(s) In Your Shopping cart"
+                }
                 val productIdList = list.map { cartProduct -> cartProduct.productId }.toList()
                 var checkoutList = arrayListOf<Checkout>()
                 productViewModel.getProductByIdList(productIdList)
                     .observe(fragmentActivity, Observer {
-                        for (product in it) {
-                            for (cart in list) {
-                                if (product.id == cart.productId) {
-                                    checkoutList.add(
-                                        Checkout(
-                                            product.id,
-                                            cart.quantity,
-                                            product.title,
-                                            product.category,
-                                            product.image,
-                                            product.price
+                        if (it != null){
+                            for (product in it) {
+                                for (cart in list) {
+                                    if (product.id == cart.productId) {
+                                        checkoutList.add(
+                                            Checkout(
+                                                product.id,
+                                                cart.quantity,
+                                                product.title,
+                                                product.category,
+                                                product.image,
+                                                product.price
+                                            )
                                         )
-                                    )
+                                    }
                                 }
                             }
+                            with(checkoutAdapter) {
+                                setCartClick(object : CartClickListener {
+                                    override fun onClick(checkout: Checkout) {
+                                        cartViewModel.deleteCartById(checkout.productId)
+                                    }
+                                })
+                                finalCheckoutList = checkoutList
+                                setData(checkoutList)
+                            }
+                            subtotal =
+                                round(checkoutList.sumOf { checkout -> checkout.price * checkout.quantity } * 100.0) / 100.0
+                            total = round((subtotal + shipping) * 100.0) / 100.0
+                            binding.txtSubTotal.text = "\u09F3  $subtotal"
+                            binding.txtShipping.text = "\u09F3  $shipping"
+                            binding.txtTotal.text = "\u09F3  $total"
                         }
-                        with(checkoutAdapter) {
-                            setCartClick(object : CartClickListener {
-                                override fun onClick(checkout: Checkout) {
-                                    cartViewModel.deleteCartById(checkout.productId)
-                                }
-                            })
-                            finalCheckoutList = checkoutList
-                            setData(checkoutList)
-                        }
-                        subtotal =
-                            round(checkoutList.sumOf { checkout -> checkout.price * checkout.quantity } * 100.0) / 100.0
-                        total = round((subtotal + shipping) * 100.0) / 100.0
-                        binding.txtSubTotal.text = "\u09F3  $subtotal"
-                        binding.txtShipping.text = "\u09F3  $shipping"
-                        binding.txtTotal.text = "\u09F3  $total"
                     })
 
             })

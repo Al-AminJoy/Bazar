@@ -8,10 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alamin.bazar.BazaarApplication
 import com.alamin.bazar.R
 import com.alamin.bazar.databinding.FragmentOrdersBinding
+import com.alamin.bazar.model.data.Invoice
+import com.alamin.bazar.view.adapter.OrderClickListener
 import com.alamin.bazar.view.adapter.OrdersAdapter
 import com.alamin.bazar.view_model.InvoiceViewModel
 import com.alamin.bazar.view_model.ViewModelFactory
@@ -42,8 +45,21 @@ class OrdersFragment : Fragment() {
 
         invoiceViewModel = ViewModelProvider(this,viewModelFactory)[InvoiceViewModel::class.java]
         invoiceViewModel.invoiceList.observe(requireActivity(), Observer {
-            Log.d(TAG, "onCreateView: $it")
-            ordersAdapter.setData(ArrayList(it))
+            if (it.isEmpty()){
+                binding.txtNoOrderMessage.text = "No Order Found"
+            }else{
+                binding.txtNoOrderMessage.text = ""
+            }
+            with(ordersAdapter){
+                setData(ArrayList(it))
+                setOrderClick(object : OrderClickListener{
+                    override fun onOrderClick(invoice: Invoice) {
+                        val action = OrdersFragmentDirections.actionOrdersFragmentToOrderDetailsFragment(invoice)
+                        findNavController().navigate(action)
+                    }
+
+                })
+            }
         })
         return binding.root
     }

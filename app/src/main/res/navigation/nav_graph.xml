@@ -35,6 +35,9 @@
         <action
             android:id="@+id/action_ordersFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_ordersFragment_to_orderDetailsFragment"
+            app:destination="@id/orderDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -98,5 +101,16 @@
         <action
             android:id="@+id/action_wishListFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderDetailsFragment"
+        android:name="com.alamin.bazar.view.fragment.OrderDetailsFragment"
+        android:label="Order Details">
+        <action
+            android:id="@+id/action_orderDetailsFragment_to_ordersFragment"
+            app:destination="@id/ordersFragment" />
+        <argument
+            android:name="invoice"
+            app:argType="com.alamin.bazar.model.data.Invoice" />
     </fragment>
 </navigation>

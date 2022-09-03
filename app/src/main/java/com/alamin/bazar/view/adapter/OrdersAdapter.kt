@@ -11,10 +11,12 @@ import javax.inject.Inject
 class OrdersAdapter @Inject constructor(private val ordersDiffUtils: OrdersDiffUtils): RecyclerView.Adapter<OrdersAdapter.ViewHolder>() {
 
     private var orderList = arrayListOf<Invoice>()
+    private lateinit var orderClickListener: OrderClickListener
 
-    inner class ViewHolder(private val rowOrderBinding: RowOrderBinding): RecyclerView.ViewHolder(rowOrderBinding.root){
+    inner class ViewHolder(private val binding: RowOrderBinding): RecyclerView.ViewHolder(binding.root){
         fun binding(invoice: Invoice){
-            rowOrderBinding.invoice = invoice
+            binding.invoice = invoice
+            binding.onOrderClick = orderClickListener
         }
     }
 
@@ -36,6 +38,10 @@ class OrdersAdapter @Inject constructor(private val ordersDiffUtils: OrdersDiffU
         val diffResult = DiffUtil.calculateDiff(ordersDiffUtils)
         orderList = newOrders
         diffResult.dispatchUpdatesTo(this)
+    }
+
+    fun setOrderClick(orderClickListener: OrderClickListener){
+        this.orderClickListener = orderClickListener
     }
 
 }

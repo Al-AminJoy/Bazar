@@ -18,7 +18,7 @@ data class Invoice(
     val address: String,
     val isCashOnDelivery: Boolean,
     val note: String,
-    val status: String,
+    var status: String,
     val isReceived: Boolean,
     val checkoutHolder: @RawValue CheckoutHolder
 ):Parcelable

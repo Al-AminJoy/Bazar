@@ -1,10 +1,13 @@
 package com.alamin.bazar.view.adapter
 
+import android.view.View
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.databinding.BindingAdapter
 import coil.load
 import com.alamin.bazar.R
+import com.alamin.bazar.model.data.Invoice
+import com.google.android.material.button.MaterialButton
 
 @BindingAdapter("setImage")
 fun ImageView.setImage(url: String){
@@ -30,5 +33,12 @@ fun ImageView.setIconTint(isWished: Boolean){
         setColorFilter(resources.getColor(R.color.red))
     }else{
         setColorFilter(resources.getColor(R.color.Ash_Gray))
+    }
+}
+
+@BindingAdapter("setCancelButtonVisibility")
+fun MaterialButton.setCancelButtonVisibility(invoice: Invoice){
+    if (invoice.isReceived || invoice.status.equals("canceled",ignoreCase = true)){
+        this.visibility = View.GONE
     }
 }

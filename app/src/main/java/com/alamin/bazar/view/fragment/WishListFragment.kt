@@ -59,6 +59,11 @@ class WishListFragment : Fragment() {
 
         activity?.let { fragmentActivity ->
             wishViewModel.wishList.observe(fragmentActivity, Observer { wishList ->
+                if (wishList.isEmpty()){
+                    binding.txtNoWishMessage.text = "No Wished Item Found"
+                }else{
+                    binding.txtNoWishMessage.text = ""
+                }
                 val wishProductList = wishList.map { wish -> wish.productId }
                 productViewModel.getProductByIdList(wishProductList).observe(fragmentActivity, Observer {
                     Log.d(TAG, "onCreateView: $it")

@@ -1,10 +1,7 @@
 package com.alamin.bazar.model.local.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.alamin.bazar.model.data.Invoice
 
 @Dao
@@ -14,4 +11,7 @@ interface InvoiceDao {
 
     @Query("SELECT * FROM invoice")
     fun getAllInvoice(): LiveData<List<Invoice>>
+
+    @Update
+    suspend fun updateInvoice(invoice: Invoice)
 }

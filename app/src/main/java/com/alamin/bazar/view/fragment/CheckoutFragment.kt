@@ -49,6 +49,7 @@ class CheckoutFragment : Fragment() {
     private lateinit var customAddress: String
     private var deliveryAddress: String = ""
     private lateinit var address: Address
+    private lateinit var user: User
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,26 +59,27 @@ class CheckoutFragment : Fragment() {
 
         val component = (requireActivity().applicationContext as BazaarApplication).appComponent
         component.injectCheckout(this)
-        Log.d(TAG, "onCreateView: ${arg.invoice}")
         cartViewModel = ViewModelProvider(this, viewModelFactory)[CartViewModel::class.java]
         invoiceViewModel = ViewModelProvider(this, viewModelFactory)[InvoiceViewModel::class.java]
 
-        lifecycleScope.launchWhenCreated {
-            localDataStore.getLastAddress().collect {
-                customAddress = it
-                binding.customAddress =
-                    if (customAddress.trim().isNotEmpty()) it else " Address Not Set"
-            }
-        }
+
 
         lifecycleScope.launchWhenCreated {
-            localDataStore.getUser().collect {
-                if (it.trim().isNotEmpty()) {
-                    val user: User = Gson().fromJson(it, User::class.java)
+            localDataStore.getUser().collect { userInfo ->
+                if (userInfo.trim().isNotEmpty()) {
+                    user = Gson().fromJson(userInfo, User::class.java)
                     address = user.address
                     userAddress =
-                        "${address.number}, ${address.street}, ${address.city}-${address.zipcode}"
+                        "${user.name.firstname} ${user.name.lastname}, ${address.number}, ${address.street}, ${address.city}-${address.zipcode}, Phone: ${user.phone}"
                     binding.userAddress = userAddress
+
+                    lifecycleScope.launchWhenCreated {
+                        localDataStore.getLastAddress().collect {
+                            customAddress = "${user.name.firstname} ${user.name.lastname}, $it, Phone: ${user.phone}"
+                            binding.customAddress =
+                                if (customAddress.trim().isNotEmpty()) customAddress else " Address Not Set"
+                        }
+                    }
                 }
             }
         }

@@ -26,6 +26,7 @@ interface AppComponent {
     fun injectWishList(wishListFragment: WishListFragment)
     fun injectCheckout(checkoutFragment: CheckoutFragment)
     fun injectCustomAddress(customAddressFragment: CustomAddressFragment)
+    fun injectOrderDetails(orderDetailsFragment: OrderDetailsFragment)
 
     fun getViewModelMap(): Map<Class<*>, ViewModel>
 

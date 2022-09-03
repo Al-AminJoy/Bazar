@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="com.alamin.bazar.model.data.Checkout"/>
+        <import type="com.alamin.bazar.view.adapter.CartClickListener"/>
+        <variable
+            name="checkout"
+            type="Checkout" />
+        <variable
+            name="cartClick"
+            type="CartClickListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/app_margin"
+        android:layout_marginVertical="@dimen/app_margin"
+        android:layout_marginEnd="@dimen/app_margin">
+
+        <ImageView
+            android:id="@+id/imgProduct"
+            android:layout_width="60dp"
+            android:layout_height="0dp"
+            app:srcCompat="@drawable/img_product"
+            setImage="@{checkout.image}"
+            app:shapeAppearanceOverlay="@style/RoundedImageView"
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/txtTitle"
+            app:layout_constraintBottom_toBottomOf="@id/txtQuantity"
+            />
+
+
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{checkout.title}"
+            android:textSize="@dimen/textSizeM"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@id/imgProduct"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:paddingHorizontal="@dimen/app_margin"/>
+
+        <TextView
+            android:id="@+id/txtPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{`\u09F3 `+checkout.price}"
+            android:textSize="@dimen/textSizeM"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@id/imgProduct"
+            app:layout_constraintTop_toBottomOf="@id/txtTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:paddingHorizontal="@dimen/app_margin"
+            android:layout_marginTop="@dimen/app_margin"/>
+
+        <TextView
+            android:id="@+id/txtQuantityTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quantity : "
+            android:textSize="@dimen/textSizeM"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@id/imgProduct"
+            app:layout_constraintTop_toBottomOf="@id/txtPrice"
+            app:layout_constraintEnd_toStartOf="@id/txtQuantity"
+            android:paddingStart="@dimen/app_margin"
+            android:layout_marginTop="@dimen/app_margin"/>
+
+        <TextView
+            android:id="@+id/txtQuantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{Integer.toString(checkout.quantity)}"
+            android:textSize="@dimen/textSizeM"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@id/txtQuantityTitle"
+            app:layout_constraintTop_toTopOf="@id/txtQuantityTitle"
+            android:paddingHorizontal="@dimen/app_margin"/>
+
+        <TextView
+            android:id="@+id/txtCategoryTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Category : "
+            android:textSize="@dimen/textSizeM"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@id/txtQuantity"
+            app:layout_constraintTop_toTopOf="@id/txtQuantityTitle"
+            app:layout_constraintEnd_toStartOf="@id/txtCategory"
+            android:paddingStart="@dimen/app_margin"/>
+
+        <TextView
+            android:id="@+id/txtCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{checkout.category}"
+            android:textSize="@dimen/textSizeM"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@id/txtCategoryTitle"
+            app:layout_constraintTop_toTopOf="@id/txtCategoryTitle"
+            android:paddingHorizontal="@dimen/app_margin"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtCategory"
+            android:layout_marginTop="@dimen/app_margin"
+            android:background="@color/DarkGray"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

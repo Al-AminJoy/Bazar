@@ -14,4 +14,8 @@ class InvoiceRepository @Inject constructor(private val apiInterface: APIInterfa
     suspend fun insertInvoice(invoice: Invoice){
         invoiceDao.insertInvoice(invoice)
     }
+
+    suspend fun updateInvoice(invoice: Invoice){
+        invoiceDao.updateInvoice(invoice)
+    }
 }

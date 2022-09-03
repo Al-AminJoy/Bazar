@@ -1,9 +1,7 @@
 package com.alamin.bazar.view.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.alamin.bazar.databinding.RowCartBinding
@@ -41,8 +39,6 @@ class CheckoutAdapter @Inject constructor(private val checkoutDiffUtils: Checkou
     }
 
     override fun getItemCount(): Int {
-        Log.d(TAG, "getItemCount: ${checkoutDiffUtils.oldListSize}")
-        //Log.d(TAG, "getItemCount: ${checkoutDiffUtils.newListSize}")
         return checkoutList.size
     }
 

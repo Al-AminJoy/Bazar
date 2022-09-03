@@ -4,13 +4,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
-       <import type="android.view.View.OnClickListener"/>
+        <import type="com.alamin.bazar.model.data.Invoice"/>
+        <import type="android.view.View.OnClickListener"/>
+        <import type="android.view.View"/>
+        <variable
+            name="invoice"
+            type="Invoice" />
 
         <variable
-            name="onCheckoutClick"
+            name="onCancelClick"
             type="OnClickListener" />
-
     </data>
 
     <ScrollView
@@ -33,11 +36,11 @@
                     android:orientation="vertical"
                     android:padding="@dimen/app_margin">
                     <TextView
-                        android:id="@+id/txtCartItemsTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/textSizeL"
                         android:textStyle="bold"
+                        android:text="Ordered Item(s)"
                         android:padding="@dimen/app_margin"/>
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -46,6 +49,38 @@
                         android:layout_height="match_parent"
                         android:paddingStart="@dimen/app_margin"/>
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/app_margin"
+                android:layout_margin="@dimen/app_margin">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="@dimen/app_margin">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Address"
+                        android:textSize="@dimen/textSizeL"
+                        android:textStyle="bold"
+                        android:padding="@dimen/app_margin"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{invoice.address}"
+                        android:textSize="@dimen/textSizeL"
+                        android:textColor="@color/black"
+                        android:paddingStart="@dimen/app_margin"/>
+
+                </LinearLayout>
+
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
@@ -146,6 +181,18 @@
                         android:gravity="end"
                         android:padding="@dimen/app_margin"/>
 
+                    <TextView
+                        android:id="@+id/txtPaymentMethod"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/txtTotal"
+                        android:textSize="@dimen/textSizeL"
+                        android:text="@{invoice.isCashOnDelivery?`* Cash On Delivery`:`* Online Payment`}"
+                        android:textColor="@color/black"
+                        android:gravity="center_vertical"
+                        android:padding="@dimen/app_margin"/>
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -157,11 +204,12 @@
                 android:layout_marginVertical="@dimen/app_margin"
                 android:layout_marginHorizontal="@dimen/app_margin"
                 app:cornerRadius="@dimen/app_margin"
-                android:text="Checkout"
+                android:text="Cancel Order"
                 android:textAllCaps="false"
-                android:backgroundTint="@color/theme_secondary"
-                app:rippleColor="@color/Baby_Blue"
-                android:onClick="@{onCheckoutClick}"/>
+                setCancelButtonVisibility="@{invoice}"
+                android:backgroundTint="@color/red"
+                app:rippleColor="@color/Chestnut_Red"
+                android:onClick="@{onCancelClick}"/>
 
         </LinearLayout>
 
