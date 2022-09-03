@@ -1,9 +1,7 @@
 package com.alamin.bazar.view.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Filter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.alamin.bazar.databinding.RowProductBinding

@@ -1,5 +1,7 @@
 package com.alamin.bazar.view.activity
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -45,6 +47,8 @@ class MainActivity : AppCompatActivity() {
         productViewModel.productList.observe(this, Observer {
             productViewModel.insertProduct(it)
         })
+
+        window.setBackgroundDrawable(ColorDrawable(getColor(R.color.theme_dark)))
 
         navController = findNavController(R.id.fragment)
         appBarConfiguration = AppBarConfiguration(setOf(R.id.dashBoardFragment,R.id.cartFragment,R.id.profileFragment))
