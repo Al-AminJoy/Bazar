@@ -90,7 +90,7 @@
                 android:background="@drawable/top_fill_32dp_round_corner"
                 android:padding="@dimen/app_margin"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/Lavender_Pinocchio">
+                android:backgroundTint="@color/Azure">
                 <TextView
                     android:id="@+id/txtCategory"
                     android:layout_width="match_parent"

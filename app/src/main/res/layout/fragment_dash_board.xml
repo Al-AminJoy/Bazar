@@ -7,11 +7,30 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/theme_dark"
-        tools:context=".view.fragment.DashBoardFragment">
+        tools:context=".view.fragment.DashBoardFragment"
+        android:orientation="vertical">
+
+       <com.google.android.material.textfield.TextInputLayout
+           style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginHorizontal="@dimen/app_margin"
+           android:layout_marginTop="@dimen/app_margin"
+           android:hint="Search Product,Category"
+           app:boxStrokeColor="@color/theme_secondary"
+           app:hintTextColor="@color/theme_secondary">
+           <com.google.android.material.textfield.TextInputEditText
+               android:id="@+id/txtSearch"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               app:iconifiedByDefault="false"
+               android:padding="@dimen/app_margin"
+               android:drawableStart="@drawable/ic_search"/>
+       </com.google.android.material.textfield.TextInputLayout>
 
        <androidx.recyclerview.widget.RecyclerView
            android:id="@+id/recyclerView"
@@ -20,7 +39,8 @@
            tools:listitem="@layout/row_product"
            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
            app:spanCount="2"
-           android:layout_marginStart="@dimen/app_margin" />
+           android:layout_marginStart="@dimen/app_margin"
+           android:layout_marginTop="@dimen/app_margin"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </layout>

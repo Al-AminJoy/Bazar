@@ -65,6 +65,7 @@ class CheckoutFragment : Fragment() {
 
 
         lifecycleScope.launchWhenCreated {
+            Log.d(TAG, "onCreateView: Called")
             localDataStore.getUser().collect { userInfo ->
                 if (userInfo.trim().isNotEmpty()) {
                     user = Gson().fromJson(userInfo, User::class.java)
@@ -75,9 +76,12 @@ class CheckoutFragment : Fragment() {
 
                     lifecycleScope.launchWhenCreated {
                         localDataStore.getLastAddress().collect {
-                            customAddress = "${user.name.firstname} ${user.name.lastname}, $it, Phone: ${user.phone}"
+                            customAddress =
+                                "${user.name.firstname} ${user.name.lastname}, $it, Phone: ${user.phone}"
                             binding.customAddress =
-                                if (customAddress.trim().isNotEmpty()) customAddress else " Address Not Set"
+                                if (customAddress.trim()
+                                        .isNotEmpty()
+                                ) customAddress else " Address Not Set"
                         }
                     }
                 }
