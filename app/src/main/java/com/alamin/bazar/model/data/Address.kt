@@ -11,7 +11,9 @@ import kotlinx.android.parcel.RawValue
 data class Address(
     @SerializedName("city")
     val city: String,
-
+    @SerializedName("geolocation")
+    @Embedded
+    val geolocation: @RawValue Geolocation,
     @SerializedName("number")
     val number: Int,
     @SerializedName("street")

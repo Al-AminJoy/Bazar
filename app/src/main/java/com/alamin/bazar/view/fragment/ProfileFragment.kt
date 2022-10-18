@@ -1,6 +1,7 @@
 package com.alamin.bazar.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
+private const val TAG = "ProfileFragment"
 class ProfileFragment : Fragment() {
 
     @Inject
@@ -33,6 +35,7 @@ class ProfileFragment : Fragment() {
             localDataStore.getUser().collect{
                 val user = Gson().fromJson(it,User::class.java)
                 binding.user = user
+                Log.d(TAG, "onCreateView: $user")
             }
         }
 
