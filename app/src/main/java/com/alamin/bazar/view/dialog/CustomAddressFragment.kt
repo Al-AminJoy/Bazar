@@ -12,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.alamin.bazar.BazaarApplication
 import com.alamin.bazar.R
-import com.alamin.bazar.app_interface.AddressSetListener
 import com.alamin.bazar.databinding.FragmentCustomAddressBinding
 import com.alamin.bazar.utils.LocalDataStore
 import kotlinx.coroutines.launch

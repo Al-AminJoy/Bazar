@@ -24,6 +24,7 @@ class ProfileFragment : Fragment() {
     lateinit var localDataStore: LocalDataStore
 
     private lateinit var binding: FragmentProfileBinding
+    private lateinit var user: User
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,7 +34,7 @@ class ProfileFragment : Fragment() {
         component.injectProfile(this)
         lifecycleScope.launchWhenCreated {
             localDataStore.getUser().collect{
-                val user = Gson().fromJson(it,User::class.java)
+                user = Gson().fromJson(it,User::class.java)
                 binding.user = user
                 Log.d(TAG, "onCreateView: $user")
             }
@@ -45,6 +46,11 @@ class ProfileFragment : Fragment() {
 
         binding.setOnWishListClick {
             findNavController().navigate(R.id.action_profileFragment_to_wishListFragment)
+        }
+
+        binding.setOnEditClick {
+            val action = ProfileFragmentDirections.actionProfileFragmentToEditProfileFragment(user)
+            findNavController().navigate(action)
         }
 
         return binding.root

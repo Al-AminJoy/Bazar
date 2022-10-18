@@ -13,4 +13,14 @@ class Converters {
     fun toCheckoutHolder(checkoutHolder: String): CheckoutHolder{
         return Gson().fromJson(checkoutHolder,CheckoutHolder::class.java);
     }
+
+    @TypeConverter
+    fun fromGeoLocation(geolocation: Geolocation): String{
+        return Gson().toJson(geolocation)
+    }
+
+    @TypeConverter
+    fun toGeoLocation(geoLocation: String): Geolocation{
+        return Gson().fromJson(geoLocation,Geolocation::class.java)
+    }
 }

@@ -15,7 +15,6 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.alamin.bazar.BazaarApplication
 import com.alamin.bazar.R
-import com.alamin.bazar.app_interface.AddressSetListener
 import com.alamin.bazar.databinding.ActivityMainBinding
 import com.alamin.bazar.databinding.FragmentDashBoardBinding
 import com.alamin.bazar.view.fragment.CartFragment

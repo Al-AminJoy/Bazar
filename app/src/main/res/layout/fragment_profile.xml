@@ -19,6 +19,10 @@
             name="onWishListClick"
             type="OnClickListener" />
 
+        <variable
+            name="onEditClick"
+            type="OnClickListener" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -56,6 +60,16 @@
                android:layout_marginHorizontal="@dimen/app_margin"
                app:layout_constraintTop_toTopOf="parent"
                app:layout_constraintStart_toStartOf="parent"/>
+
+           <ImageView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintTop_toTopOf="@id/imgProfile"
+               app:layout_constraintBottom_toBottomOf="@id/imgProfile"
+               android:src="@drawable/ic_edit"
+               android:layout_marginHorizontal="@dimen/app_margin"
+               android:onClick="@{onEditClick}"/>
 
            <TextView
                android:id="@+id/txtName"

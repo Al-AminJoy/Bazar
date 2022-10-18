@@ -8,7 +8,7 @@ import kotlinx.android.parcel.Parcelize
 import kotlinx.android.parcel.RawValue
 
 @Parcelize
-data class Address(
+data class Address @JvmOverloads constructor(
     @SerializedName("city")
     val city: String,
     @SerializedName("geolocation")

@@ -50,6 +50,9 @@
         <action
             android:id="@+id/action_profileFragment_to_wishListFragment"
             app:destination="@id/wishListFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
     </fragment>
     <fragment
         android:id="@+id/productDetailsFragment"
@@ -112,5 +115,17 @@
         <argument
             android:name="invoice"
             app:argType="com.alamin.bazar.model.data.Invoice" />
+    </fragment>
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.alamin.bazar.view.fragment.EditProfileFragment"
+        android:label="Update Profile"
+        tools:layout="@layout/fragment_edit_profile" >
+        <action
+            android:id="@+id/action_editProfileFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <argument
+            android:name="user"
+            app:argType="com.alamin.bazar.model.data.User" />
     </fragment>
 </navigation>

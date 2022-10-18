@@ -27,6 +27,7 @@ interface AppComponent {
     fun injectCheckout(checkoutFragment: CheckoutFragment)
     fun injectCustomAddress(customAddressFragment: CustomAddressFragment)
     fun injectOrderDetails(orderDetailsFragment: OrderDetailsFragment)
+    fun injectEditProfile(editProfileFragment: EditProfileFragment)
 
     fun getViewModelMap(): Map<Class<*>, ViewModel>
 
