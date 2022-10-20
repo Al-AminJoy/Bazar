@@ -4,6 +4,7 @@ import com.alamin.bazar.model.data.*
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -23,4 +24,7 @@ interface APIInterface {
 
     @GET("products")
     suspend fun getProducts(): Response<List<Product>>
+
+    @PATCH("users/{id}")
+    suspend fun updateUser(@Path("id") id: Int,@Body user: User): Response<User>
 }

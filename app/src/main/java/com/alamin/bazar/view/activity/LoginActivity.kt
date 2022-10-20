@@ -44,7 +44,7 @@ class LoginActivity : AppCompatActivity() {
         userDataViewModel = ViewModelProvider(this,viewModelFactory)[UserDataViewModel::class.java]
         userViewModel = ViewModelProvider(this,viewModelFactory)[UserViewModel::class.java]
 
-        binding.userDataViewModel = userDataViewModel
+        binding.userViewModel = userViewModel
         binding.lifecycleOwner = this
 
         binding.setLoginClickListener {
@@ -66,6 +66,8 @@ class LoginActivity : AppCompatActivity() {
         binding.setSignUpClickListener {
             startActivity(Intent(this@LoginActivity,SignUpActivity::class.java))
         }
+
+        userViewModel.dummyLogin()
 
         userDataViewModel.loginResponse.observe(this, Observer {
             lifecycleScope.launch{

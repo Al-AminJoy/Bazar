@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.alamin.bazar.model.data.User
 import com.alamin.bazar.model.local.LocalDatabase
 import com.alamin.bazar.model.network.APIInterface
+import com.alamin.bazar.model.network.APIResponse
 import javax.inject.Inject
 
 private const val TAG = "UserRepository"
@@ -24,6 +25,20 @@ class UserRepository @Inject constructor(private val apiInterface: APIInterface,
                 userLiveData.postValue(response.body())
             }
         }
+    }
+
+    suspend fun updateUser(user: User,apiResponse: APIResponse){
+        //TODO: Should Use Dynamic Id
+        val response = apiInterface.updateUser(1,user)
+        if (response.isSuccessful){
+            response.body()?.let {
+                userLiveData.postValue(response.body())
+                apiResponse.onSuccess("Success")
+            }
+        }else{
+            apiResponse.onFailed("Failed")
+        }
+
     }
 
 }

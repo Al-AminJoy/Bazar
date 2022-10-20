@@ -12,14 +12,14 @@ import kotlinx.parcelize.Parcelize
 @Entity
 @Parcelize
 data class User(
+    @PrimaryKey
+    @SerializedName("id")
+    val id: Int,
     @SerializedName("address")
     @Embedded
     val address: @RawValue Address,
     @SerializedName("email")
     val email: String,
-    @PrimaryKey
-    @SerializedName("id")
-    val id: Int,
     @SerializedName("name")
     @Embedded
     val name: @RawValue Name,

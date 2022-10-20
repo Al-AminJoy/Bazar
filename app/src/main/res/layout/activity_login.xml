@@ -5,12 +5,12 @@
 
     <data>
 
-        <import type="com.alamin.bazar.view_model.UserDataViewModel"/>
+        <import type="com.alamin.bazar.view_model.UserViewModel"/>
         <import type="android.view.View.OnClickListener"/>
 
         <variable
-            name="userDataViewModel"
-            type="UserDataViewModel" />
+            name="userViewModel"
+            type="UserViewModel" />
 
         <variable
             name="loginClickListener"
@@ -82,7 +82,7 @@
                 android:singleLine="true"
                 android:inputType="textEmailAddress"
                 android:maxLength="48"
-                android:text="@={userDataViewModel.inputName}"/>
+                android:text="@={userViewModel.inputUserId}"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -113,7 +113,7 @@
                 android:singleLine="true"
                 android:inputType="textPassword"
                 android:maxLength="48"
-                android:text="@={userDataViewModel.inputPassword}"/>
+                android:text="@={userViewModel.inputPassword}"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

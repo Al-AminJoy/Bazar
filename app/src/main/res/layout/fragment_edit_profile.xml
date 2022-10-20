@@ -31,6 +31,13 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_percent=".15"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineCenter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".5"/>
         <View
             android:id="@+id/topView"
             android:layout_width="match_parent"
@@ -54,7 +61,7 @@
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layoutName"
+            android:id="@+id/layoutFirstName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
@@ -62,7 +69,7 @@
             app:layout_constraintTop_toBottomOf="@id/imgProfile"
             android:layout_marginVertical="@dimen/app_margin"
             android:layout_marginHorizontal="@dimen/app_margin"
-            android:hint="Name"
+            android:hint="First Name"
             app:hintTextColor="@color/theme_secondary"
             app:boxStrokeColor="@color/theme_secondary"
             app:boxCornerRadiusTopStart="@dimen/dimen4dp"
@@ -72,14 +79,45 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/txtName"
+                android:id="@+id/txtFirstName"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="@dimen/app_margin"
                 android:inputType="text"
                 android:maxLines="1"
                 android:maxLength="32"
-                android:text="@={userViewModel.inputName}"/>
+                android:text="@={userViewModel.inputFirstName}"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutLastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layoutFirstName"
+            android:layout_marginVertical="@dimen/app_margin"
+            android:layout_marginHorizontal="@dimen/app_margin"
+            android:hint="Last Name"
+            app:hintTextColor="@color/theme_secondary"
+            app:boxStrokeColor="@color/theme_secondary"
+            app:boxCornerRadiusTopStart="@dimen/dimen4dp"
+            app:boxCornerRadiusBottomStart="@dimen/dimen4dp"
+            app:boxCornerRadiusBottomEnd="@dimen/dimen4dp"
+            app:boxCornerRadiusTopEnd="@dimen/dimen4dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtLastName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/app_margin"
+                android:inputType="text"
+                android:maxLines="1"
+                android:maxLength="32"
+                android:text="@={userViewModel.inputLastName}"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -89,7 +127,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layoutName"
+            app:layout_constraintTop_toBottomOf="@id/layoutLastName"
             android:layout_marginVertical="@dimen/app_margin"
             android:layout_marginHorizontal="@dimen/app_margin"
             android:hint="Contact Number"
@@ -115,10 +153,10 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layoutCity"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/guidelineCenter"
             app:layout_constraintTop_toBottomOf="@id/layoutContactNumber"
             android:layout_marginVertical="@dimen/app_margin"
             android:layout_marginHorizontal="@dimen/app_margin"
@@ -144,15 +182,15 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layoutAddress"
-            android:layout_width="match_parent"
+            android:id="@+id/layoutHolding"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/guidelineCenter"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layoutCity"
-            android:layout_marginVertical="@dimen/app_margin"
+            app:layout_constraintTop_toTopOf="@id/layoutCity"
+            app:layout_constraintBottom_toBottomOf="@id/layoutCity"
             android:layout_marginHorizontal="@dimen/app_margin"
-            android:hint="Address"
+            android:hint="House"
             app:hintTextColor="@color/theme_secondary"
             app:boxStrokeColor="@color/theme_secondary"
             app:boxCornerRadiusTopStart="@dimen/dimen4dp"
@@ -166,10 +204,70 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="@dimen/app_margin"
-                android:inputType="text"
+                android:inputType="numberDecimal"
                 android:maxLines="2"
                 android:maxLength="64"
-                android:text="@={userViewModel.inputAddress}"/>
+                android:text="@={userViewModel.inputHolding}"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutRoad"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/guidelineCenter"
+            app:layout_constraintTop_toBottomOf="@id/layoutCity"
+            android:layout_marginVertical="@dimen/app_margin"
+            android:layout_marginHorizontal="@dimen/app_margin"
+            android:hint="Road"
+            app:hintTextColor="@color/theme_secondary"
+            app:boxStrokeColor="@color/theme_secondary"
+            app:boxCornerRadiusTopStart="@dimen/dimen4dp"
+            app:boxCornerRadiusBottomStart="@dimen/dimen4dp"
+            app:boxCornerRadiusBottomEnd="@dimen/dimen4dp"
+            app:boxCornerRadiusTopEnd="@dimen/dimen4dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtRoad"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/app_margin"
+                android:inputType="text"
+                android:maxLines="1"
+                android:maxLength="16"
+                android:text="@={userViewModel.inputStreet}"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutZip"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/guidelineCenter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/layoutRoad"
+            app:layout_constraintBottom_toBottomOf="@id/layoutRoad"
+            android:layout_marginHorizontal="@dimen/app_margin"
+            android:hint="Postal Code"
+            app:hintTextColor="@color/theme_secondary"
+            app:boxStrokeColor="@color/theme_secondary"
+            app:boxCornerRadiusTopStart="@dimen/dimen4dp"
+            app:boxCornerRadiusBottomStart="@dimen/dimen4dp"
+            app:boxCornerRadiusBottomEnd="@dimen/dimen4dp"
+            app:boxCornerRadiusTopEnd="@dimen/dimen4dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtPost"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/app_margin"
+                android:inputType="numberDecimal"
+                android:maxLines="2"
+                android:maxLength="64"
+                android:text="@={userViewModel.inputZipcode}"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -178,7 +276,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layoutAddress"
+            app:layout_constraintTop_toBottomOf="@id/layoutRoad"
             android:layout_marginHorizontal="@dimen/app_margin"
             android:layout_marginVertical="@dimen/app_margin"
             android:text="Confirm"
