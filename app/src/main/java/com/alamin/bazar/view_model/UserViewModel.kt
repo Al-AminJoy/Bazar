@@ -136,7 +136,7 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
         val road = inputStreet.value
         val post = inputZipcode.value
 
-        if (checkEmpty(firstName,lastName,contact,"no","no",city,holding,road,post,apiResponse)){
+        if (checkEmpty(firstName,lastName,contact,"email@email.com","no_password",city,holding,road,post,apiResponse)){
             val updatedUser = User(0, Address(city!!,
                 Geolocation(userInfo.address.geolocation.lat,userInfo.address.geolocation.longi),
                 holding?.toInt()!!,
