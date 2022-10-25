@@ -11,7 +11,6 @@ import com.alamin.bazar.BazaarApplication
 
 import com.alamin.bazar.databinding.ActivitySignUpBinding
 import com.alamin.bazar.model.network.APIResponse
-import com.alamin.bazar.view_model.UserDataViewModel
 import com.alamin.bazar.view_model.UserViewModel
 import com.alamin.bazar.view_model.ViewModelFactory
 import javax.inject.Inject

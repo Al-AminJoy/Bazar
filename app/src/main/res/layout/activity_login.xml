@@ -82,7 +82,7 @@
                 android:singleLine="true"
                 android:inputType="textEmailAddress"
                 android:maxLength="48"
-                android:text="@={userViewModel.inputUserId}"/>
+                android:text="@={userViewModel.inputUserName}"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

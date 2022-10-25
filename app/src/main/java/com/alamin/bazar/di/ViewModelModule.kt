@@ -16,11 +16,6 @@ abstract class ViewModelModule {
     abstract fun provideUserViewModel(userViewModel: UserViewModel): ViewModel
 
     @Binds
-    @ClassKey(UserDataViewModel::class)
-    @IntoMap
-    abstract fun provideUserDataViewModel(userDataViewModel: UserDataViewModel): ViewModel
-
-    @Binds
     @ClassKey(ProductViewModel::class)
     @IntoMap
     abstract fun provideProductViewModel(productViewModel: ProductViewModel): ViewModel

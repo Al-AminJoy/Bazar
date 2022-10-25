@@ -2,6 +2,7 @@ package com.alamin.bazar.view_model
 
 import android.text.TextUtils
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,9 +19,13 @@ import javax.inject.Inject
 private const val TAG = "UserViewModel"
 class UserViewModel @Inject constructor(private val userRepository: UserRepository): ViewModel() {
 
+    val loginResponse : LiveData<UserResponse>
+        get() = userRepository.getLoginResponse
+
     val user = userRepository.user
     lateinit var userInfo:User
 
+     val inputUserName = MutableLiveData<String>()
      val inputFirstName = MutableLiveData<String>()
      val inputLastName = MutableLiveData<String>()
      val inputContactNumber = MutableLiveData<String>()
@@ -29,7 +34,6 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
      val inputHolding = MutableLiveData<String>()
      val inputStreet = MutableLiveData<String>()
      val inputZipcode = MutableLiveData<String>()
-     val inputUserId = MutableLiveData<String>()
      val inputPassword = MutableLiveData<String>()
 
     fun setUserData(user:User){
@@ -44,13 +48,43 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
     }
 
     fun dummyLogin(){
-        inputUserId.value = "johnd"
+        inputUserName.value = "johnd"
         inputPassword.value = "m38rmF$"
     }
 
     fun requestUser(id: Int){
         viewModelScope.launch(IO) {
             userRepository.requestUser(id)
+        }
+    }
+
+    fun loginUser(apiResponse: APIResponse){
+
+         val userName = inputUserName.value
+         val userPassword = inputPassword.value
+
+        if (userName.equals(null) || TextUtils.isEmpty(userName)){
+            apiResponse.onFailed("Please, Enter Name")
+        }else if (userPassword.equals(null) || TextUtils.isEmpty(userPassword)){
+            apiResponse.onFailed("Please, Enter Password")
+        }else{
+            val userData = UserData(userName?.trim()!!,userPassword?.trim()!!)
+            viewModelScope.launch(IO) {
+                userRepository.loginUser(userData,object :APIResponse{
+                    override fun onSuccess(message: String) {
+                        viewModelScope.launch(Main){
+                            apiResponse.onSuccess(message)
+                        }
+                    }
+
+                    override fun onFailed(message: String) {
+                        viewModelScope.launch(Main){
+                            apiResponse.onFailed(message)
+                        }
+                    }
+
+                })
+            }
         }
     }
 

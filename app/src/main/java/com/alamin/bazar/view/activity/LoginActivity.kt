@@ -3,21 +3,15 @@ package com.alamin.bazar.view.activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
 import com.alamin.bazar.BazaarApplication
-import com.alamin.bazar.R
 import com.alamin.bazar.databinding.ActivityLoginBinding
 import com.alamin.bazar.model.network.APIResponse
 import com.alamin.bazar.utils.LocalDataStore
-import com.alamin.bazar.view_model.UserDataViewModel
 import com.alamin.bazar.view_model.UserViewModel
 import com.alamin.bazar.view_model.ViewModelFactory
 import com.google.gson.Gson
@@ -30,7 +24,6 @@ class LoginActivity : AppCompatActivity() {
     lateinit var viewModelFactory: ViewModelFactory
     @Inject
     lateinit var localDataStore: LocalDataStore
-    private lateinit var userDataViewModel: UserDataViewModel
     private lateinit var userViewModel: UserViewModel;
     private lateinit var binding : ActivityLoginBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +34,6 @@ class LoginActivity : AppCompatActivity() {
         val component = (this.applicationContext as BazaarApplication).appComponent
         component.injectLogin(this)
 
-        userDataViewModel = ViewModelProvider(this,viewModelFactory)[UserDataViewModel::class.java]
         userViewModel = ViewModelProvider(this,viewModelFactory)[UserViewModel::class.java]
 
         binding.userViewModel = userViewModel
@@ -49,7 +41,7 @@ class LoginActivity : AppCompatActivity() {
 
         binding.setLoginClickListener {
             binding.btnLogin.visibility = View.GONE
-            userDataViewModel.loginUser(object : APIResponse{
+            userViewModel.loginUser(object : APIResponse{
                 override fun onSuccess(message: String) {
                     //TODO: User ID Should Dynamic
                     userViewModel.requestUser(1);
@@ -69,7 +61,7 @@ class LoginActivity : AppCompatActivity() {
 
         userViewModel.dummyLogin()
 
-        userDataViewModel.loginResponse.observe(this, Observer {
+        userViewModel.loginResponse.observe(this, Observer {
             lifecycleScope.launch{
                 localDataStore.storeToken(it.token)
             }
