@@ -16,8 +16,8 @@ interface APIInterface {
     @GET("users/{id}")
     suspend fun getUser(@Path(value = "id") id : Int): Response<User>
 
-    @POST("users/signup")
-    suspend fun signup(@Body user: UserData): Response<UserResponse>
+    @POST("users")
+    suspend fun signup(@Body user: User): Response<User>
 
     @POST("carts")
     suspend fun addCart(@Body cart: Cart): Response<Cart>

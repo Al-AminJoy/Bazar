@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.alamin.bazar.model.data.User
+import com.alamin.bazar.model.data.UserData
 import com.alamin.bazar.model.local.LocalDatabase
 import com.alamin.bazar.model.network.APIInterface
 import com.alamin.bazar.model.network.APIResponse
@@ -19,12 +20,24 @@ class UserRepository @Inject constructor(private val apiInterface: APIInterface,
 
     suspend fun requestUser(id: Int){
         val response = apiInterface.getUser(id);
-        Log.d(TAG, "requestUser: ${response.body()}")
         response.body()?.let {
             if (response.isSuccessful){
                 userLiveData.postValue(response.body())
             }
         }
+    }
+
+    suspend fun signUpUser(user: User,apiResponse: APIResponse){
+        val response = apiInterface.signup(user)
+            if (response.isSuccessful){response
+                response.body()?.let {
+                userLiveData.postValue(response.body())
+                apiResponse.onSuccess("Success")
+            }
+        }else{
+            apiResponse.onFailed("Failed")
+            }
+
     }
 
     suspend fun updateUser(user: User,apiResponse: APIResponse){

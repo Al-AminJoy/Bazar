@@ -51,29 +51,4 @@ class UserDataViewModel @Inject constructor(private val userDataRepository: User
     }
 
 
-
-    fun signUpUser(apiResponse: APIResponse){
-        val userName = inputName.value
-        val userPassword = inputPassword.value
-        if (userName.equals(null) || TextUtils.isEmpty(userName)){
-            apiResponse.onFailed("Please, Enter Name")
-        }else if (userPassword.equals(null) || TextUtils.isEmpty(userPassword)){
-            apiResponse.onFailed("Please, Enter Password")
-        }else{
-            val userData = UserData(userName?.trim()!!,userPassword?.trim()!!)
-
-            viewModelScope.launch(IO) {
-                val response =  userDataRepository.signUpUser(userData)
-                if (response){
-                    withContext(Main){
-                        apiResponse.onSuccess("Success")
-                    }
-                }else{
-                    withContext(Main){
-                        apiResponse.onFailed("Failed")
-                    }
-                }
-            }
-        }
-    }
 }

@@ -5,16 +5,14 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alamin.bazar.model.data.Address
-import com.alamin.bazar.model.data.Geolocation
-import com.alamin.bazar.model.data.Name
-import com.alamin.bazar.model.data.User
+import com.alamin.bazar.model.data.*
 import com.alamin.bazar.model.network.APIResponse
 import com.alamin.bazar.model.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 private const val TAG = "UserViewModel"
@@ -26,6 +24,7 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
      val inputFirstName = MutableLiveData<String>()
      val inputLastName = MutableLiveData<String>()
      val inputContactNumber = MutableLiveData<String>()
+     val inputEmail = MutableLiveData<String>()
      val inputCity = MutableLiveData<String>()
      val inputHolding = MutableLiveData<String>()
      val inputStreet = MutableLiveData<String>()
@@ -55,6 +54,45 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
         }
     }
 
+    fun signUpUser(apiResponse: APIResponse){
+        val firstName = inputFirstName.value
+        val lastName = inputLastName.value
+        val contact = inputContactNumber.value
+        val email = inputEmail.value
+        val password = inputPassword.value
+        val  city = inputCity.value
+        val holding = inputHolding.value
+        val road = inputStreet.value
+        val post = inputZipcode.value
+
+        if (checkEmpty(firstName,lastName,contact,email,password,city,holding,road,post,apiResponse)){
+
+            val createUser = User(0, Address(city!!,
+                Geolocation("0.0","0.0"),
+                holding?.toInt()!!,
+                road!!,post!!),email!!,Name(firstName!!,lastName!!),password!!,contact!!,"")
+
+            viewModelScope.launch(IO) {
+                userRepository.signUpUser(createUser,object : APIResponse{
+                    override fun onSuccess(message: String) {
+                        viewModelScope.launch(Main) {
+                            apiResponse.onSuccess(message)
+                        }
+                    }
+
+                    override fun onFailed(message: String) {
+                        viewModelScope.launch(Main) {
+                            apiResponse.onFailed(message)
+                        }
+                    }
+
+                })
+            }
+
+        }
+
+    }
+
     fun updateUser(apiResponse: APIResponse){
         val firstName = inputFirstName.value
         val lastName = inputLastName.value
@@ -64,7 +102,7 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
         val road = inputStreet.value
         val post = inputZipcode.value
 
-        if (checkEmpty(firstName,lastName,contact,city,holding,road,post,apiResponse)){
+        if (checkEmpty(firstName,lastName,contact,"no","no",city,holding,road,post,apiResponse)){
             val updatedUser = User(0, Address(city!!,
                 Geolocation(userInfo.address.geolocation.lat,userInfo.address.geolocation.longi),
                 holding?.toInt()!!,
@@ -93,6 +131,8 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
         firstName: String?,
         lastName: String?,
         contact: String?,
+        email: String?,
+        password: String?,
         city: String?,
         holding: String?,
         road: String?,
@@ -127,9 +167,24 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
             apiResponse.onFailed("Enter Postal Code")
             return false
         }
+        if (email ==null || TextUtils.isEmpty(email)){
+            apiResponse.onFailed("Enter Email")
+            return false
+        }
+
+        if (!email.isValid()){
+            apiResponse.onFailed("Invalid Email")
+        }
+
+        if (password ==null || TextUtils.isEmpty(password)){
+            apiResponse.onFailed("Enter Password")
+            return false
+        }
 
         return true
 
     }
+
+    private fun String.isValid() = android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
 
 }
