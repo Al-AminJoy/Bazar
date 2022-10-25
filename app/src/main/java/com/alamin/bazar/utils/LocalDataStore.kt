@@ -18,6 +18,12 @@ class LocalDataStore @Inject constructor (val context: Context){
         val LAST_ADDRESS = stringPreferencesKey("last_address")
     }
 
+    suspend fun clearAllData(){
+        context.dataStore.edit {
+            it.clear()
+        }
+    }
+
     /**
      * User Operation
      */
