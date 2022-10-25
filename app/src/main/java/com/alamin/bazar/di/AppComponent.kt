@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.alamin.bazar.view.activity.LoginActivity
 import com.alamin.bazar.view.activity.MainActivity
 import com.alamin.bazar.view.activity.SignUpActivity
+import com.alamin.bazar.view.activity.SplashActivity
 import com.alamin.bazar.view.dialog.CustomAddressFragment
 import com.alamin.bazar.view.fragment.*
 import dagger.BindsInstance
@@ -28,6 +29,7 @@ interface AppComponent {
     fun injectCustomAddress(customAddressFragment: CustomAddressFragment)
     fun injectOrderDetails(orderDetailsFragment: OrderDetailsFragment)
     fun injectEditProfile(editProfileFragment: EditProfileFragment)
+    fun injectSplash(splashActivity: SplashActivity)
 
     fun getViewModelMap(): Map<Class<*>, ViewModel>
 
