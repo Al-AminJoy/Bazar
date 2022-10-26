@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,8 +19,12 @@ import com.alamin.bazar.BazaarApplication
 import com.alamin.bazar.R
 import com.alamin.bazar.databinding.FragmentDashBoardBinding
 import com.alamin.bazar.model.data.Product
+import com.alamin.bazar.model.network.Response
+import com.alamin.bazar.utils.Constants
 import com.alamin.bazar.view.adapter.ProductClickListener
 import com.alamin.bazar.view.adapter.ProductsAdapter
+import com.alamin.bazar.view.dialog.LoadingFragment
+import com.alamin.bazar.view.dialog.LoadingFragmentDirections
 import com.alamin.bazar.view_model.ProductViewModel
 import com.alamin.bazar.view_model.ViewModelFactory
 import javax.inject.Inject
@@ -36,6 +41,8 @@ class DashBoardFragment : Fragment() {
 
     private lateinit var binding : FragmentDashBoardBinding
 
+    private lateinit var loadingFragment: LoadingFragment
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,8 +51,25 @@ class DashBoardFragment : Fragment() {
 
         val component = (requireActivity().applicationContext as BazaarApplication).appComponent
         component.injectDashBoard(this)
-
         productViewModel = ViewModelProvider(this,viewModelFactory)[ProductViewModel::class.java]
+        productViewModel.productList.observe(requireActivity(), Observer {
+            when(it){
+                is Response.Loading -> {
+
+                }
+                is Response.Success -> {
+                    it.data?.let {
+                        findNavController().navigateUp()
+                        productViewModel.insertProduct(it)
+                    }
+                }
+                is Response.Error -> {
+                    it.message?.let {
+                        Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        })
 
         productViewModel.productFromLocal.observe(requireActivity(), Observer {
             binding.recyclerView.apply {
@@ -80,6 +104,16 @@ class DashBoardFragment : Fragment() {
         })
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (Constants.isOnline(requireActivity())){
+            findNavController().navigate(R.id.action_dashBoardFragment_to_loadingFragment)
+            productViewModel.requestProduct()
+        }else{
+            Toast.makeText(requireContext(), getString(R.string.no_internet_message), Toast.LENGTH_SHORT).show()
+        }
     }
 
 }

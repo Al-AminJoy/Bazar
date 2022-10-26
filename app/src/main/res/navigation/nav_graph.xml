@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_dashBoardFragment_to_productDetailsFragment"
             app:destination="@id/productDetailsFragment" />
+        <action
+            android:id="@+id/action_dashBoardFragment_to_loadingFragment"
+            app:destination="@id/loadingFragment" />
     </fragment>
 
     <fragment
@@ -65,6 +68,12 @@
         <argument
             android:name="product"
             app:argType="com.alamin.bazar.model.data.Product" />
+        <action
+            android:id="@+id/action_productDetailsFragment_to_loadingFragment"
+            app:destination="@id/loadingFragment" />
+        <action
+            android:id="@+id/action_productDetailsFragment_to_loadingFragment2"
+            app:destination="@id/loadingFragment" />
 
 
     </fragment>
@@ -128,4 +137,17 @@
             android:name="user"
             app:argType="com.alamin.bazar.model.data.User" />
     </fragment>
+    <dialog
+        android:id="@+id/loadingFragment"
+        android:name="com.alamin.bazar.view.dialog.LoadingFragment"
+        android:label="LoadingFragment"
+        >
+        <action
+            android:id="@+id/action_loadingFragment_to_dashBoardFragment"
+            app:destination="@id/dashBoardFragment" />
+        <action
+            android:id="@+id/action_loadingFragment_to_productDetailsFragment"
+            app:destination="@id/productDetailsFragment" />
+
+    </dialog>
 </navigation>

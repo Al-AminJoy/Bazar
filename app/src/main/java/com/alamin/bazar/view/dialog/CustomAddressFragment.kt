@@ -1,17 +1,13 @@
 package com.alamin.bazar.view.dialog
 
-import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.alamin.bazar.BazaarApplication
-import com.alamin.bazar.R
 import com.alamin.bazar.databinding.FragmentCustomAddressBinding
 import com.alamin.bazar.utils.LocalDataStore
 import kotlinx.coroutines.launch
@@ -48,12 +44,11 @@ class CustomAddressFragment : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        val dialog = dialog;
-        dialog?.let {
+        dialog.let {
             // Set Match Parent for Full Screen Dialog
             val width: Int = ViewGroup.LayoutParams.MATCH_PARENT;
             val height: Int = ViewGroup.LayoutParams.WRAP_CONTENT;
-            dialog.window?.setLayout(width, height)
+            dialog?.window?.setLayout(width, height)
         }
     }
 }

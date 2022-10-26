@@ -24,6 +24,7 @@ class ProductRepository @Inject constructor(private val apiInterface: APIInterfa
     fun getProductByIdList(ids:List<Int>):LiveData<List<Product>> = productDao.getProductByIdList(ids)
 
     suspend fun requestProduct(){
+        liveProductList.postValue(Response.Loading())
         var response = apiInterface.getProducts()
         if (response.isSuccessful){
             response.body()?.let {

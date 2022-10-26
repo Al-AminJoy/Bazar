@@ -25,7 +25,7 @@ class SplashActivity : AppCompatActivity() {
         val component = (applicationContext as BazaarApplication).appComponent
         component.injectSplash(this)
 
-        binding.animationView.animate().setDuration(1000).startDelay = 0
+        binding.animationView.animate().startDelay = 0
         binding.animationView.addAnimatorListener (object: Animator.AnimatorListener{
             override fun onAnimationStart(p0: Animator?) {}
 

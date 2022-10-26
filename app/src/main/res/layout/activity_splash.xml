@@ -22,7 +22,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:lottie_rawRes="@raw/splash_icon"
-            app:lottie_autoPlay="true"/>
+            app:lottie_autoPlay="true" />
 
         <TextView
             android:layout_width="match_parent"

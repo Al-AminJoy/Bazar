@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.alamin.bazar.BazaarApplication
 import com.alamin.bazar.R
@@ -54,13 +55,16 @@ class ProductDetailsFragment : Fragment() {
 
         binding.setOnAddCartClick {
             binding.btnCart.visibility = View.GONE
+            findNavController().navigate(R.id.action_productDetailsFragment_to_loadingFragment)
             cartViewModel.requestAddCart(arg.product, object: APIResponse{
                 override fun onSuccess(message: String) {
+                    findNavController().navigateUp()
                     Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
                     binding.btnCart.visibility = View.VISIBLE
                 }
 
                 override fun onFailed(message: String) {
+                    findNavController().navigateUp()
                     Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
                     binding.btnCart.visibility = View.VISIBLE
                 }
