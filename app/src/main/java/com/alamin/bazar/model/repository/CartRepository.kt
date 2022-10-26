@@ -6,27 +6,28 @@ import com.alamin.bazar.model.data.Cart
 import com.alamin.bazar.model.data.CartProduct
 import com.alamin.bazar.model.local.LocalDatabase
 import com.alamin.bazar.model.network.APIInterface
+import com.alamin.bazar.model.network.Response
 import javax.inject.Inject
 
 class CartRepository @Inject constructor(private val apiInterface: APIInterface,private val localDatabase: LocalDatabase) {
     private val cartDao = localDatabase.cartDao()
-    private val cartLiveData = MutableLiveData<Cart>()
+    private val cartLiveData = MutableLiveData<Response<Cart>>()
 
-    val cartResponse: LiveData<Cart>
+    val cartResponse: LiveData<Response<Cart>>
     get() = cartLiveData
 
     fun getAllCart(): LiveData<List<CartProduct>> = cartDao.getAllCart()
 
-    suspend fun requestAddCart(cart: Cart): Boolean{
+    suspend fun requestAddCart(cart: Cart){
+        cartLiveData.postValue(Response.Loading())
         val response = apiInterface.addCart(cart)
-
+        if (response.isSuccessful){
         response.body()?.let {
-            if (response.isSuccessful){
-                cartLiveData.postValue(it)
-                return  true
+                cartLiveData.postValue(Response.Success(response.body()))
             }
+        }else{
+            cartLiveData.postValue(Response.Error("Network Error"))
         }
-        return false
     }
 
     suspend fun insertCart(carts: List<CartProduct>){

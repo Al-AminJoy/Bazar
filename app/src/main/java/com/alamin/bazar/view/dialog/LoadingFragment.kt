@@ -20,7 +20,7 @@ class LoadingFragment : DialogFragment() {
         binding = FragmentLoadingBinding.inflate(layoutInflater)
 
         binding.animationView.animate().startDelay = 0
-
+        dialog?.setCanceledOnTouchOutside(false)
         return binding.root
     }
 

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alamin.bazar.BazaarApplication
 import com.alamin.bazar.R
@@ -16,6 +17,7 @@ import com.alamin.bazar.databinding.FragmentWishListBinding
 import com.alamin.bazar.model.data.Cart
 import com.alamin.bazar.model.data.Product
 import com.alamin.bazar.model.network.APIResponse
+import com.alamin.bazar.model.network.Response
 import com.alamin.bazar.view.adapter.ProductClickListener
 import com.alamin.bazar.view.adapter.WishListAdapter
 import com.alamin.bazar.view_model.CartViewModel
@@ -38,6 +40,7 @@ class WishListFragment : Fragment() {
     private lateinit var cartViewModel: CartViewModel
 
     private lateinit var binding: FragmentWishListBinding
+    private lateinit var product: Product
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,17 +74,8 @@ class WishListFragment : Fragment() {
                         setData(ArrayList(it))
                         setOnProductClick(object : ProductClickListener{
                             override fun onClick(product: Product) {
-                                cartViewModel.requestAddCartFromWish(product, object: APIResponse {
-                                    override fun onSuccess(message: String) {
-                                        Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
-                                        wishViewModel.deleteWish(product.id)
-                                    }
-
-                                    override fun onFailed(message: String) {
-                                        Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
-                                    }
-
-                                })
+                                cartViewModel.requestAddCartFromWish(product)
+                                this@WishListFragment.product = product
                             }
                         })
                     }
@@ -90,8 +84,25 @@ class WishListFragment : Fragment() {
         }
 
         cartViewModel.cartAddResponse.observe(requireActivity(), Observer {
-            if (it != null){
-                cartViewModel.insertCart(it.products)
+            when(it){
+                is Response.Loading -> {
+                    findNavController().navigate(R.id.action_wishListFragment_to_loadingFragment)
+                }
+                is Response.Success -> {
+                    it.data?.let {
+                        findNavController().navigateUp()
+                        Toast.makeText(activity, "Success", Toast.LENGTH_SHORT).show()
+                        cartViewModel.insertCart(it.products)
+                        wishViewModel.deleteWish(product.id)
+                    }
+
+                }
+                is Response.Error -> {
+                    it.message.let {
+                        findNavController().navigateUp()
+                        Toast.makeText(activity, it, Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         })
 

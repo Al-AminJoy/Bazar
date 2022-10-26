@@ -113,6 +113,9 @@
         <action
             android:id="@+id/action_wishListFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_wishListFragment_to_loadingFragment"
+            app:destination="@id/loadingFragment" />
     </fragment>
     <fragment
         android:id="@+id/orderDetailsFragment"

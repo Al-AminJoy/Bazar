@@ -16,6 +16,7 @@ import com.alamin.bazar.R
 import com.alamin.bazar.databinding.FragmentProductDetailsBinding
 import com.alamin.bazar.model.data.Wish
 import com.alamin.bazar.model.network.APIResponse
+import com.alamin.bazar.model.network.Response
 import com.alamin.bazar.view_model.CartViewModel
 import com.alamin.bazar.view_model.ViewModelFactory
 import com.alamin.bazar.view_model.WishViewModel
@@ -54,23 +55,10 @@ class ProductDetailsFragment : Fragment() {
         }
 
         binding.setOnAddCartClick {
-            binding.btnCart.visibility = View.GONE
-            findNavController().navigate(R.id.action_productDetailsFragment_to_loadingFragment)
-            cartViewModel.requestAddCart(arg.product, object: APIResponse{
-                override fun onSuccess(message: String) {
-                    findNavController().navigateUp()
-                    Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
-                    binding.btnCart.visibility = View.VISIBLE
-                }
-
-                override fun onFailed(message: String) {
-                    findNavController().navigateUp()
-                    Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
-                    binding.btnCart.visibility = View.VISIBLE
-                }
-
-            })
+            cartViewModel.requestAddCart(arg.product)
         }
+
+
 
         binding.setOnWishClick {
             if (isWished){
@@ -90,8 +78,31 @@ class ProductDetailsFragment : Fragment() {
             binding.txtQuantity.text = it.toString()
         })
 
+        cartViewModel.message.observe(requireActivity(), Observer {
+            it?.let {
+                Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT).show()
+            }
+        })
+
         cartViewModel.cartAddResponse.observe(requireActivity(), Observer {
-            cartViewModel.insertCart(it.products)
+            when(it){
+                is Response.Loading ->{
+                    findNavController().navigate(R.id.action_productDetailsFragment_to_loadingFragment)
+                }
+                is Response.Success ->{
+                    it.data?.let {
+                        findNavController().navigateUp()
+                        Toast.makeText(requireActivity(), "Success", Toast.LENGTH_SHORT).show()
+                        cartViewModel.insertCart(it.products)
+                    }
+                }
+                is Response.Error ->{
+                    it.message?.let {
+                        findNavController().navigateUp()
+                        Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         })
 
         return binding.root

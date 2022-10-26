@@ -21,6 +21,8 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
 
     val cartAddResponse = cartRepository.cartResponse
 
+    var message = MutableLiveData<String>()
+
     val count = MutableLiveData<Int>().apply {
         value = 0
     }
@@ -49,10 +51,10 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
         viewModelScope.launch (IO) { cartRepository.insertCart(carts) }
     }
 
-    fun requestAddCart(product: Product, apiResponse: APIResponse){
+    fun requestAddCart(product: Product){
         count.value?.let {
             if (count.value!! <= 0){
-                apiResponse.onFailed("Please, Set Quantity")
+                message.value = "Please, Set Quantity"
                 return
             }
             val dateString = SimpleDateFormat("yyyy/MM/dd").format(Date(System.currentTimeMillis()))
@@ -63,22 +65,13 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
             val cart = Cart(dateString,1,productList)
 
             viewModelScope.launch (IO) {
-               val response = cartRepository.requestAddCart(cart)
-                if (response){
-                    withContext(Main){
-                        apiResponse.onSuccess("Successfully Added")
-                    }
-                }else{
-                    withContext(Main){
-                        apiResponse.onSuccess("Failed")
-                    }
-                }
+               cartRepository.requestAddCart(cart)
             }
 
         }
     }
 
-    fun requestAddCartFromWish(product: Product, apiResponse: APIResponse){
+    fun requestAddCartFromWish(product: Product){
             val dateString = SimpleDateFormat("yyyy/MM/dd").format(Date(System.currentTimeMillis()))
             val cartProduct = CartProduct(product.id, 1)
             val productList = arrayListOf<CartProduct>()
@@ -87,16 +80,7 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
             val cart = Cart(dateString,1,productList)
 
             viewModelScope.launch (IO) {
-               val response = cartRepository.requestAddCart(cart)
-                if (response){
-                    withContext(Main){
-                        apiResponse.onSuccess("Successfully Added")
-                    }
-                }else{
-                    withContext(Main){
-                        apiResponse.onSuccess("Failed")
-                    }
-                }
+               cartRepository.requestAddCart(cart)
             }
 
         }

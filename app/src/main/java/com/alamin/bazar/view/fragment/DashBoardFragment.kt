@@ -41,7 +41,6 @@ class DashBoardFragment : Fragment() {
 
     private lateinit var binding : FragmentDashBoardBinding
 
-    private lateinit var loadingFragment: LoadingFragment
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
