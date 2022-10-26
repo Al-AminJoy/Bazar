@@ -6,14 +6,16 @@ import androidx.lifecycle.MutableLiveData
 import com.alamin.bazar.model.data.Product
 import com.alamin.bazar.model.local.LocalDatabase
 import com.alamin.bazar.model.network.APIInterface
+import com.alamin.bazar.model.network.Response
+import com.alamin.bazar.utils.Constants
 import javax.inject.Inject
 
 private const val TAG = "ProductRepository"
 class ProductRepository @Inject constructor(private val apiInterface: APIInterface, private val localDatabase: LocalDatabase) {
-    private var liveProductList = MutableLiveData<List<Product>>()
+    private var liveProductList = MutableLiveData<Response<List<Product>>>()
     private val productDao = localDatabase.productDao()
 
-    val productList: LiveData<List<Product>>
+    val productList: LiveData<Response<List<Product>>>
     get() = liveProductList
 
     val productFromLocal: LiveData<List<Product>>
@@ -23,11 +25,14 @@ class ProductRepository @Inject constructor(private val apiInterface: APIInterfa
 
     suspend fun requestProduct(){
         var response = apiInterface.getProducts()
-        response.body()?.let {
-            if (response.isSuccessful){
-                liveProductList.postValue(response.body())
+        if (response.isSuccessful){
+            response.body()?.let {
+                liveProductList.postValue(Response.Success(response.body()))
             }
+        }else{
+            liveProductList.postValue(Response.Error("Error"))
         }
+
     }
 
     suspend fun insertProducts(products: List<Product>){

@@ -20,6 +20,8 @@ import androidx.navigation.ui.setupWithNavController
 import com.alamin.bazar.BazaarApplication
 import com.alamin.bazar.R
 import com.alamin.bazar.databinding.ActivityMainBinding
+import com.alamin.bazar.model.network.Response
+import com.alamin.bazar.utils.Constants
 import com.alamin.bazar.utils.LocalDataStore
 import com.alamin.bazar.view_model.ProductViewModel
 import com.alamin.bazar.view_model.ViewModelFactory
@@ -51,7 +53,21 @@ class MainActivity : AppCompatActivity() {
         productViewModel = ViewModelProvider(this,viewModelFactory)[ProductViewModel::class.java]
 
         productViewModel.productList.observe(this, Observer {
-            productViewModel.insertProduct(it)
+            when(it){
+                is Response.Loading -> {
+
+                }
+                is Response.Success -> {
+                    it.data?.let {
+                        productViewModel.insertProduct(it)
+                    }
+                }
+                is Response.Error -> {
+                    it.message?.let {
+                        Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         })
 
         window.setBackgroundDrawable(ColorDrawable(getColor(R.color.theme_dark)))
@@ -98,7 +114,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        productViewModel.requestProduct()
+        if (Constants.isOnline(this)){
+            productViewModel.requestProduct()
+        }else{
+            Toast.makeText(this, getString(R.string.no_internet_message), Toast.LENGTH_SHORT).show()
+        }
     }
 
 
