@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alamin.bazar.model.data.*
 import com.alamin.bazar.model.network.APIResponse
+import com.alamin.bazar.model.network.Response
 import com.alamin.bazar.model.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
@@ -19,10 +20,13 @@ import javax.inject.Inject
 private const val TAG = "UserViewModel"
 class UserViewModel @Inject constructor(private val userRepository: UserRepository): ViewModel() {
 
-    val loginResponse : LiveData<UserResponse>
+    val loginResponse : LiveData<Response<UserResponse>>
         get() = userRepository.getLoginResponse
 
     val user = userRepository.user
+
+    val message = MutableLiveData<String>()
+
     lateinit var userInfo:User
 
      val inputUserName = MutableLiveData<String>()
@@ -58,37 +62,24 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
         }
     }
 
-    fun loginUser(apiResponse: APIResponse){
+    fun loginUser(){
 
          val userName = inputUserName.value
          val userPassword = inputPassword.value
 
         if (userName.equals(null) || TextUtils.isEmpty(userName)){
-            apiResponse.onFailed("Please, Enter Name")
+            message.value = "Please, Enter Name"
         }else if (userPassword.equals(null) || TextUtils.isEmpty(userPassword)){
-            apiResponse.onFailed("Please, Enter Password")
+            message.value = "Please, Enter Password"
         }else{
             val userData = UserData(userName?.trim()!!,userPassword?.trim()!!)
             viewModelScope.launch(IO) {
-                userRepository.loginUser(userData,object :APIResponse{
-                    override fun onSuccess(message: String) {
-                        viewModelScope.launch(Main){
-                            apiResponse.onSuccess(message)
-                        }
-                    }
-
-                    override fun onFailed(message: String) {
-                        viewModelScope.launch(Main){
-                            apiResponse.onFailed(message)
-                        }
-                    }
-
-                })
+                userRepository.loginUser(userData)
             }
         }
     }
 
-    fun signUpUser(apiResponse: APIResponse){
+    fun signUpUser(){
         val firstName = inputFirstName.value
         val lastName = inputLastName.value
         val contact = inputContactNumber.value
@@ -99,7 +90,7 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
         val road = inputStreet.value
         val post = inputZipcode.value
 
-        if (checkEmpty(firstName,lastName,contact,email,password,city,holding,road,post,apiResponse)){
+        if (checkEmpty(firstName,lastName,contact,email,password,city,holding,road,post)){
 
             val createUser = User(0, Address(city!!,
                 Geolocation("0.0","0.0"),
@@ -107,27 +98,14 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
                 road!!,post!!),email!!,Name(firstName!!,lastName!!),password!!,contact!!,"")
 
             viewModelScope.launch(IO) {
-                userRepository.signUpUser(createUser,object : APIResponse{
-                    override fun onSuccess(message: String) {
-                        viewModelScope.launch(Main) {
-                            apiResponse.onSuccess(message)
-                        }
-                    }
-
-                    override fun onFailed(message: String) {
-                        viewModelScope.launch(Main) {
-                            apiResponse.onFailed(message)
-                        }
-                    }
-
-                })
+                userRepository.signUpUser(createUser)
             }
 
         }
 
     }
 
-    fun updateUser(apiResponse: APIResponse){
+    fun updateUser(){
         val firstName = inputFirstName.value
         val lastName = inputLastName.value
         val contact = inputContactNumber.value
@@ -136,26 +114,13 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
         val road = inputStreet.value
         val post = inputZipcode.value
 
-        if (checkEmpty(firstName,lastName,contact,"email@email.com","no_password",city,holding,road,post,apiResponse)){
+        if (checkEmpty(firstName,lastName,contact,"email@email.com","no_password",city,holding,road,post)){
             val updatedUser = User(0, Address(city!!,
                 Geolocation(userInfo.address.geolocation.lat,userInfo.address.geolocation.longi),
                 holding?.toInt()!!,
                 road!!,post!!),userInfo.email,Name(firstName!!,lastName!!),userInfo.password,contact!!,userInfo.username)
             viewModelScope.launch (IO){
-                userRepository.updateUser(updatedUser,object :APIResponse{
-                    override fun onSuccess(message: String) {
-                        viewModelScope.launch(Main) {
-                            apiResponse.onSuccess(message)
-                        }
-                    }
-
-                    override fun onFailed(message: String) {
-                        viewModelScope.launch(Main) {
-                            apiResponse.onFailed(message)
-                        }
-                    }
-
-                })
+                userRepository.updateUser(updatedUser)
             }
         }
 
@@ -170,48 +135,47 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
         city: String?,
         holding: String?,
         road: String?,
-        post: String?,
-        apiResponse: APIResponse
-    ): Boolean {
+        post: String?): Boolean {
         if (firstName ==null || TextUtils.isEmpty(firstName)){
-            apiResponse.onFailed("Enter First Name")
+            message.value = "Enter First Name"
             return false
         }
         if (lastName ==null || TextUtils.isEmpty(lastName)){
-            apiResponse.onFailed("Enter Last Name")
+            message.value = "Enter Last Name"
             return false
         }
         if (contact ==null || TextUtils.isEmpty(contact)){
-            apiResponse.onFailed("Enter Contact Number")
+            message.value = "Enter Contact Number"
             return false
         }
         if (city ==null || TextUtils.isEmpty(city)){
-            apiResponse.onFailed("Enter City")
+            message.value = "Enter City"
             return false
         }
         if (holding ==null || TextUtils.isEmpty(holding)){
-            apiResponse.onFailed("Enter House")
+            message.value = "Enter House"
             return false
         }
         if (road ==null || TextUtils.isEmpty(road)){
-            apiResponse.onFailed("Enter Road")
+            message.value = "Enter Road"
             return false
         }
         if (post ==null || TextUtils.isEmpty(post)){
-            apiResponse.onFailed("Enter Postal Code")
+            message.value = "Enter Postal Code"
             return false
         }
         if (email ==null || TextUtils.isEmpty(email)){
-            apiResponse.onFailed("Enter Email")
+            message.value = "Enter Email"
             return false
         }
 
         if (!email.isValid()){
-            apiResponse.onFailed("Invalid Email")
+            message.value = "Invalid Email"
+            return false
         }
 
         if (password ==null || TextUtils.isEmpty(password)){
-            apiResponse.onFailed("Enter Password")
+            message.value = "Enter Password"
             return false
         }
 

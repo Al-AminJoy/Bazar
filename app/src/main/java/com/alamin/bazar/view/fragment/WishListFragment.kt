@@ -40,7 +40,7 @@ class WishListFragment : Fragment() {
     private lateinit var cartViewModel: CartViewModel
 
     private lateinit var binding: FragmentWishListBinding
-    private lateinit var product: Product
+    private  var product: Product? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -93,7 +93,10 @@ class WishListFragment : Fragment() {
                         findNavController().navigateUp()
                         Toast.makeText(activity, "Success", Toast.LENGTH_SHORT).show()
                         cartViewModel.insertCart(it.products)
-                        wishViewModel.deleteWish(product.id)
+                        product?.let {
+                            wishViewModel.deleteWish(product?.id!!)
+                        }
+
                     }
 
                 }

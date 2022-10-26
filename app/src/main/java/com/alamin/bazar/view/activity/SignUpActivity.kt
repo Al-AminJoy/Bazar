@@ -11,6 +11,7 @@ import com.alamin.bazar.BazaarApplication
 
 import com.alamin.bazar.databinding.ActivitySignUpBinding
 import com.alamin.bazar.model.network.APIResponse
+import com.alamin.bazar.model.network.Response
 import com.alamin.bazar.view_model.UserViewModel
 import com.alamin.bazar.view_model.ViewModelFactory
 import javax.inject.Inject
@@ -36,23 +37,33 @@ class SignUpActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
 
         binding.setSignupClickListener {
-            binding.btnSignUp.visibility = View.GONE
-            userViewModel.signUpUser(object : APIResponse {
-                override fun onSuccess(message: String) {
-                    Toast.makeText(this@SignUpActivity, message, Toast.LENGTH_SHORT).show()
-                    finish();
-                }
-
-                override fun onFailed(message: String) {
-                    binding.btnSignUp.visibility = View.VISIBLE
-                    Toast.makeText(this@SignUpActivity, message, Toast.LENGTH_SHORT).show()
-                }
-
-            })
+            userViewModel.signUpUser()
         }
 
+        userViewModel.message.observe(this, Observer {
+            it?.let {
+                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            }
+        })
+
         userViewModel.user.observe(this, Observer {
-            Log.d(TAG, "onCreate: "+it)
+            when(it){
+                is Response.Loading -> {
+                    binding.btnSignUp.visibility = View.GONE
+                }
+                is Response.Success -> {
+                    it.data?.let {
+                        Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+                        finish();
+                    }
+                }
+                is Response.Error -> {
+                    it.message?.let {
+                        binding.btnSignUp.visibility = View.VISIBLE
+                        Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         })
 
     }

@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import com.alamin.bazar.BazaarApplication
 import com.alamin.bazar.databinding.ActivityLoginBinding
 import com.alamin.bazar.model.network.APIResponse
+import com.alamin.bazar.model.network.Response
 import com.alamin.bazar.utils.LocalDataStore
 import com.alamin.bazar.view_model.UserViewModel
 import com.alamin.bazar.view_model.ViewModelFactory
@@ -40,19 +41,7 @@ class LoginActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
 
         binding.setLoginClickListener {
-            binding.btnLogin.visibility = View.GONE
-            userViewModel.loginUser(object : APIResponse{
-                override fun onSuccess(message: String) {
-                    //TODO: User ID Should Dynamic
-                    userViewModel.requestUser(1);
-                }
-
-                override fun onFailed(message: String) {
-                    binding.btnLogin.visibility = View.VISIBLE
-                    Toast.makeText(this@LoginActivity, message, Toast.LENGTH_SHORT).show()
-                }
-
-            })
+            userViewModel.loginUser()
         }
 
         binding.setSignUpClickListener {
@@ -60,20 +49,48 @@ class LoginActivity : AppCompatActivity() {
         }
 
         userViewModel.dummyLogin()
-
+        //userViewModel.requestUser(1);
         userViewModel.loginResponse.observe(this, Observer {
-            lifecycleScope.launch{
-                localDataStore.storeToken(it.token)
+            when(it){
+                is Response.Loading ->{
+                    binding.btnLogin.visibility = View.GONE
+                }
+                is Response.Success ->{
+                    it.data?.let {
+                        userViewModel.requestUser(1)
+                        lifecycleScope.launch{
+                            localDataStore.storeToken(it.token)
+                        }
+                    }
+                }
+                is Response.Error ->{
+                    it.message?.let {
+                        Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+                        binding.btnLogin.visibility = View.VISIBLE
+                    }
+                }
             }
         })
 
         userViewModel.user.observe(this, Observer{
-            if (it != null){
-                lifecycleScope.launch {
-                    localDataStore.storeUser(Gson().toJson(it))
+            when(it){
+                is Response.Loading ->{}
+                is Response.Success ->{
+                    it.data?.let {
+                        lifecycleScope.launch {
+                            localDataStore.storeUser(Gson().toJson(it))
+                        }
+                        Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this@LoginActivity,MainActivity::class.java))
+                        finish()
+                    }
                 }
-                startActivity(Intent(this@LoginActivity,MainActivity::class.java))
-                finish()
+                is Response.Error ->{
+                    it.message?.let {
+                        Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+                        binding.btnLogin.visibility = View.VISIBLE
+                    }
+                }
             }
         })
     }

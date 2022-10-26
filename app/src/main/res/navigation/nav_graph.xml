@@ -139,6 +139,9 @@
         <argument
             android:name="user"
             app:argType="com.alamin.bazar.model.data.User" />
+        <action
+            android:id="@+id/action_editProfileFragment_to_loadingFragment"
+            app:destination="@id/loadingFragment" />
     </fragment>
     <dialog
         android:id="@+id/loadingFragment"

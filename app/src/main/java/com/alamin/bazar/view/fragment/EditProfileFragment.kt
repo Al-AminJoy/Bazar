@@ -17,6 +17,7 @@ import com.alamin.bazar.R
 import com.alamin.bazar.databinding.FragmentEditProfileBinding
 import com.alamin.bazar.model.data.User
 import com.alamin.bazar.model.network.APIResponse
+import com.alamin.bazar.model.network.Response
 import com.alamin.bazar.utils.LocalDataStore
 import com.alamin.bazar.view_model.UserViewModel
 import com.alamin.bazar.view_model.ViewModelFactory
@@ -52,22 +53,36 @@ class EditProfileFragment : Fragment() {
         userViewModel.setUserData(user)
 
         binding.setOnSubmitClick {
-            userViewModel.updateUser(object : APIResponse{
-                override fun onSuccess(message: String) {
-                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                    findNavController().navigate(R.id.action_editProfileFragment_to_profileFragment)
-                }
-
-                override fun onFailed(message: String) {
-                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                }
-
-            })
+            userViewModel.updateUser()
         }
 
+        userViewModel.message.observe(requireActivity(), Observer {
+            it?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            }
+        })
+
         userViewModel.user.observe(requireActivity(), Observer {
-            lifecycleScope.launch(IO) {
-                localDataStore.storeUser(Gson().toJson(it))
+            when(it){
+                is Response.Loading -> {
+                    findNavController().navigate(R.id.action_editProfileFragment_to_loadingFragment)
+                }
+                is Response.Success -> {
+                    findNavController().popBackStack()
+                    it.data.let {
+                        lifecycleScope.launch(IO) {
+                            localDataStore.storeUser(Gson().toJson(it))
+                        }
+                        Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show()
+                        findNavController().navigate(R.id.action_editProfileFragment_to_profileFragment)
+                    }
+                }
+                is Response.Error -> {
+                    it.message?.let {
+                        findNavController().popBackStack()
+                        Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         })
 

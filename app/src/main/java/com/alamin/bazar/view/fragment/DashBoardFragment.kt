@@ -70,21 +70,23 @@ class DashBoardFragment : Fragment() {
             }
         })
 
-        productViewModel.productFromLocal.observe(requireActivity(), Observer {
-            binding.recyclerView.apply {
-                layoutManager = GridLayoutManager(requireContext(),2)
-                adapter = productsAdapter
-            }
-            with(productsAdapter){
-                setData(ArrayList(it))
-                setOnClick(object: ProductClickListener{
-                    override fun onClick(product: Product) {
-                        val action = DashBoardFragmentDirections.actionDashBoardFragmentToProductDetailsFragment(product)
-                        findNavController().navigate(action)
-                    }
-                })
-            }
-        })
+        context?.let {
+            productViewModel.productFromLocal.observe(requireActivity(), Observer {
+                binding.recyclerView.apply {
+                    layoutManager = GridLayoutManager(context,2)
+                    adapter = productsAdapter
+                }
+                with(productsAdapter){
+                    setData(ArrayList(it))
+                    setOnClick(object: ProductClickListener{
+                        override fun onClick(product: Product) {
+                            val action = DashBoardFragmentDirections.actionDashBoardFragmentToProductDetailsFragment(product)
+                            findNavController().navigate(action)
+                        }
+                    })
+                }
+            })
+        }
 
 
         binding.txtSearch.addTextChangedListener(object : TextWatcher{
