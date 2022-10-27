@@ -74,6 +74,8 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     //Logging Interceptor
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.2")
+    //RxJavaAdapter
+    implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
 
     //Dagger 2
     def dagger_version="2.41"
@@ -89,4 +91,12 @@ dependencies {
     //Lottie
     def lottieVersion = "3.4.0"
     implementation "com.airbnb.android:lottie:$lottieVersion"
+
+    //RxJava
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.5'
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+    implementation 'com.jakewharton.rxbinding4:rxbinding:4.0.0'
+
+
+
 }

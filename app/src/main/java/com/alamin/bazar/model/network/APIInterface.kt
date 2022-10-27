@@ -1,6 +1,7 @@
 package com.alamin.bazar.model.network
 
 import com.alamin.bazar.model.data.*
+import io.reactivex.rxjava3.core.Observable
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -23,7 +24,7 @@ interface APIInterface {
     suspend fun addCart(@Body cart: Cart): Response<Cart>
 
     @GET("products")
-    suspend fun getProducts(): Response<List<Product>>
+    fun getProducts(): Observable<Response<List<Product>>>
 
     @PATCH("users/{id}")
     suspend fun updateUser(@Path("id") id: Int,@Body user: User): Response<User>

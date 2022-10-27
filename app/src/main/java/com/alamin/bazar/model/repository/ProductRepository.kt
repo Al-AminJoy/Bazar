@@ -8,6 +8,11 @@ import com.alamin.bazar.model.local.LocalDatabase
 import com.alamin.bazar.model.network.APIInterface
 import com.alamin.bazar.model.network.Response
 import com.alamin.bazar.utils.Constants
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observer
+import io.reactivex.rxjava3.core.Scheduler
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 private const val TAG = "ProductRepository"
@@ -23,18 +28,23 @@ class ProductRepository @Inject constructor(private val apiInterface: APIInterfa
 
     fun getProductByIdList(ids:List<Int>):LiveData<List<Product>> = productDao.getProductByIdList(ids)
 
-    suspend fun requestProduct(){
-        liveProductList.postValue(Response.Loading())
-        var response = apiInterface.getProducts()
-        if (response.isSuccessful){
-            response.body()?.let {
-                liveProductList.postValue(Response.Success(response.body()))
+     fun requestProduct(){
+         liveProductList.postValue(Response.Loading())
+        apiInterface.getProducts()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe{
+                if (it.isSuccessful){
+                    it.body()?.let {
+                        liveProductList.postValue(Response.Success(it))
+                    }
+                }else{
+                    liveProductList.postValue(Response.Error("Error"))
+                }
             }
-        }else{
-            liveProductList.postValue(Response.Error("Error"))
-        }
 
-    }
+     }
+
 
     suspend fun insertProducts(products: List<Product>){
         productDao.insertProduct(products)
