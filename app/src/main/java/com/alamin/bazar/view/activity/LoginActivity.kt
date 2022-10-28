@@ -49,7 +49,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         userViewModel.dummyLogin()
-        //userViewModel.requestUser(1);
+
         userViewModel.loginResponse.observe(this, Observer {
             when(it){
                 is Response.Loading ->{

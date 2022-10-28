@@ -63,7 +63,6 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
     }
 
     fun loginUser(){
-
          val userName = inputUserName.value
          val userPassword = inputPassword.value
 

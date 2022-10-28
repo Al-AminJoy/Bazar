@@ -64,6 +64,8 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if(destination.id == R.id.productDetailsFragment) {
                 binding.navView.visibility = View.GONE
+            }else if(destination.id == R.id.loadingFragment) {
+                binding.navView.visibility = View.GONE
             } else {
                 binding.navView.visibility = View.VISIBLE
             }

@@ -10,6 +10,8 @@ import com.alamin.bazar.model.local.LocalDatabase
 import com.alamin.bazar.model.network.APIInterface
 import com.alamin.bazar.model.network.APIResponse
 import com.alamin.bazar.model.network.Response
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 private const val TAG = "UserRepository"
@@ -24,53 +26,73 @@ class UserRepository @Inject constructor(private val apiInterface: APIInterface,
     val user: LiveData<Response<User>>
     get() = userLiveData
 
-    suspend fun requestUser(id: Int){
+    fun requestUser(id: Int){
         userLiveData.postValue(Response.Loading())
-        val response = apiInterface.getUser(id);
-        if (response.isSuccessful){
-            response.body()?.let {
-                userLiveData.postValue(Response.Success(response.body()))
-            }
-        }else{
-            userLiveData.postValue(Response.Error("Network Error"))
-        }
-    }
-
-    suspend fun loginUser(userData: UserData){
-        userLiveData.postValue(Response.Loading())
-        val response = apiInterface.login(userData)
-        if (response.isSuccessful){
-            response.body()?.let {
-                loginResponseLiveData.postValue(Response.Success(response.body()))            }
-        }else{
-            loginResponseLiveData.postValue(Response.Error("Network Error"))
-        }
-    }
-
-    suspend fun signUpUser(user: User){
-        userLiveData.postValue(Response.Loading())
-        val response = apiInterface.signup(user)
-            if (response.isSuccessful){
-                response.body()?.let {
-                    userLiveData.postValue(Response.Success(response.body()))
-            }
-        }else{
-                userLiveData.postValue(Response.Error("Network Error"))
+        apiInterface.getUser(id)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (it.isSuccessful){
+                    it.body()?.let {
+                        userLiveData.postValue(Response.Success(it))
+                    }
+                }else{
+                    userLiveData.postValue(Response.Error("Network Error"))
+                }
             }
 
     }
 
-    suspend fun updateUser(user: User){
+     fun loginUser(userData: UserData){
+        userLiveData.postValue(Response.Loading())
+        apiInterface.login(userData)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (it.isSuccessful){
+                    it.body()?.let {
+                        loginResponseLiveData.postValue(Response.Success(it))            }
+                }else{
+                    loginResponseLiveData.postValue(Response.Error("Network Error"))
+                }
+            }
+
+    }
+
+     fun signUpUser(user: User){
+        userLiveData.postValue(Response.Loading())
+        apiInterface.signup(user)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (it.isSuccessful){
+                    it.body()?.let {
+                        userLiveData.postValue(Response.Success(it))
+                    }
+                }else{
+                    userLiveData.postValue(Response.Error("Network Error"))
+                }
+            }
+
+
+    }
+
+     fun updateUser(user: User){
         userLiveData.postValue(Response.Loading())
         //TODO: Should Use Dynamic Id
-        val response = apiInterface.updateUser(1,user)
-        if (response.isSuccessful){
-            response.body()?.let {
-                userLiveData.postValue(Response.Success(response.body()))
+        apiInterface.updateUser(1,user)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (it.isSuccessful){
+                    it.body()?.let {
+                        userLiveData.postValue(Response.Success(it))
+                    }
+                }else{
+                    userLiveData.postValue(Response.Error("Network Error"))
+                }
             }
-        }else{
-            userLiveData.postValue(Response.Error("Network Error"))
-        }
+
 
     }
 

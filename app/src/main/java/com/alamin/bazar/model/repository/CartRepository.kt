@@ -7,6 +7,8 @@ import com.alamin.bazar.model.data.CartProduct
 import com.alamin.bazar.model.local.LocalDatabase
 import com.alamin.bazar.model.network.APIInterface
 import com.alamin.bazar.model.network.Response
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 class CartRepository @Inject constructor(private val apiInterface: APIInterface,private val localDatabase: LocalDatabase) {
@@ -18,16 +20,20 @@ class CartRepository @Inject constructor(private val apiInterface: APIInterface,
 
     fun getAllCart(): LiveData<List<CartProduct>> = cartDao.getAllCart()
 
-    suspend fun requestAddCart(cart: Cart){
+     fun requestAddCart(cart: Cart){
         cartLiveData.postValue(Response.Loading())
-        val response = apiInterface.addCart(cart)
-        if (response.isSuccessful){
-        response.body()?.let {
-                cartLiveData.postValue(Response.Success(response.body()))
+        apiInterface.addCart(cart)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (it.isSuccessful){
+                    it.body()?.let {
+                        cartLiveData.postValue(Response.Success(it))
+                    }
+                }else{
+                    cartLiveData.postValue(Response.Error("Network Error"))
+                }
             }
-        }else{
-            cartLiveData.postValue(Response.Error("Network Error"))
-        }
     }
 
     suspend fun insertCart(carts: List<CartProduct>){
