@@ -9,6 +9,7 @@ import com.alamin.bazar.model.network.Response
 import com.alamin.bazar.model.repository.ProductRepository
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProductViewModel @Inject constructor(private val productRepository: ProductRepository): ViewModel() {
@@ -24,13 +25,17 @@ class ProductViewModel @Inject constructor(private val productRepository: Produc
     fun getProductByIdList(ids: List<Int>): LiveData<List<Product>> = productRepository.getProductByIdList(ids)
 
     fun requestProduct(){
-        viewModelScope.launch(IO) {
-            productRepository.requestProduct()
+        viewModelScope.launch {
+            withContext(IO){
+                productRepository.requestProduct()
+            }
         }
     }
     fun insertProduct(products: List<Product>){
-        viewModelScope.launch(IO) {
-            productRepository.insertProducts(products)
+        viewModelScope.launch{
+            withContext(IO){
+                productRepository.insertProducts(products)
+            }
         }
     }
 

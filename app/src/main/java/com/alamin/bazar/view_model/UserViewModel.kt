@@ -57,8 +57,10 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
     }
 
     fun requestUser(id: Int){
-        viewModelScope.launch(IO) {
-            userRepository.requestUser(id)
+        viewModelScope.launch {
+            withContext(IO){
+                userRepository.requestUser(id)
+            }
         }
     }
 
@@ -72,8 +74,10 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
             message.value = "Please, Enter Password"
         }else{
             val userData = UserData(userName?.trim()!!,userPassword?.trim()!!)
-            viewModelScope.launch(IO) {
-                userRepository.loginUser(userData)
+            viewModelScope.launch {
+                withContext(IO){
+                    userRepository.loginUser(userData)
+                }
             }
         }
     }
@@ -96,8 +100,10 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
                 holding?.toInt()!!,
                 road!!,post!!),email!!,Name(firstName!!,lastName!!),password!!,contact!!,"")
 
-            viewModelScope.launch(IO) {
-                userRepository.signUpUser(createUser)
+            viewModelScope.launch {
+                withContext(IO){
+                    userRepository.signUpUser(createUser)
+                }
             }
 
         }
@@ -118,8 +124,10 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
                 Geolocation(userInfo.address.geolocation.lat,userInfo.address.geolocation.longi),
                 holding?.toInt()!!,
                 road!!,post!!),userInfo.email,Name(firstName!!,lastName!!),userInfo.password,contact!!,userInfo.username)
-            viewModelScope.launch (IO){
-                userRepository.updateUser(updatedUser)
+            viewModelScope.launch {
+                withContext(IO){
+                    userRepository.updateUser(updatedUser)
+                }
             }
         }
 

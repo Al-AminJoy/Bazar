@@ -7,6 +7,7 @@ import com.alamin.bazar.model.data.Wish
 import com.alamin.bazar.model.repository.WishRepository
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class WishViewModel @Inject constructor(private val wishRepository: WishRepository): ViewModel() {
@@ -14,18 +15,21 @@ class WishViewModel @Inject constructor(private val wishRepository: WishReposito
     val wishList = wishRepository.wishList
 
     fun insertWish(wish: Wish){
-        viewModelScope.launch(IO) {
-            wishRepository.insertWish(wish)
+        viewModelScope.launch {
+            withContext(IO){
+                wishRepository.insertWish(wish)
+            }
         }
     }
 
-    fun getWishByProductId(productId: Int): LiveData<Wish>{
-        return wishRepository.getWishByProductId(productId)
-    }
+    fun getWishByProductId(productId: Int): LiveData<Wish> = wishRepository.getWishByProductId(productId)
+
 
     fun deleteWish(productId: Int){
-        viewModelScope.launch (IO) {
-            wishRepository.deleteWish(productId)
+        viewModelScope.launch {
+            withContext(IO){
+                wishRepository.deleteWish(productId)
+            }
         }
     }
 }

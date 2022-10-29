@@ -48,7 +48,11 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
 
 
     fun insertCart(carts: List<CartProduct>){
-        viewModelScope.launch (IO) { cartRepository.insertCart(carts) }
+        viewModelScope.launch{
+            withContext(IO){
+                cartRepository.insertCart(carts)
+            }
+        }
     }
 
     fun requestAddCart(product: Product){
@@ -64,8 +68,10 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
             //TODO: User Id Should Dynamic
             val cart = Cart(dateString,1,productList)
 
-            viewModelScope.launch (IO) {
-               cartRepository.requestAddCart(cart)
+            viewModelScope.launch {
+                withContext(IO){
+                    cartRepository.requestAddCart(cart)
+                }
             }
 
         }
@@ -79,22 +85,28 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
             //TODO: User Id Should Dynamic
             val cart = Cart(dateString,1,productList)
 
-            viewModelScope.launch (IO) {
-               cartRepository.requestAddCart(cart)
+            viewModelScope.launch{
+               withContext(IO){
+                   cartRepository.requestAddCart(cart)
+               }
             }
 
         }
 
 
     fun deleteCartById(id: Int){
-        viewModelScope.launch (IO) {
-            cartRepository.deleteCartById(id)
+        viewModelScope.launch  {
+            withContext(IO){
+                cartRepository.deleteCartById(id)
+            }
         }
     }
 
     fun deleteAllCart(){
-            viewModelScope.launch (IO) {
-                cartRepository.deleteAllCart()
+            viewModelScope.launch {
+                withContext(IO){
+                    cartRepository.deleteAllCart()
+                }
             }
         }
 
