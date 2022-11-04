@@ -13,6 +13,7 @@ import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 private const val TAG = "ProductRepository"
@@ -26,7 +27,7 @@ class ProductRepository @Inject constructor(private val apiInterface: APIInterfa
     val productFromLocal: LiveData<List<Product>>
     get() = productDao.getAllProduct()
 
-    fun getProductByIdList(ids:List<Int>):LiveData<List<Product>> = productDao.getProductByIdList(ids)
+    fun getProductByIdList(ids:List<Int>):Flow<List<Product>> = productDao.getProductByIdList(ids)
 
      fun requestProduct(){
          liveProductList.postValue(Response.Loading())

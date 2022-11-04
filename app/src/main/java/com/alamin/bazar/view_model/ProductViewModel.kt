@@ -8,6 +8,10 @@ import com.alamin.bazar.model.data.Product
 import com.alamin.bazar.model.network.Response
 import com.alamin.bazar.model.repository.ProductRepository
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -22,7 +26,13 @@ class ProductViewModel @Inject constructor(private val productRepository: Produc
         get() = productRepository.productFromLocal
 
 
-    fun getProductByIdList(ids: List<Int>): LiveData<List<Product>> = productRepository.getProductByIdList(ids)
+    fun getProductByIdList(ids: List<Int>): StateFlow<List<Product>?> {
+        return productRepository.getProductByIdList(ids).stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            null
+        )
+    }
 
     fun requestProduct(){
         viewModelScope.launch {

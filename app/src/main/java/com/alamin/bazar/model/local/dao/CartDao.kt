@@ -3,6 +3,7 @@ package com.alamin.bazar.model.local.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.alamin.bazar.model.data.CartProduct
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CartDao {

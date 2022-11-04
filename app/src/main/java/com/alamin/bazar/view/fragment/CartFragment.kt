@@ -30,6 +30,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -113,42 +114,44 @@ class CartFragment : Fragment() {
                 }
                 val productIdList = list.map { cartProduct -> cartProduct.productId }.toList()
                 var checkoutList = arrayListOf<Checkout>()
-                productViewModel.getProductByIdList(productIdList)
-                    .observe(fragmentActivity, Observer {
-                        if (it != null){
-                            for (product in it) {
-                                for (cart in list) {
-                                    if (product.id == cart.productId) {
-                                        checkoutList.add(
-                                            Checkout(
-                                                product.id,
-                                                cart.quantity,
-                                                product.title,
-                                                product.category,
-                                                product.image,
-                                                product.price
+                lifecycleScope.launch {
+                    productViewModel.getProductByIdList(productIdList)
+                        .collect {
+                            it?.let{
+                                for (product in it) {
+                                    for (cart in list) {
+                                        if (product.id == cart.productId) {
+                                            checkoutList.add(
+                                                Checkout(
+                                                    product.id,
+                                                    cart.quantity,
+                                                    product.title,
+                                                    product.category,
+                                                    product.image,
+                                                    product.price
+                                                )
                                             )
-                                        )
+                                        }
                                     }
                                 }
+                                with(checkoutAdapter) {
+                                    setCartClick(object : CartClickListener {
+                                        override fun onClick(checkout: Checkout) {
+                                            cartViewModel.deleteCartById(checkout.productId)
+                                        }
+                                    })
+                                    finalCheckoutList = checkoutList
+                                    setData(checkoutList)
+                                }
+                                subtotal =
+                                    round(checkoutList.sumOf { checkout -> checkout.price * checkout.quantity } * 100.0) / 100.0
+                                total = round((subtotal + shipping) * 100.0) / 100.0
+                                binding.txtSubTotal.text = "\u09F3  $subtotal"
+                                binding.txtShipping.text = "\u09F3  $shipping"
+                                binding.txtTotal.text = "\u09F3  $total"
                             }
-                            with(checkoutAdapter) {
-                                setCartClick(object : CartClickListener {
-                                    override fun onClick(checkout: Checkout) {
-                                        cartViewModel.deleteCartById(checkout.productId)
-                                    }
-                                })
-                                finalCheckoutList = checkoutList
-                                setData(checkoutList)
-                            }
-                            subtotal =
-                                round(checkoutList.sumOf { checkout -> checkout.price * checkout.quantity } * 100.0) / 100.0
-                            total = round((subtotal + shipping) * 100.0) / 100.0
-                            binding.txtSubTotal.text = "\u09F3  $subtotal"
-                            binding.txtShipping.text = "\u09F3  $shipping"
-                            binding.txtTotal.text = "\u09F3  $total"
                         }
-                    })
+                }
 
             })
         }

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alamin.bazar.BazaarApplication
@@ -24,6 +25,7 @@ import com.alamin.bazar.view_model.CartViewModel
 import com.alamin.bazar.view_model.ProductViewModel
 import com.alamin.bazar.view_model.ViewModelFactory
 import com.alamin.bazar.view_model.WishViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "WishListFragment"
@@ -68,18 +70,22 @@ class WishListFragment : Fragment() {
                     binding.txtNoWishMessage.text = ""
                 }
                 val wishProductList = wishList.map { wish -> wish.productId }
-                productViewModel.getProductByIdList(wishProductList).observe(fragmentActivity, Observer {
-                    Log.d(TAG, "onCreateView: $it")
-                    with(wishListAdapter){
-                        setData(ArrayList(it))
-                        setOnProductClick(object : ProductClickListener{
-                            override fun onClick(product: Product) {
-                                cartViewModel.requestAddCartFromWish(product)
-                                this@WishListFragment.product = product
+                lifecycleScope.launch {
+                    productViewModel.getProductByIdList(wishProductList).collect {
+                        it?.let {
+                            with(wishListAdapter){
+                                setData(ArrayList(it))
+                                setOnProductClick(object : ProductClickListener{
+                                    override fun onClick(product: Product) {
+                                        cartViewModel.requestAddCartFromWish(product)
+                                        this@WishListFragment.product = product
+                                    }
+                                })
                             }
-                        })
+                        }
+
                     }
-                })
+                }
             })
         }
 
