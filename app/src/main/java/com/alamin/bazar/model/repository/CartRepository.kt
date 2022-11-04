@@ -19,7 +19,7 @@ class CartRepository @Inject constructor(private val apiInterface: APIInterface,
     val cartResponse: LiveData<Response<Cart>>
     get() = cartLiveData
 
-    fun getAllCart(): LiveData<List<CartProduct>> = cartDao.getAllCart()
+    fun getAllCart(): Flow<List<CartProduct>> = cartDao.getAllCart()
 
      fun requestAddCart(cart: Cart){
         cartLiveData.postValue(Response.Loading())

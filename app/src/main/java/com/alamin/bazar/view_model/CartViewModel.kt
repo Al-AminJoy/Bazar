@@ -12,6 +12,9 @@ import com.alamin.bazar.model.repository.CartRepository
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
@@ -28,7 +31,11 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
         value = 0
     }
 
-    fun getAllCart(): LiveData<List<CartProduct>> = cartRepository.getAllCart()
+    fun getAllCart(): StateFlow<List<CartProduct>?> = cartRepository
+        .getAllCart()
+        .stateIn(viewModelScope,
+        SharingStarted.WhileSubscribed(),
+        null)
 
     fun addProduct(){
         count.value?.let {

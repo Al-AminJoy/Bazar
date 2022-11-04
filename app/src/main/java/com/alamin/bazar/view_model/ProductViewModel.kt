@@ -26,13 +26,13 @@ class ProductViewModel @Inject constructor(private val productRepository: Produc
         get() = productRepository.productFromLocal
 
 
-    fun getProductByIdList(ids: List<Int>): StateFlow<List<Product>?> {
-        return productRepository.getProductByIdList(ids).stateIn(
+    fun getProductByIdList(ids: List<Int>): StateFlow<List<Product>?> = productRepository
+        .getProductByIdList(ids)
+        .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
             null
         )
-    }
 
     fun requestProduct(){
         viewModelScope.launch {

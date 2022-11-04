@@ -11,7 +11,7 @@ interface CartDao {
     suspend fun insertCart(carts: List<CartProduct>)
 
     @Query("SELECT * FROM cartproduct")
-    fun getAllCart(): LiveData<List<CartProduct>>
+    fun getAllCart(): Flow<List<CartProduct>>
 
     @Delete
     fun deleteCart(cartProduct: CartProduct)

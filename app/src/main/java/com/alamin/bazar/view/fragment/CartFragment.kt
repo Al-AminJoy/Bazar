@@ -30,6 +30,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -105,18 +106,18 @@ class CartFragment : Fragment() {
             adapter = checkoutAdapter
         }
 
-        activity?.let { fragmentActivity ->
-            cartViewModel.getAllCart().observe(fragmentActivity, Observer { list ->
-                if (list.isEmpty()){
-                    binding.txtCartItemsTitle.text = "No Cart Item Added"
-                }else{
-                    binding.txtCartItemsTitle.text = "Item(s) In Your Shopping cart"
-                }
-                val productIdList = list.map { cartProduct -> cartProduct.productId }.toList()
-                var checkoutList = arrayListOf<Checkout>()
-                lifecycleScope.launch {
+            lifecycleScope.launch {
+            cartViewModel.getAllCart().collectLatest { list ->
+                list?.let {
+                    if (list.isEmpty()){
+                        binding.txtCartItemsTitle.text = "No Cart Item Added"
+                    }else{
+                        binding.txtCartItemsTitle.text = "Item(s) In Your Shopping cart"
+                    }
+                    val productIdList = list.map { cartProduct -> cartProduct.productId }.toList()
+                    var checkoutList = arrayListOf<Checkout>()
                     productViewModel.getProductByIdList(productIdList)
-                        .collect {
+                        .collectLatest {
                             it?.let{
                                 for (product in it) {
                                     for (cart in list) {
@@ -152,9 +153,10 @@ class CartFragment : Fragment() {
                             }
                         }
                 }
+                }
 
-            })
-        }
+            }
+
 
 
         return binding.root
