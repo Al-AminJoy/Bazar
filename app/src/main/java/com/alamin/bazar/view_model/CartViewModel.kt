@@ -8,13 +8,11 @@ import com.alamin.bazar.model.data.Cart
 import com.alamin.bazar.model.data.CartProduct
 import com.alamin.bazar.model.data.Product
 import com.alamin.bazar.model.network.APIResponse
+import com.alamin.bazar.model.network.Response
 import com.alamin.bazar.model.repository.CartRepository
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
@@ -23,9 +21,9 @@ import javax.inject.Inject
 
 class CartViewModel @Inject constructor(private val cartRepository: CartRepository): ViewModel() {
 
-    val cartAddResponse = cartRepository.cartResponse
+    val cartAddResponse: StateFlow<Response<Cart>> = cartRepository.cartResponse
 
-    var message = MutableLiveData<String>()
+    var message = MutableSharedFlow<String>()
 
     val count = MutableLiveData<Int>().apply {
         value = 0
@@ -64,19 +62,18 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
     }
 
     fun requestAddCart(product: Product){
-        count.value?.let {
-            if (count.value!! <= 0){
-                message.value = "Please, Set Quantity"
-                return
-            }
-            val dateString = SimpleDateFormat("yyyy/MM/dd").format(Date(System.currentTimeMillis()))
-            val cartProduct = CartProduct(product.id, count.value!!)
-            val productList = arrayListOf<CartProduct>()
-            productList.add(cartProduct)
-            //TODO: User Id Should Dynamic
-            val cart = Cart(dateString,1,productList)
-
             viewModelScope.launch {
+                count.value?.let {
+                    if (count.value!! <= 0){
+                        message.emit("Please, Set Quantity")
+                        return@launch
+                    }
+                    val dateString = SimpleDateFormat("yyyy/MM/dd").format(Date(System.currentTimeMillis()))
+                    val cartProduct = CartProduct(product.id, count.value!!)
+                    val productList = arrayListOf<CartProduct>()
+                    productList.add(cartProduct)
+                    //TODO: User Id Should Dynamic
+                    val cart = Cart(dateString,1,productList)
                 withContext(IO){
                     cartRepository.requestAddCart(cart)
                 }

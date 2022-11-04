@@ -12,20 +12,20 @@ import retrofit2.http.Path
 interface APIInterface {
 
     @POST("auth/login")
-    fun login(@Body user: UserData): Observable<Response<UserResponse>>
+    suspend fun login(@Body user: UserData): Response<UserResponse>
 
     @GET("users/{id}")
-    fun getUser(@Path(value = "id") id : Int): Observable<Response<User>>
+    suspend fun getUser(@Path(value = "id") id : Int): Response<User>
 
     @POST("users")
-    fun signup(@Body user: User): Observable<Response<User>>
+    suspend fun signup(@Body user: User): Response<User>
 
     @POST("carts")
-    fun addCart(@Body cart: Cart): Observable<Response<Cart>>
+    suspend fun addCart(@Body cart: Cart): Response<Cart>
 
     @GET("products")
-    fun getProducts(): Observable<Response<List<Product>>>
+    suspend fun getProducts(): Response<List<Product>>
 
     @PATCH("users/{id}")
-    fun updateUser(@Path("id") id: Int,@Body user: User): Observable<Response<User>>
+    suspend fun updateUser(@Path("id") id: Int,@Body user: User): Response<User>
 }

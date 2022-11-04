@@ -23,6 +23,7 @@ import com.alamin.bazar.view_model.UserViewModel
 import com.alamin.bazar.view_model.ViewModelFactory
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -56,35 +57,37 @@ class EditProfileFragment : Fragment() {
             userViewModel.updateUser()
         }
 
-        userViewModel.message.observe(requireActivity(), Observer {
-            it?.let {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+        lifecycleScope.launch {
+            userViewModel.message.collect {
+                    Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
-        })
 
-        userViewModel.user.observe(requireActivity(), Observer {
-            when(it){
-                is Response.Loading -> {
-                    findNavController().navigate(R.id.action_editProfileFragment_to_loadingFragment)
-                }
-                is Response.Success -> {
-                    findNavController().popBackStack()
-                    it.data.let {
-                        lifecycleScope.launch(IO) {
-                            localDataStore.storeUser(Gson().toJson(it))
-                        }
-                        Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show()
-                        findNavController().navigate(R.id.action_editProfileFragment_to_profileFragment)
+        }
+        lifecycleScope.launchWhenCreated {
+            userViewModel.user.collectLatest {
+                when(it){
+                    is Response.Loading -> {
+                        findNavController().navigate(R.id.action_editProfileFragment_to_loadingFragment)
                     }
-                }
-                is Response.Error -> {
-                    it.message?.let {
+                    is Response.Success -> {
                         findNavController().popBackStack()
-                        Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                        it.data.let {
+                            lifecycleScope.launch(IO) {
+                                localDataStore.storeUser(Gson().toJson(it))
+                            }
+                            Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show()
+                            findNavController().navigate(R.id.action_editProfileFragment_to_profileFragment)
+                        }
+                    }
+                    is Response.Error -> {
+                        it.message?.let {
+                            findNavController().popBackStack()
+                            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
-        })
+        }
 
         return binding.root
     }

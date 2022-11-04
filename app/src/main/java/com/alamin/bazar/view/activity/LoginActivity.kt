@@ -16,6 +16,7 @@ import com.alamin.bazar.utils.LocalDataStore
 import com.alamin.bazar.view_model.UserViewModel
 import com.alamin.bazar.view_model.ViewModelFactory
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -50,29 +51,32 @@ class LoginActivity : AppCompatActivity() {
 
         userViewModel.dummyLogin()
 
-        userViewModel.loginResponse.observe(this, Observer {
-            when(it){
-                is Response.Loading ->{
-                    binding.btnLogin.visibility = View.GONE
-                }
-                is Response.Success ->{
-                    it.data?.let {
-                        userViewModel.requestUser(1)
-                        lifecycleScope.launch{
-                            localDataStore.storeToken(it.token)
-                        }
-                    }
-                }
-                is Response.Error ->{
-                    it.message?.let {
-                        Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
-                        binding.btnLogin.visibility = View.VISIBLE
-                    }
-                }
-            }
-        })
+       lifecycleScope.launchWhenCreated {
+           userViewModel.loginResponse.collectLatest {
+               when(it){
+                   is Response.Loading ->{
+                       binding.btnLogin.visibility = View.GONE
+                   }
+                   is Response.Success ->{
+                       it.data?.let {
+                           userViewModel.requestUser(1)
+                           lifecycleScope.launch{
+                               localDataStore.storeToken(it.token)
+                           }
+                       }
+                   }
+                   is Response.Error ->{
+                       it.message?.let {
+                           Toast.makeText(applicationContext, it, Toast.LENGTH_SHORT).show()
+                           binding.btnLogin.visibility = View.VISIBLE
+                       }
+                   }
+               }
+           }
+       }
 
-        userViewModel.user.observe(this, Observer{
+    lifecycleScope.launchWhenCreated {
+        userViewModel.user.collectLatest{
             when(it){
                 is Response.Loading ->{}
                 is Response.Success ->{
@@ -80,19 +84,21 @@ class LoginActivity : AppCompatActivity() {
                         lifecycleScope.launch {
                             localDataStore.storeUser(Gson().toJson(it))
                         }
-                        Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, "Success", Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this@LoginActivity,MainActivity::class.java))
                         finish()
                     }
                 }
                 is Response.Error ->{
                     it.message?.let {
-                        Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, it, Toast.LENGTH_SHORT).show()
                         binding.btnLogin.visibility = View.VISIBLE
                     }
                 }
             }
-        })
+        }
+    }
+
     }
 
 

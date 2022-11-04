@@ -28,6 +28,7 @@ import com.alamin.bazar.view.dialog.LoadingFragment
 import com.alamin.bazar.view.dialog.LoadingFragmentDirections
 import com.alamin.bazar.view_model.ProductViewModel
 import com.alamin.bazar.view_model.ViewModelFactory
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 private const val TAG = "DashBoardFragment"
@@ -52,24 +53,27 @@ class DashBoardFragment : Fragment() {
         val component = (requireActivity().applicationContext as BazaarApplication).appComponent
         component.injectDashBoard(this)
         productViewModel = ViewModelProvider(this,viewModelFactory)[ProductViewModel::class.java]
-        productViewModel.productList.observe(requireActivity(), Observer {
-            when(it){
-                is Response.Loading -> {
 
-                }
-                is Response.Success -> {
-                    it.data?.let {
-                        findNavController().navigateUp()
-                        productViewModel.insertProduct(it)
-                    }
-                }
-                is Response.Error -> {
-                    it.message?.let {
-                        Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        })
+        lifecycleScope.launchWhenCreated {
+           productViewModel.productList.collectLatest  {
+               when(it){
+                   is Response.Loading -> {
+
+                   }
+                   is Response.Success -> {
+                       it.data?.let {
+                           findNavController().navigateUp()
+                           productViewModel.insertProduct(it)
+                       }
+                   }
+                   is Response.Error -> {
+                       it.message?.let {
+                           Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                       }
+                   }
+               }
+           }
+       }
 
         binding.recyclerView.apply {
             layoutManager = GridLayoutManager(context,2)
@@ -78,7 +82,7 @@ class DashBoardFragment : Fragment() {
 
         lifecycleScope.launchWhenCreated {
             context?.let {
-                productViewModel.productFromLocal.collect {
+                productViewModel.productFromLocal.collectLatest {
                     it?.let {
                         with(productsAdapter){
                             setData(ArrayList(it))

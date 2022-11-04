@@ -10,31 +10,30 @@ import com.alamin.bazar.model.network.Response
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 class CartRepository @Inject constructor(private val apiInterface: APIInterface,private val localDatabase: LocalDatabase) {
     private val cartDao = localDatabase.cartDao()
-    private val cartLiveData = MutableLiveData<Response<Cart>>()
+    private val cartFlow = MutableStateFlow<Response<Cart>>(Response.Empty())
 
-    val cartResponse: LiveData<Response<Cart>>
-    get() = cartLiveData
+    val cartResponse: StateFlow<Response<Cart>>
+    get() = cartFlow.asStateFlow()
 
     fun getAllCart(): Flow<List<CartProduct>> = cartDao.getAllCart()
 
-     fun requestAddCart(cart: Cart){
-        cartLiveData.postValue(Response.Loading())
-        apiInterface.addCart(cart)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                if (it.isSuccessful){
-                    it.body()?.let {
-                        cartLiveData.postValue(Response.Success(it))
-                    }
-                }else{
-                    cartLiveData.postValue(Response.Error("Network Error"))
-                }
+    suspend fun requestAddCart(cart: Cart){
+        cartFlow.emit(Response.Loading())
+        val response = apiInterface.addCart(cart)
+        if (response.isSuccessful){
+            response.body()?.let {
+                cartFlow.emit(Response.Success(it))
             }
+        }else{
+            cartFlow.emit(Response.Error("Network Error"))
+        }
     }
 
     suspend fun insertCart(carts: List<CartProduct>){

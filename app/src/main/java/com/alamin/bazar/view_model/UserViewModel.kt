@@ -13,6 +13,9 @@ import com.alamin.bazar.model.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -20,12 +23,12 @@ import javax.inject.Inject
 private const val TAG = "UserViewModel"
 class UserViewModel @Inject constructor(private val userRepository: UserRepository): ViewModel() {
 
-    val loginResponse : LiveData<Response<UserResponse>>
+    val loginResponse : StateFlow<Response<UserResponse>>
         get() = userRepository.getLoginResponse
 
     val user = userRepository.user
 
-    val message = MutableLiveData<String>()
+    val message = MutableSharedFlow<String>()
 
     lateinit var userInfo:User
 
@@ -67,14 +70,13 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
     fun loginUser(){
          val userName = inputUserName.value
          val userPassword = inputPassword.value
-
+        viewModelScope.launch {
         if (userName.equals(null) || TextUtils.isEmpty(userName)){
-            message.value = "Please, Enter Name"
+            message.emit("Please, Enter Name")
         }else if (userPassword.equals(null) || TextUtils.isEmpty(userPassword)){
-            message.value = "Please, Enter Password"
+            message.emit("Please, Enter Password")
         }else{
             val userData = UserData(userName?.trim()!!,userPassword?.trim()!!)
-            viewModelScope.launch {
                 withContext(IO){
                     userRepository.loginUser(userData)
                 }
@@ -92,7 +94,7 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
         val holding = inputHolding.value
         val road = inputStreet.value
         val post = inputZipcode.value
-
+        viewModelScope.launch {
         if (checkEmpty(firstName,lastName,contact,email,password,city,holding,road,post)){
 
             val createUser = User(0, Address(city!!,
@@ -100,7 +102,7 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
                 holding?.toInt()!!,
                 road!!,post!!),email!!,Name(firstName!!,lastName!!),password!!,contact!!,"")
 
-            viewModelScope.launch {
+
                 withContext(IO){
                     userRepository.signUpUser(createUser)
                 }
@@ -119,12 +121,13 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
         val road = inputStreet.value
         val post = inputZipcode.value
 
-        if (checkEmpty(firstName,lastName,contact,"email@email.com","no_password",city,holding,road,post)){
-            val updatedUser = User(0, Address(city!!,
-                Geolocation(userInfo.address.geolocation.lat,userInfo.address.geolocation.longi),
-                holding?.toInt()!!,
-                road!!,post!!),userInfo.email,Name(firstName!!,lastName!!),userInfo.password,contact!!,userInfo.username)
+
             viewModelScope.launch {
+                if (checkEmpty(firstName,lastName,contact,"email@email.com","no_password",city,holding,road,post)){
+                    val updatedUser = User(0, Address(city!!,
+                        Geolocation(userInfo.address.geolocation.lat,userInfo.address.geolocation.longi),
+                        holding?.toInt()!!,
+                        road!!,post!!),userInfo.email,Name(firstName!!,lastName!!),userInfo.password,contact!!,userInfo.username)
                 withContext(IO){
                     userRepository.updateUser(updatedUser)
                 }
@@ -133,7 +136,7 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
 
     }
 
-    private fun checkEmpty(
+    private suspend fun checkEmpty(
         firstName: String?,
         lastName: String?,
         contact: String?,
@@ -144,45 +147,45 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
         road: String?,
         post: String?): Boolean {
         if (firstName ==null || TextUtils.isEmpty(firstName)){
-            message.value = "Enter First Name"
+            message.emit("Enter First Name")
             return false
         }
         if (lastName ==null || TextUtils.isEmpty(lastName)){
-            message.value = "Enter Last Name"
+            message.emit("Enter Last Name")
             return false
         }
         if (contact ==null || TextUtils.isEmpty(contact)){
-            message.value = "Enter Contact Number"
+            message.emit("Enter Contact Number")
             return false
         }
         if (city ==null || TextUtils.isEmpty(city)){
-            message.value = "Enter City"
+            message.emit("Enter City")
             return false
         }
         if (holding ==null || TextUtils.isEmpty(holding)){
-            message.value = "Enter House"
+            message.emit("Enter House")
             return false
         }
         if (road ==null || TextUtils.isEmpty(road)){
-            message.value = "Enter Road"
+            message.emit("Enter Road")
             return false
         }
         if (post ==null || TextUtils.isEmpty(post)){
-            message.value = "Enter Postal Code"
+            message.emit("Enter Postal Code")
             return false
         }
         if (email ==null || TextUtils.isEmpty(email)){
-            message.value = "Enter Email"
+            message.emit("Enter Email")
             return false
         }
 
         if (!email.isValid()){
-            message.value = "Invalid Email"
+            message.emit("Invalid Email")
             return false
         }
 
         if (password ==null || TextUtils.isEmpty(password)){
-            message.value = "Enter Password"
+            message.emit("Enter Password")
             return false
         }
 

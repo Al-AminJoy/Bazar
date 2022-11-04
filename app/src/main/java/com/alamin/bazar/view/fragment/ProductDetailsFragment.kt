@@ -82,32 +82,34 @@ class ProductDetailsFragment : Fragment() {
             binding.txtQuantity.text = it.toString()
         })
 
-        cartViewModel.message.observe(requireActivity(), Observer {
-            it?.let {
-                Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT).show()
+        lifecycleScope.launchWhenCreated {
+            cartViewModel.message.collect{
+                    Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT).show()
             }
-        })
+        }
 
-        cartViewModel.cartAddResponse.observe(requireActivity(), Observer {
-            when(it){
-                is Response.Loading ->{
-                    findNavController().navigate(R.id.action_productDetailsFragment_to_loadingFragment)
-                }
-                is Response.Success ->{
-                    it.data?.let {
-                        findNavController().navigateUp()
-                        Toast.makeText(requireActivity(), "Success", Toast.LENGTH_SHORT).show()
-                        cartViewModel.insertCart(it.products)
+        lifecycleScope.launchWhenCreated {
+            cartViewModel.cartAddResponse.collectLatest {
+                when(it){
+                    is Response.Loading ->{
+                        findNavController().navigate(R.id.action_productDetailsFragment_to_loadingFragment)
                     }
-                }
-                is Response.Error ->{
-                    it.message?.let {
-                        findNavController().navigateUp()
-                        Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT).show()
+                    is Response.Success ->{
+                        it.data?.let {
+                            findNavController().navigateUp()
+                            Toast.makeText(requireActivity(), "Success", Toast.LENGTH_SHORT).show()
+                            cartViewModel.insertCart(it.products)
+                        }
+                    }
+                    is Response.Error ->{
+                        it.message?.let {
+                            findNavController().navigateUp()
+                            Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
-        })
+        }
 
         return binding.root
     }

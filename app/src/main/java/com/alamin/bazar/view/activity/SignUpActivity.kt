@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.alamin.bazar.BazaarApplication
 
 import com.alamin.bazar.databinding.ActivitySignUpBinding
@@ -14,6 +15,8 @@ import com.alamin.bazar.model.network.APIResponse
 import com.alamin.bazar.model.network.Response
 import com.alamin.bazar.view_model.UserViewModel
 import com.alamin.bazar.view_model.ViewModelFactory
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "SignUpActivity"
@@ -40,31 +43,33 @@ class SignUpActivity : AppCompatActivity() {
             userViewModel.signUpUser()
         }
 
-        userViewModel.message.observe(this, Observer {
-            it?.let {
-                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        lifecycleScope.launch {
+            userViewModel.message.collect{
+                    Toast.makeText(applicationContext, it, Toast.LENGTH_SHORT).show()
             }
-        })
+        }
 
-        userViewModel.user.observe(this, Observer {
-            when(it){
-                is Response.Loading -> {
-                    binding.btnSignUp.visibility = View.GONE
-                }
-                is Response.Success -> {
-                    it.data?.let {
-                        Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
-                        finish();
+        lifecycleScope.launchWhenCreated {
+            userViewModel.user.collectLatest {
+                when(it){
+                    is Response.Loading -> {
+                        binding.btnSignUp.visibility = View.GONE
                     }
-                }
-                is Response.Error -> {
-                    it.message?.let {
-                        binding.btnSignUp.visibility = View.VISIBLE
-                        Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+                    is Response.Success -> {
+                        it.data?.let {
+                            Toast.makeText(applicationContext, "Success", Toast.LENGTH_SHORT).show()
+                            finish();
+                        }
+                    }
+                    is Response.Error -> {
+                        it.message?.let {
+                            binding.btnSignUp.visibility = View.VISIBLE
+                            Toast.makeText(applicationContext, it, Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
-        })
+        }
 
     }
 }

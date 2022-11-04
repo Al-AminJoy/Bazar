@@ -43,7 +43,7 @@ class NetworkModule {
             .baseUrl(Constants.BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+            //.addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .build();
     }
 

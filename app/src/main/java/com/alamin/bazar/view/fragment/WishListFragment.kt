@@ -91,31 +91,32 @@ class WishListFragment : Fragment() {
         }
 
 
-        cartViewModel.cartAddResponse.observe(requireActivity(), Observer {
-            when(it){
-                is Response.Loading -> {
-                    findNavController().navigate(R.id.action_wishListFragment_to_loadingFragment)
-                }
-                is Response.Success -> {
-                    it.data?.let {
-                        findNavController().navigateUp()
-                        Toast.makeText(activity, "Success", Toast.LENGTH_SHORT).show()
-                        cartViewModel.insertCart(it.products)
-                        product?.let {
-                            wishViewModel.deleteWish(product?.id!!)
+        lifecycleScope.launchWhenCreated {
+            cartViewModel.cartAddResponse.collectLatest {
+                when(it){
+                    is Response.Loading -> {
+                        findNavController().navigate(R.id.action_wishListFragment_to_loadingFragment)
+                    }
+                    is Response.Success -> {
+                        it.data?.let {
+                            findNavController().navigateUp()
+                            Toast.makeText(activity, "Success", Toast.LENGTH_SHORT).show()
+                            cartViewModel.insertCart(it.products)
+                            product?.let {
+                                wishViewModel.deleteWish(product?.id!!)
+                            }
                         }
 
                     }
-
-                }
-                is Response.Error -> {
-                    it.message.let {
-                        findNavController().navigateUp()
-                        Toast.makeText(activity, it, Toast.LENGTH_SHORT).show()
+                    is Response.Error -> {
+                        it.message.let {
+                            findNavController().navigateUp()
+                            Toast.makeText(activity, it, Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
-        })
+        }
 
         return binding.root
     }

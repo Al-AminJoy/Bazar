@@ -13,41 +13,48 @@ import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "ProductRepository"
-class ProductRepository @Inject constructor(private val apiInterface: APIInterface, private val localDatabase: LocalDatabase) {
-    private var liveProductList = MutableLiveData<Response<List<Product>>>()
+
+class ProductRepository @Inject constructor(
+    private val apiInterface: APIInterface,
+    private val localDatabase: LocalDatabase
+) {
+    private var flowProductList = MutableStateFlow<Response<List<Product>>>(Response.Empty())
     private val productDao = localDatabase.productDao()
 
-    val productList: LiveData<Response<List<Product>>>
-    get() = liveProductList
+    val productList: StateFlow<Response<List<Product>>>
+        get() = flowProductList.asStateFlow()
 
     val productFromLocal: Flow<List<Product>>
-    get() = productDao.getAllProduct()
+        get() = productDao.getAllProduct()
 
-    fun getProductByIdList(ids:List<Int>):Flow<List<Product>> = productDao.getProductByIdList(ids)
+    fun getProductByIdList(ids: List<Int>): Flow<List<Product>> = productDao.getProductByIdList(ids)
 
-     fun requestProduct(){
-         liveProductList.postValue(Response.Loading())
-        apiInterface.getProducts()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe{
-                if (it.isSuccessful){
-                    it.body()?.let {
-                        liveProductList.postValue(Response.Success(it))
-                    }
-                }else{
-                    liveProductList.postValue(Response.Error("Error"))
+    suspend fun requestProduct() {
+            flowProductList.emit(Response.Loading())
+            val response = apiInterface.getProducts()
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    flowProductList.emit(Response.Success(it))
                 }
+            } else {
+                flowProductList.emit(Response.Error("Error"))
             }
 
-     }
+    }
 
 
-    suspend fun insertProducts(products: List<Product>){
+    suspend fun insertProducts(products: List<Product>) {
         productDao.insertProduct(products)
     }
 }
