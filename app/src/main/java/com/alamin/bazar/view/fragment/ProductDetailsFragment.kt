@@ -78,9 +78,11 @@ class ProductDetailsFragment : Fragment() {
             }
         }
 
-        cartViewModel.count.observe(requireActivity(), Observer {
-            binding.txtQuantity.text = it.toString()
-        })
+        lifecycleScope.launchWhenCreated {
+            cartViewModel.count.collectLatest {
+                binding.txtQuantity.text = it.toString()
+            }
+        }
 
         lifecycleScope.launchWhenCreated {
             cartViewModel.message.collect{

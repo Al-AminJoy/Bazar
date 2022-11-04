@@ -25,9 +25,7 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
 
     var message = MutableSharedFlow<String>()
 
-    val count = MutableLiveData<Int>().apply {
-        value = 0
-    }
+    val count = MutableStateFlow<Int>(0)
 
     fun getAllCart(): StateFlow<List<CartProduct>?> = cartRepository
         .getAllCart()
@@ -36,19 +34,21 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
         null)
 
     fun addProduct(){
-        count.value?.let {
-            if (it>=0){
-                count.value = it+1
-            }
+        viewModelScope.launch {
+                if (count.value >= 0){
+                    count.value += 1
+                }
+
         }
     }
 
     fun removeProduct(){
-        count.value?.let {
-            if (it>0){
-                count.value = it-1
-            }
-        }
+       viewModelScope.launch {
+           if (count.value > 0){
+               count.value -= 1
+           }
+       }
+
     }
 
 
@@ -63,7 +63,6 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
 
     fun requestAddCart(product: Product){
             viewModelScope.launch {
-                count.value?.let {
                     if (count.value!! <= 0){
                         message.emit("Please, Set Quantity")
                         return@launch
@@ -77,7 +76,6 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
                 withContext(IO){
                     cartRepository.requestAddCart(cart)
                 }
-            }
 
         }
     }
