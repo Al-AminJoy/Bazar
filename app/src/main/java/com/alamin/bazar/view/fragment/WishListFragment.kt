@@ -25,6 +25,7 @@ import com.alamin.bazar.view_model.CartViewModel
 import com.alamin.bazar.view_model.ProductViewModel
 import com.alamin.bazar.view_model.ViewModelFactory
 import com.alamin.bazar.view_model.WishViewModel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -62,16 +63,16 @@ class WishListFragment : Fragment() {
             adapter = wishListAdapter
         }
 
-        activity?.let { fragmentActivity ->
-            wishViewModel.wishList.observe(fragmentActivity, Observer { wishList ->
-                if (wishList.isEmpty()){
-                    binding.txtNoWishMessage.text = "No Wished Item Found"
-                }else{
-                    binding.txtNoWishMessage.text = ""
-                }
-                val wishProductList = wishList.map { wish -> wish.productId }
-                lifecycleScope.launch {
-                    productViewModel.getProductByIdList(wishProductList).collect {
+        lifecycleScope.launchWhenCreated {
+            wishViewModel.wishList.collectLatest { wishList ->
+                wishList?.let {
+                    if (wishList.isEmpty()){
+                        binding.txtNoWishMessage.text = "No Wished Item Found"
+                    }else{
+                        binding.txtNoWishMessage.text = ""
+                    }
+                    val wishProductList = wishList.map { wish -> wish.productId }
+                    productViewModel.getProductByIdList(wishProductList).collectLatest {
                         it?.let {
                             with(wishListAdapter){
                                 setData(ArrayList(it))
@@ -86,8 +87,9 @@ class WishListFragment : Fragment() {
 
                     }
                 }
-            })
+            }
         }
+
 
         cartViewModel.cartAddResponse.observe(requireActivity(), Observer {
             when(it){

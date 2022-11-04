@@ -106,7 +106,7 @@ class CartFragment : Fragment() {
             adapter = checkoutAdapter
         }
 
-            lifecycleScope.launch {
+            lifecycleScope.launchWhenCreated {
             cartViewModel.getAllCart().collectLatest { list ->
                 list?.let {
                     if (list.isEmpty()){

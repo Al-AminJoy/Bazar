@@ -17,5 +17,5 @@ interface ProductDao {
     fun getProductByIdList(ids:List<Int>): Flow<List<Product>>
 
     @Query("SELECT * FROM product")
-    fun getAllProduct(): LiveData<List<Product>>
+    fun getAllProduct(): Flow<List<Product>>
 }

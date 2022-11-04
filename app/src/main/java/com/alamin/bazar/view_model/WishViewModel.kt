@@ -6,13 +6,20 @@ import androidx.lifecycle.viewModelScope
 import com.alamin.bazar.model.data.Wish
 import com.alamin.bazar.model.repository.WishRepository
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class WishViewModel @Inject constructor(private val wishRepository: WishRepository): ViewModel() {
 
-    val wishList = wishRepository.wishList
+    val wishList: StateFlow<List<Wish>?> = wishRepository.wishList
+        .stateIn(viewModelScope,
+        SharingStarted.WhileSubscribed(),
+    null)
 
     fun insertWish(wish: Wish){
         viewModelScope.launch {
@@ -22,7 +29,10 @@ class WishViewModel @Inject constructor(private val wishRepository: WishReposito
         }
     }
 
-    fun getWishByProductId(productId: Int): LiveData<Wish> = wishRepository.getWishByProductId(productId)
+    fun getWishByProductId(productId: Int): StateFlow<Wish?> = wishRepository.getWishByProductId(productId)
+        .stateIn(viewModelScope,
+        SharingStarted.WhileSubscribed(),
+        null)
 
 
     fun deleteWish(productId: Int){

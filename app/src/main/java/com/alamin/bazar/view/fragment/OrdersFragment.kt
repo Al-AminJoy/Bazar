@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alamin.bazar.BazaarApplication
@@ -18,6 +19,7 @@ import com.alamin.bazar.view.adapter.OrderClickListener
 import com.alamin.bazar.view.adapter.OrdersAdapter
 import com.alamin.bazar.view_model.InvoiceViewModel
 import com.alamin.bazar.view_model.ViewModelFactory
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 private const val TAG = "OrdersFragment"
@@ -44,23 +46,28 @@ class OrdersFragment : Fragment() {
         }
 
         invoiceViewModel = ViewModelProvider(this,viewModelFactory)[InvoiceViewModel::class.java]
-        invoiceViewModel.invoiceList.observe(requireActivity(), Observer {
-            if (it.isEmpty()){
-                binding.txtNoOrderMessage.text = "No Order Found"
-            }else{
-                binding.txtNoOrderMessage.text = ""
-            }
-            with(ordersAdapter){
-                setData(ArrayList(it))
-                setOrderClick(object : OrderClickListener{
-                    override fun onOrderClick(invoice: Invoice) {
-                        val action = OrdersFragmentDirections.actionOrdersFragmentToOrderDetailsFragment(invoice)
-                        findNavController().navigate(action)
+        lifecycleScope.launchWhenCreated {
+            invoiceViewModel.invoiceList.collectLatest {
+                it?.let {
+                    if (it.isEmpty()){
+                        binding.txtNoOrderMessage.text = "No Order Found"
+                    }else{
+                        binding.txtNoOrderMessage.text = ""
                     }
+                    with(ordersAdapter){
+                        setData(ArrayList(it))
+                        setOrderClick(object : OrderClickListener{
+                            override fun onOrderClick(invoice: Invoice) {
+                                val action = OrdersFragmentDirections.actionOrdersFragmentToOrderDetailsFragment(invoice)
+                                findNavController().navigate(action)
+                            }
 
-                })
+                        })
+                    }
+                }
             }
-        })
+        }
+
         return binding.root
     }
 

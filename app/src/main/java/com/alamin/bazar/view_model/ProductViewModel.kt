@@ -22,8 +22,9 @@ class ProductViewModel @Inject constructor(private val productRepository: Produc
     val productList: LiveData<Response<List<Product>>>
         get() = productRepository.productList
 
-    val productFromLocal: LiveData<List<Product>>
-        get() = productRepository.productFromLocal
+    val productFromLocal: StateFlow<List<Product>?>  = productRepository.productFromLocal.stateIn(viewModelScope,
+        SharingStarted.WhileSubscribed(),
+    null)
 
 
     fun getProductByIdList(ids: List<Int>): StateFlow<List<Product>?> = productRepository

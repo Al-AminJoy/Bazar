@@ -3,6 +3,7 @@ package com.alamin.bazar.model.local.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.alamin.bazar.model.data.Invoice
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface InvoiceDao {
@@ -10,7 +11,7 @@ interface InvoiceDao {
     suspend fun insertInvoice(invoice: Invoice)
 
     @Query("SELECT * FROM invoice")
-    fun getAllInvoice(): LiveData<List<Invoice>>
+    fun getAllInvoice(): Flow<List<Invoice>>
 
     @Update
     suspend fun updateInvoice(invoice: Invoice)

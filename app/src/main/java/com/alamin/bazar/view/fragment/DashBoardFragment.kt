@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.alamin.bazar.BazaarApplication
@@ -70,22 +71,27 @@ class DashBoardFragment : Fragment() {
             }
         })
 
-        context?.let {
-            productViewModel.productFromLocal.observe(requireActivity(), Observer {
-                binding.recyclerView.apply {
-                    layoutManager = GridLayoutManager(context,2)
-                    adapter = productsAdapter
-                }
-                with(productsAdapter){
-                    setData(ArrayList(it))
-                    setOnClick(object: ProductClickListener{
-                        override fun onClick(product: Product) {
-                            val action = DashBoardFragmentDirections.actionDashBoardFragmentToProductDetailsFragment(product)
-                            findNavController().navigate(action)
+        binding.recyclerView.apply {
+            layoutManager = GridLayoutManager(context,2)
+            adapter = productsAdapter
+        }
+
+        lifecycleScope.launchWhenCreated {
+            context?.let {
+                productViewModel.productFromLocal.collect {
+                    it?.let {
+                        with(productsAdapter){
+                            setData(ArrayList(it))
+                            setOnClick(object: ProductClickListener{
+                                override fun onClick(product: Product) {
+                                    val action = DashBoardFragmentDirections.actionDashBoardFragmentToProductDetailsFragment(product)
+                                    findNavController().navigate(action)
+                                }
+                            })
                         }
-                    })
+                    }
                 }
-            })
+            }
         }
 
 

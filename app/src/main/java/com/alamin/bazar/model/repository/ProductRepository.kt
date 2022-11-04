@@ -24,7 +24,7 @@ class ProductRepository @Inject constructor(private val apiInterface: APIInterfa
     val productList: LiveData<Response<List<Product>>>
     get() = liveProductList
 
-    val productFromLocal: LiveData<List<Product>>
+    val productFromLocal: Flow<List<Product>>
     get() = productDao.getAllProduct()
 
     fun getProductByIdList(ids:List<Int>):Flow<List<Product>> = productDao.getProductByIdList(ids)
