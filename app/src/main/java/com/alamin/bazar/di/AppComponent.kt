@@ -23,7 +23,6 @@ interface AppComponent {
     fun injectCart(cartFragment: CartFragment)
     fun injectOrders(ordersFragment: OrdersFragment)
     fun injectProfile(profileFragment: ProfileFragment)
-    fun injectRegister(registrationFragment: RegistrationFragment)
     fun injectWishList(wishListFragment: WishListFragment)
     fun injectCheckout(checkoutFragment: CheckoutFragment)
     fun injectCustomAddress(customAddressFragment: CustomAddressFragment)

@@ -1,13 +1,11 @@
 package com.alamin.bazar.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -16,11 +14,10 @@ import com.alamin.bazar.BazaarApplication
 import com.alamin.bazar.R
 import com.alamin.bazar.databinding.FragmentEditProfileBinding
 import com.alamin.bazar.model.data.User
-import com.alamin.bazar.model.network.APIResponse
 import com.alamin.bazar.model.network.Response
 import com.alamin.bazar.utils.LocalDataStore
-import com.alamin.bazar.view_model.UserViewModel
-import com.alamin.bazar.view_model.ViewModelFactory
+import com.alamin.bazar.viewmodel.EditProfileViewModel
+import com.alamin.bazar.viewmodel.ViewModelFactory
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.collectLatest
@@ -33,7 +30,7 @@ class EditProfileFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelFactory
     @Inject
     lateinit var localDataStore: LocalDataStore
-    private lateinit var userViewModel: UserViewModel
+    private lateinit var editProfileViewModel: EditProfileViewModel
     private lateinit var binding: FragmentEditProfileBinding
     private val arg by navArgs<EditProfileFragmentArgs>()
     private lateinit var user:User
@@ -45,26 +42,26 @@ class EditProfileFragment : Fragment() {
         val component = (requireActivity().applicationContext as BazaarApplication).appComponent
         component.injectEditProfile(this)
         user = arg.user
-        userViewModel = ViewModelProvider(this,viewModelFactory)[UserViewModel::class.java]
+        editProfileViewModel = ViewModelProvider(this,viewModelFactory)[EditProfileViewModel::class.java]
 
-        binding.userViewModel = userViewModel
+        binding.userViewModel = editProfileViewModel
         binding.lifecycleOwner = this
         binding.user = user
 
-        userViewModel.setUserData(user)
+        editProfileViewModel.setUserData(user)
 
         binding.setOnSubmitClick {
-            userViewModel.updateUser()
+            editProfileViewModel.updateUser()
         }
 
         lifecycleScope.launch {
-            userViewModel.message.collect {
+            editProfileViewModel.message.collect {
                     Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
 
         }
         lifecycleScope.launchWhenCreated {
-            userViewModel.user.collectLatest {
+            editProfileViewModel.user.collectLatest {
                 when(it){
                     is Response.Loading -> {
                         findNavController().navigate(R.id.action_editProfileFragment_to_loadingFragment)

@@ -10,13 +10,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alamin.bazar.BazaarApplication
-import com.alamin.bazar.R
 import com.alamin.bazar.databinding.FragmentOrderDetailsBinding
 import com.alamin.bazar.model.data.Invoice
 import com.alamin.bazar.view.adapter.OrderedProductAdapter
-import com.alamin.bazar.view.adapter.OrdersAdapter
-import com.alamin.bazar.view_model.InvoiceViewModel
-import com.alamin.bazar.view_model.ViewModelFactory
+import com.alamin.bazar.viewmodel.InvoiceViewModel
+import com.alamin.bazar.viewmodel.OrderDetailsViewModel
+import com.alamin.bazar.viewmodel.ViewModelFactory
 import javax.inject.Inject
 import kotlin.math.round
 
@@ -28,7 +27,7 @@ class OrderDetailsFragment : Fragment() {
     @Inject
     lateinit var orderedProductAdapter: OrderedProductAdapter
 
-    private lateinit var invoiceViewModel: InvoiceViewModel
+    private lateinit var viewModel: OrderDetailsViewModel
 
     private val args by navArgs<OrderDetailsFragmentArgs>()
 
@@ -47,7 +46,7 @@ class OrderDetailsFragment : Fragment() {
         binding = FragmentOrderDetailsBinding.inflate(layoutInflater)
         val component = (requireActivity().applicationContext as BazaarApplication).appComponent
         component.injectOrderDetails(this)
-        invoiceViewModel = ViewModelProvider(this,viewModelFactory)[InvoiceViewModel::class.java]
+        viewModel = ViewModelProvider(this,viewModelFactory)[OrderDetailsViewModel::class.java]
 
         invoice = args.invoice
         binding.invoice = invoice
@@ -69,7 +68,7 @@ class OrderDetailsFragment : Fragment() {
 
         binding.setOnCancelClick {
             invoice.status = "Canceled"
-            invoiceViewModel.updateInvoice(invoice)
+            viewModel.updateInvoice(invoice)
             binding.invoice = invoice
             Toast.makeText(activity, "Order Cancelled", Toast.LENGTH_SHORT).show()
         }

@@ -6,22 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.alamin.bazar.BazaarApplication
 import com.alamin.bazar.R
 import com.alamin.bazar.databinding.FragmentProductDetailsBinding
 import com.alamin.bazar.model.data.Wish
-import com.alamin.bazar.model.network.APIResponse
 import com.alamin.bazar.model.network.Response
-import com.alamin.bazar.view_model.CartViewModel
-import com.alamin.bazar.view_model.ViewModelFactory
-import com.alamin.bazar.view_model.WishViewModel
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.alamin.bazar.viewmodel.CartViewModel
+import com.alamin.bazar.viewmodel.ProductDetailsViewModel
+import com.alamin.bazar.viewmodel.ViewModelFactory
+import com.alamin.bazar.viewmodel.WishViewModel
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -30,8 +27,7 @@ private const val TAG = "ProductDetailsFragment"
 class ProductDetailsFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-    private lateinit var cartViewModel: CartViewModel
-    lateinit var wishViewModel: WishViewModel
+    private lateinit var viewModel: ProductDetailsViewModel
     private lateinit var binding: FragmentProductDetailsBinding
     private  val arg by navArgs<ProductDetailsFragmentArgs>()
     private  var isWished: Boolean = false
@@ -45,53 +41,52 @@ class ProductDetailsFragment : Fragment() {
         val component = (requireActivity().applicationContext as BazaarApplication).appComponent
         component.injectProductDetails(this)
 
-        cartViewModel = ViewModelProvider(this,viewModelFactory)[CartViewModel::class.java]
-        wishViewModel = ViewModelProvider(this,viewModelFactory)[WishViewModel::class.java]
+        viewModel = ViewModelProvider(this,viewModelFactory)[ProductDetailsViewModel::class.java]
 
         binding.setOnAddClick {
-            cartViewModel.addProduct()
+            viewModel.addProduct()
         }
 
         binding.setOnRemoveClick {
-            cartViewModel.removeProduct()
+            viewModel.removeProduct()
         }
 
         binding.setOnAddCartClick {
-            cartViewModel.requestAddCart(arg.product)
+            viewModel.requestAddCart(arg.product)
         }
 
 
 
         binding.setOnWishClick {
             if (isWished){
-                wishViewModel.deleteWish(arg.product.id)
+                viewModel.deleteWish(arg.product.id)
             }else{
                 val wish = Wish(0,arg.product.id)
-                wishViewModel.insertWish(wish)
+                viewModel.insertWish(wish)
             }
         }
 
         lifecycleScope.launchWhenCreated {
-            wishViewModel.getWishByProductId(arg.product.id).collectLatest {
+            viewModel.getWishByProductId(arg.product.id).collectLatest {
                 isWished = it != null
                 binding.isWished = isWished
             }
         }
 
         lifecycleScope.launchWhenCreated {
-            cartViewModel.count.collectLatest {
+            viewModel.count.collectLatest {
                 binding.txtQuantity.text = it.toString()
             }
         }
 
         lifecycleScope.launchWhenCreated {
-            cartViewModel.message.collect{
+            viewModel.message.collect{
                     Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT).show()
             }
         }
 
         lifecycleScope.launchWhenCreated {
-            cartViewModel.cartAddResponse.collectLatest {
+            viewModel.cartAddResponse.collectLatest {
                 when(it){
                     is Response.Loading ->{
                         findNavController().navigate(R.id.action_productDetailsFragment_to_loadingFragment)
@@ -100,7 +95,7 @@ class ProductDetailsFragment : Fragment() {
                         it.data?.let {
                             findNavController().navigateUp()
                             Toast.makeText(requireActivity(), "Success", Toast.LENGTH_SHORT).show()
-                            cartViewModel.insertCart(it.products)
+                            viewModel.insertCart(it.products)
                         }
                     }
                     is Response.Error ->{

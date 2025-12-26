@@ -1,42 +1,27 @@
 package com.alamin.bazar.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alamin.bazar.BazaarApplication
-import com.alamin.bazar.R
 import com.alamin.bazar.databinding.FragmentCartBinding
 import com.alamin.bazar.model.data.*
 import com.alamin.bazar.utils.LocalDataStore
-import com.alamin.bazar.view.adapter.CartAdapter
 import com.alamin.bazar.view.adapter.CartClickListener
 import com.alamin.bazar.view.adapter.CheckoutAdapter
 
-import com.alamin.bazar.view_model.CartViewModel
-import com.alamin.bazar.view_model.ProductViewModel
-import com.alamin.bazar.view_model.ViewModelFactory
-import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.flow.collect
+import com.alamin.bazar.viewmodel.CartViewModel
+import com.alamin.bazar.viewmodel.ViewModelFactory
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.*
 
 import javax.inject.Inject
-import kotlin.math.log
 import kotlin.math.round
 
 private const val TAG = "CartFragment"
@@ -51,7 +36,6 @@ class CartFragment : Fragment() {
     @Inject
     lateinit var checkoutAdapter: CheckoutAdapter
     private lateinit var cartViewModel: CartViewModel
-    private lateinit var productViewModel: ProductViewModel
     private lateinit var binding: FragmentCartBinding
 
     private var finalCheckoutList = arrayListOf<Checkout>()
@@ -73,7 +57,6 @@ class CartFragment : Fragment() {
         component.injectCart(this)
 
         cartViewModel = ViewModelProvider(this, viewModelFactory)[CartViewModel::class.java]
-        productViewModel = ViewModelProvider(this, viewModelFactory)[ProductViewModel::class.java]
 
         binding.setOnCheckoutClick {
             val holder = CheckoutHolder(finalCheckoutList)
@@ -116,7 +99,7 @@ class CartFragment : Fragment() {
                     }
                     val productIdList = list.map { cartProduct -> cartProduct.productId }.toList()
                     var checkoutList = arrayListOf<Checkout>()
-                    productViewModel.getProductByIdList(productIdList)
+                    cartViewModel.getProductByIdList(productIdList)
                         .collectLatest {
                             it?.let{
                                 for (product in it) {

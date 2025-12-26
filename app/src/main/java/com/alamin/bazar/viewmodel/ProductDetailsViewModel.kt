@@ -1,17 +1,16 @@
-package com.alamin.bazar.view_model
+package com.alamin.bazar.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alamin.bazar.model.data.Cart
 import com.alamin.bazar.model.data.CartProduct
 import com.alamin.bazar.model.data.Product
-import com.alamin.bazar.model.network.APIResponse
+import com.alamin.bazar.model.data.Wish
 import com.alamin.bazar.model.network.Response
 import com.alamin.bazar.model.repository.CartRepository
+import com.alamin.bazar.model.repository.ProductRepository
+import com.alamin.bazar.model.repository.WishRepository
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -19,7 +18,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-class CartViewModel @Inject constructor(private val cartRepository: CartRepository): ViewModel() {
+class ProductDetailsViewModel @Inject constructor(private val cartRepository: CartRepository,
+                                                  private val wishRepository: WishRepository,
+                                                  private val productRepository: ProductRepository): ViewModel() {
 
     val cartAddResponse: StateFlow<Response<Cart>> = cartRepository.cartResponse
 
@@ -42,6 +43,27 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
         }
     }
 
+    fun getWishByProductId(productId: Int): StateFlow<Wish?> = wishRepository.getWishByProductId(productId)
+        .stateIn(viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            null)
+
+    fun insertWish(wish: Wish){
+        viewModelScope.launch {
+            withContext(IO){
+                wishRepository.insertWish(wish)
+            }
+        }
+    }
+
+    fun deleteWish(productId: Int){
+        viewModelScope.launch {
+            withContext(IO){
+                wishRepository.deleteWish(productId)
+            }
+        }
+    }
+
     fun removeProduct(){
        viewModelScope.launch {
            if (count.value > 0){
@@ -51,7 +73,13 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
 
     }
 
-
+    fun getProductByIdList(ids: List<Int>): StateFlow<List<Product>?> = productRepository
+        .getProductByIdList(ids)
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            null
+        )
 
     fun insertCart(carts: List<CartProduct>){
         viewModelScope.launch{
@@ -63,7 +91,7 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
 
     fun requestAddCart(product: Product){
             viewModelScope.launch {
-                    if (count.value!! <= 0){
+                    if (count.value <= 0){
                         message.emit("Please, Set Quantity")
                         return@launch
                     }
@@ -105,12 +133,6 @@ class CartViewModel @Inject constructor(private val cartRepository: CartReposito
         }
     }
 
-    fun deleteAllCart(){
-            viewModelScope.launch {
-                withContext(IO){
-                    cartRepository.deleteAllCart()
-                }
-            }
-        }
+
 
 }

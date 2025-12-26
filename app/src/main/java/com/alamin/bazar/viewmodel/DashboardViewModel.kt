@@ -1,4 +1,4 @@
-package com.alamin.bazar.view_model
+package com.alamin.bazar.viewmodel
 
 
 import androidx.lifecycle.ViewModel
@@ -9,13 +9,12 @@ import com.alamin.bazar.model.repository.ProductRepository
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ProductViewModel @Inject constructor(private val productRepository: ProductRepository): ViewModel() {
+class DashboardViewModel @Inject constructor(private val productRepository: ProductRepository): ViewModel() {
 
 
     val productList: StateFlow<Response<List<Product>>>
@@ -26,13 +25,7 @@ class ProductViewModel @Inject constructor(private val productRepository: Produc
     null)
 
 
-    fun getProductByIdList(ids: List<Int>): StateFlow<List<Product>?> = productRepository
-        .getProductByIdList(ids)
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            null
-        )
+
 
     fun requestProduct(){
         viewModelScope.launch {

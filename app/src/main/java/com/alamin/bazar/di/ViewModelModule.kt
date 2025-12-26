@@ -1,7 +1,7 @@
 package com.alamin.bazar.di
 
 import androidx.lifecycle.ViewModel
-import com.alamin.bazar.view_model.*
+import com.alamin.bazar.viewmodel.*
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.ClassKey
@@ -11,14 +11,30 @@ import dagger.multibindings.IntoMap
 abstract class ViewModelModule {
 
     @Binds
-    @ClassKey(UserViewModel::class)
+    @ClassKey(MainViewModel::class)
     @IntoMap
-    abstract fun provideUserViewModel(userViewModel: UserViewModel): ViewModel
+    abstract fun provideMainViewModel(viewModel: MainViewModel): ViewModel
 
     @Binds
-    @ClassKey(ProductViewModel::class)
+    @ClassKey(LoginViewModel::class)
     @IntoMap
-    abstract fun provideProductViewModel(productViewModel: ProductViewModel): ViewModel
+    abstract fun provideLoginViewModel(viewModel: LoginViewModel): ViewModel
+
+    @Binds
+    @ClassKey(SignUpViewModel::class)
+    @IntoMap
+    abstract fun provideSignUpViewModel(viewModel: SignUpViewModel): ViewModel
+
+
+    @Binds
+    @ClassKey(ProductDetailsViewModel::class)
+    @IntoMap
+    abstract fun provideProductDetailsViewModel(viewModel: ProductDetailsViewModel): ViewModel
+
+    @Binds
+    @ClassKey(DashboardViewModel::class)
+    @IntoMap
+    abstract fun provideProductViewModel(dashboardViewModel: DashboardViewModel): ViewModel
 
     @Binds
     @ClassKey(CartViewModel::class)
@@ -33,5 +49,22 @@ abstract class ViewModelModule {
     @Binds
     @ClassKey(WishViewModel::class)
     @IntoMap
-    abstract fun provideWishlist(wishViewModel: WishViewModel): ViewModel
+    abstract fun provideWishlistViewModel(wishViewModel: WishViewModel): ViewModel
+
+    @Binds
+    @ClassKey(OrderDetailsViewModel::class)
+    @IntoMap
+    abstract fun provideOrderDetailsViewModel(viewModel: OrderDetailsViewModel): ViewModel
+
+    @Binds
+    @ClassKey(OrdersViewModel::class)
+    @IntoMap
+    abstract fun provideOrdersViewModel(viewModel: OrdersViewModel): ViewModel
+
+    @Binds
+    @ClassKey(EditProfileViewModel::class)
+    @IntoMap
+    abstract fun provideUserViewModel(editProfileViewModel: EditProfileViewModel): ViewModel
+
+
 }

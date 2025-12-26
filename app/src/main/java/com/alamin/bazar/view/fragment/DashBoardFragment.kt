@@ -3,15 +3,11 @@ package com.alamin.bazar.view.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
 import android.widget.Toast
-import androidx.core.widget.addTextChangedListener
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -24,10 +20,8 @@ import com.alamin.bazar.model.network.Response
 import com.alamin.bazar.utils.Constants
 import com.alamin.bazar.view.adapter.ProductClickListener
 import com.alamin.bazar.view.adapter.ProductsAdapter
-import com.alamin.bazar.view.dialog.LoadingFragment
-import com.alamin.bazar.view.dialog.LoadingFragmentDirections
-import com.alamin.bazar.view_model.ProductViewModel
-import com.alamin.bazar.view_model.ViewModelFactory
+import com.alamin.bazar.viewmodel.DashboardViewModel
+import com.alamin.bazar.viewmodel.ViewModelFactory
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -39,7 +33,7 @@ class DashBoardFragment : Fragment() {
     @Inject
     lateinit var productsAdapter: ProductsAdapter
 
-    private lateinit var productViewModel: ProductViewModel
+    private lateinit var dashboardViewModel: DashboardViewModel
 
     private lateinit var binding : FragmentDashBoardBinding
 
@@ -52,10 +46,10 @@ class DashBoardFragment : Fragment() {
 
         val component = (requireActivity().applicationContext as BazaarApplication).appComponent
         component.injectDashBoard(this)
-        productViewModel = ViewModelProvider(this,viewModelFactory)[ProductViewModel::class.java]
+        dashboardViewModel = ViewModelProvider(this,viewModelFactory)[DashboardViewModel::class.java]
 
         lifecycleScope.launchWhenCreated {
-           productViewModel.productList.collectLatest  {
+           dashboardViewModel.productList.collectLatest  {
                when(it){
                    is Response.Loading -> {
 
@@ -63,7 +57,7 @@ class DashBoardFragment : Fragment() {
                    is Response.Success -> {
                        it.data?.let {
                            findNavController().navigateUp()
-                           productViewModel.insertProduct(it)
+                           dashboardViewModel.insertProduct(it)
                        }
                    }
                    is Response.Error -> {
@@ -82,7 +76,7 @@ class DashBoardFragment : Fragment() {
 
         lifecycleScope.launchWhenCreated {
             context?.let {
-                productViewModel.productFromLocal.collectLatest {
+                dashboardViewModel.productFromLocal.collectLatest {
                     it?.let {
                         with(productsAdapter){
                             setData(ArrayList(it))
@@ -121,7 +115,7 @@ class DashBoardFragment : Fragment() {
         super.onResume()
         if (Constants.isOnline(requireActivity())){
             findNavController().navigate(R.id.action_dashBoardFragment_to_loadingFragment)
-            productViewModel.requestProduct()
+            dashboardViewModel.requestProduct()
         }else{
             Toast.makeText(requireContext(), getString(R.string.no_internet_message), Toast.LENGTH_SHORT).show()
         }

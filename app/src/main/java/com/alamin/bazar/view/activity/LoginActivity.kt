@@ -5,16 +5,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.alamin.bazar.BazaarApplication
 import com.alamin.bazar.databinding.ActivityLoginBinding
-import com.alamin.bazar.model.network.APIResponse
 import com.alamin.bazar.model.network.Response
 import com.alamin.bazar.utils.LocalDataStore
-import com.alamin.bazar.view_model.UserViewModel
-import com.alamin.bazar.view_model.ViewModelFactory
+import com.alamin.bazar.viewmodel.EditProfileViewModel
+import com.alamin.bazar.viewmodel.LoginViewModel
+import com.alamin.bazar.viewmodel.ViewModelFactory
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -26,7 +25,7 @@ class LoginActivity : AppCompatActivity() {
     lateinit var viewModelFactory: ViewModelFactory
     @Inject
     lateinit var localDataStore: LocalDataStore
-    private lateinit var userViewModel: UserViewModel;
+    private lateinit var viewModel: LoginViewModel
     private lateinit var binding : ActivityLoginBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,30 +35,30 @@ class LoginActivity : AppCompatActivity() {
         val component = (this.applicationContext as BazaarApplication).appComponent
         component.injectLogin(this)
 
-        userViewModel = ViewModelProvider(this,viewModelFactory)[UserViewModel::class.java]
+        viewModel = ViewModelProvider(this,viewModelFactory)[LoginViewModel::class.java]
 
-        binding.userViewModel = userViewModel
+        binding.userViewModel = viewModel
         binding.lifecycleOwner = this
 
         binding.setLoginClickListener {
-            userViewModel.loginUser()
+            viewModel.loginUser()
         }
 
         binding.setSignUpClickListener {
             startActivity(Intent(this@LoginActivity,SignUpActivity::class.java))
         }
 
-        userViewModel.dummyLogin()
+        viewModel.dummyLogin()
 
        lifecycleScope.launchWhenCreated {
-           userViewModel.loginResponse.collectLatest {
+           viewModel.loginResponse.collectLatest {
                when(it){
                    is Response.Loading ->{
                        binding.btnLogin.visibility = View.GONE
                    }
                    is Response.Success ->{
                        it.data?.let {
-                           userViewModel.requestUser(1)
+                           viewModel.requestUser(1)
                            lifecycleScope.launch{
                                localDataStore.storeToken(it.token)
                            }
@@ -76,7 +75,7 @@ class LoginActivity : AppCompatActivity() {
        }
 
     lifecycleScope.launchWhenCreated {
-        userViewModel.user.collectLatest{
+        viewModel.user.collectLatest{
             when(it){
                 is Response.Loading ->{}
                 is Response.Success ->{

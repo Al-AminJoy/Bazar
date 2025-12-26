@@ -2,19 +2,17 @@ package com.alamin.bazar.view.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.alamin.bazar.BazaarApplication
 
 import com.alamin.bazar.databinding.ActivitySignUpBinding
-import com.alamin.bazar.model.network.APIResponse
 import com.alamin.bazar.model.network.Response
-import com.alamin.bazar.view_model.UserViewModel
-import com.alamin.bazar.view_model.ViewModelFactory
+import com.alamin.bazar.viewmodel.EditProfileViewModel
+import com.alamin.bazar.viewmodel.SignUpViewModel
+import com.alamin.bazar.viewmodel.ViewModelFactory
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,7 +21,7 @@ private const val TAG = "SignUpActivity"
 class SignUpActivity : AppCompatActivity() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-    private lateinit var userViewModel: UserViewModel
+    private lateinit var viewModel: SignUpViewModel
     private lateinit var binding : ActivitySignUpBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,23 +32,23 @@ class SignUpActivity : AppCompatActivity() {
         val component = (this.applicationContext as BazaarApplication).appComponent
         component.injectSignUp(this)
 
-        userViewModel = ViewModelProvider(this,viewModelFactory)[UserViewModel::class.java]
+        viewModel = ViewModelProvider(this,viewModelFactory)[SignUpViewModel::class.java]
 
-        binding.userViewModel = userViewModel
+        binding.userViewModel = viewModel
         binding.lifecycleOwner = this
 
         binding.setSignupClickListener {
-            userViewModel.signUpUser()
+            viewModel.signUpUser()
         }
 
         lifecycleScope.launch {
-            userViewModel.message.collect{
+            viewModel.message.collect{
                     Toast.makeText(applicationContext, it, Toast.LENGTH_SHORT).show()
             }
         }
 
         lifecycleScope.launchWhenCreated {
-            userViewModel.user.collectLatest {
+            viewModel.user.collectLatest {
                 when(it){
                     is Response.Loading -> {
                         binding.btnSignUp.visibility = View.GONE

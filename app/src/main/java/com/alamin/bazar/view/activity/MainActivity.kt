@@ -7,8 +7,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -20,11 +18,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.alamin.bazar.BazaarApplication
 import com.alamin.bazar.R
 import com.alamin.bazar.databinding.ActivityMainBinding
-import com.alamin.bazar.model.network.Response
-import com.alamin.bazar.utils.Constants
 import com.alamin.bazar.utils.LocalDataStore
-import com.alamin.bazar.view_model.ProductViewModel
-import com.alamin.bazar.view_model.ViewModelFactory
+import com.alamin.bazar.viewmodel.MainViewModel
+import com.alamin.bazar.viewmodel.ViewModelFactory
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var localDataStore: LocalDataStore
 
-    private lateinit var productViewModel: ProductViewModel
+    private lateinit var viewModel: MainViewModel
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
@@ -50,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         val component = (this.applicationContext as BazaarApplication).appComponent
         component.injectMain(this)
 
-        productViewModel = ViewModelProvider(this,viewModelFactory)[ProductViewModel::class.java]
+        viewModel = ViewModelProvider(this,viewModelFactory)[MainViewModel::class.java]
 
 
 

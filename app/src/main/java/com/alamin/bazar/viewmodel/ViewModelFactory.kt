@@ -1,4 +1,4 @@
-package com.alamin.bazar.view_model
+package com.alamin.bazar.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

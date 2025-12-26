@@ -1,30 +1,22 @@
-package com.alamin.bazar.view_model
+package com.alamin.bazar.viewmodel
 
 import android.text.TextUtils
-import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alamin.bazar.model.data.*
-import com.alamin.bazar.model.network.APIResponse
 import com.alamin.bazar.model.network.Response
 import com.alamin.bazar.model.repository.UserRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 private const val TAG = "UserViewModel"
-class UserViewModel @Inject constructor(private val userRepository: UserRepository): ViewModel() {
+class EditProfileViewModel @Inject constructor(private val userRepository: UserRepository): ViewModel() {
 
-    val loginResponse : StateFlow<Response<UserResponse>>
-        get() = userRepository.getLoginResponse
 
     val user = userRepository.user
 
@@ -54,63 +46,8 @@ class UserViewModel @Inject constructor(private val userRepository: UserReposito
         inputZipcode.value = user.address.zipcode
     }
 
-    fun dummyLogin(){
-        inputUserName.value = "johnd"
-        inputPassword.value = "m38rmF$"
-    }
-
-    fun requestUser(id: Int){
-        viewModelScope.launch {
-            withContext(IO){
-                userRepository.requestUser(id)
-            }
-        }
-    }
-
-    fun loginUser(){
-         val userName = inputUserName.value
-         val userPassword = inputPassword.value
-        viewModelScope.launch {
-        if (userName.equals(null) || TextUtils.isEmpty(userName)){
-            message.emit("Please, Enter Name")
-        }else if (userPassword.equals(null) || TextUtils.isEmpty(userPassword)){
-            message.emit("Please, Enter Password")
-        }else{
-            val userData = UserData(userName?.trim()!!,userPassword?.trim()!!)
-                withContext(IO){
-                    userRepository.loginUser(userData)
-                }
-            }
-        }
-    }
-
-    fun signUpUser(){
-        val firstName = inputFirstName.value
-        val lastName = inputLastName.value
-        val contact = inputContactNumber.value
-        val email = inputEmail.value
-        val password = inputPassword.value
-        val  city = inputCity.value
-        val holding = inputHolding.value
-        val road = inputStreet.value
-        val post = inputZipcode.value
-        viewModelScope.launch {
-        if (checkEmpty(firstName,lastName,contact,email,password,city,holding,road,post)){
-
-            val createUser = User(0, Address(city!!,
-                Geolocation("0.0","0.0"),
-                holding?.toInt()!!,
-                road!!,post!!),email!!,Name(firstName!!,lastName!!),password!!,contact!!,"")
 
 
-                withContext(IO){
-                    userRepository.signUpUser(createUser)
-                }
-            }
-
-        }
-
-    }
 
     fun updateUser(){
         val firstName = inputFirstName.value

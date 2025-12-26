@@ -36,7 +36,6 @@ class ProfileFragment : Fragment() {
             localDataStore.getUser().collect{
                 user = Gson().fromJson(it,User::class.java)
                 binding.user = user
-                Log.d(TAG, "onCreateView: $user")
             }
         }
 

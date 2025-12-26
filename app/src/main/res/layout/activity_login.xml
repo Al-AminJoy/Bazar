@@ -5,12 +5,12 @@
 
     <data>
 
-        <import type="com.alamin.bazar.view_model.UserViewModel"/>
+        <import type="com.alamin.bazar.viewmodel.LoginViewModel"/>
         <import type="android.view.View.OnClickListener"/>
 
         <variable
             name="userViewModel"
-            type="UserViewModel" />
+            type="LoginViewModel" />
 
         <variable
             name="loginClickListener"

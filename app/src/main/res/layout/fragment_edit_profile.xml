@@ -6,7 +6,7 @@
     <data>
         <import type="com.alamin.bazar.model.data.User"/>
         <import type="android.view.View.OnClickListener"/>
-        <import type="com.alamin.bazar.view_model.UserViewModel"/>
+        <import type="com.alamin.bazar.viewmodel.EditProfileViewModel"/>
         <variable
             name="user"
             type="User" />
@@ -17,7 +17,7 @@
 
         <variable
             name="userViewModel"
-            type="UserViewModel" />
+            type="EditProfileViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

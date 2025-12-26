@@ -18,9 +18,8 @@ import com.alamin.bazar.model.data.Address
 import com.alamin.bazar.model.data.Invoice
 import com.alamin.bazar.model.data.User
 import com.alamin.bazar.utils.LocalDataStore
-import com.alamin.bazar.view_model.CartViewModel
-import com.alamin.bazar.view_model.InvoiceViewModel
-import com.alamin.bazar.view_model.ViewModelFactory
+import com.alamin.bazar.viewmodel.InvoiceViewModel
+import com.alamin.bazar.viewmodel.ViewModelFactory
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.*
@@ -38,7 +37,6 @@ class CheckoutFragment : Fragment() {
 
     private lateinit var binding: FragmentCheckoutBinding
 
-    private lateinit var cartViewModel: CartViewModel
     private lateinit var invoiceViewModel: InvoiceViewModel
 
     private val arg by navArgs<CheckoutFragmentArgs>()
@@ -59,7 +57,6 @@ class CheckoutFragment : Fragment() {
 
         val component = (requireActivity().applicationContext as BazaarApplication).appComponent
         component.injectCheckout(this)
-        cartViewModel = ViewModelProvider(this, viewModelFactory)[CartViewModel::class.java]
         invoiceViewModel = ViewModelProvider(this, viewModelFactory)[InvoiceViewModel::class.java]
 
 
@@ -127,7 +124,7 @@ class CheckoutFragment : Fragment() {
                     false,
                     arg.invoice.checkoutHolder
                 )
-                cartViewModel.deleteAllCart()
+                invoiceViewModel.deleteAllCart()
                 invoiceViewModel.insertInvoice(invoice)
                 Toast.makeText(activity, "Order Confirmed", Toast.LENGTH_LONG).show()
                 findNavController().navigate(R.id.action_checkoutFragment_to_dashBoardFragment)
